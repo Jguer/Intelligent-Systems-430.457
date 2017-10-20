@@ -8,7 +8,6 @@
 #include <geometry_msgs/Twist.h>
 #include <tf/transform_datatypes.h>
 #include <cmath>
-
 //car pose variable
 point car_pose;
 
@@ -126,13 +125,13 @@ int main(int argc, char** argv){
     PID pid_ctrl;
     ackermann_msgs::AckermannDriveStamped drive_msg_stamped;
 
-    point designated_point = path.begin();
+    point *designated_point = path.begin();
     int f = 0;  // nth element to be found.
     double dist_to_target = 0.0;
     // control rate, 10 Hz
     ros::Rate control_rate(10);
     while(ros::ok()){
-        dist_to_target = math.sqrt((designated_point.x^2 - car_pose.x^2) + (designated_point.y^2 - car_pose.y^2));
+        dist_to_target = sqrt((designated_point.x^2 - car_pose.x^2) + (designated_point.y^2 - car_pose.y^2));
         if (dist_to_target <= 0.2) {
             int i = 0;  // counter.
             f++;
@@ -140,10 +139,10 @@ int main(int argc, char** argv){
                 break;
             }
 
-            for(point ip : path) {
+            for(point* ip : path) {
                 i++;
                 if (i == n) {
-                    designated_point = *ip;
+                    designated_point = ip;
                     break;
                 }
             }
