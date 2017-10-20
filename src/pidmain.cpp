@@ -127,11 +127,10 @@ int main(int argc, char** argv){
 
     point *designated_point = pop_back(path)
 
-    double dist_to_target = 0.0;
     // control rate, 10 Hz
     ros::Rate control_rate(10);
     while(ros::ok()){
-        dist_to_target = sqrt((pow(designated_point->x, 2) - pow(car_pose.x, 2)) + (pow(designated_point->y, 2) - pow(car_pose.y, 2)));
+        double dist_to_target = sqrt((pow(designated_point->x, 2) - pow(car_pose.x, 2)) + (pow(designated_point->y, 2) - pow(car_pose.y, 2)));
         if (dist_to_target <= 0.2) {
             designated_point = pop_back(path)
                 if (designated_point == NULL) {
