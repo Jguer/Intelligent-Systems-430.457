@@ -26,7 +26,7 @@ int main(int argc, char** argv){
     ros::init(argc,argv,"pidmain");
     ros::NodeHandle n;
     double speed = max_speed;
-    double steering = 0.0;
+    double angle = 0.0;
 
     ros::Subscriber gazebo_pose_sub = n.subscribe("/gazebo/model_states",1,callback_state);
     ros::ServiceClient gazebo_spawn = n.serviceClient<gazebo_msgs::SpawnModel>("/gazebo/spawn_urdf_model");
@@ -125,27 +125,18 @@ int main(int argc, char** argv){
     PID pid_ctrl;
     ackermann_msgs::AckermannDriveStamped drive_msg_stamped;
 
-    point *designated_point = path.begin();
-    int f = 0;  // nth element to be found.
+    point *designated_point = pop_back(path)
+
     double dist_to_target = 0.0;
     // control rate, 10 Hz
     ros::Rate control_rate(10);
     while(ros::ok()){
-        dist_to_target = sqrt((designated_point.x^2 - car_pose.x^2) + (designated_point.y^2 - car_pose.y^2));
+        dist_to_target = sqrt((pow(designated_point->x, 2) - pow(car_pose.x, 2)) + (pow(designated_point->y, 2) - pow(car_pose.y, 2)));
         if (dist_to_target <= 0.2) {
-            int i = 0;  // counter.
-            f++;
-            if (f > 8) {
-                break;
-            }
-
-            for(point* ip : path) {
-                i++;
-                if (i == n) {
-                    designated_point = ip;
+            designated_point = pop_back(path)
+                if (designated_point == NULL) {
                     break;
                 }
-            }
         }
 
         drive_msg_stamped.drive.speed = speed;
@@ -188,7 +179,13 @@ void setpath(){
     point point7;    point7.x = 4.0;    point7.y = 0.0;    point7.th = 0.5 * M_PI;
     point point8;    point8.x = 4.0;    point8.y = 4.0;    point8.th = 0.5 * M_PI;
 
-    path.push_back(point0);    path.push_back(point1);    path.push_back(point2);
-    path.push_back(point3);    path.push_back(point4);    path.push_back(point5);
-    path.push_back(point6);    path.push_back(point7);    path.push_back(point8);
+    path.push_back(point8);
+    path.push_back(point7);
+    path.push_back(point6);
+    path.push_back(point5);
+    path.push_back(point4);
+    path.push_back(point3);
+    path.push_back(point2);
+    path.push_back(point1);
+    path.push_back(point0);
 }
