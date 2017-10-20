@@ -122,7 +122,7 @@ int main(int argc, char** argv){
     /* controller */
 
     int current_goal = 1;
-    PID pid_ctrl;
+    PID pid_ctrl = new PID(10,0,5);
     ackermann_msgs::AckermannDriveStamped drive_msg_stamped;
 
     point *designated_point = &path.back();
@@ -139,13 +139,12 @@ int main(int argc, char** argv){
                 }
         }
 
+        angle = pid_ctrl.get_control(car_pose, *designated_point);        
+
         drive_msg_stamped.drive.speed = speed;
         drive_msg_stamped.drive.steering_angle = angle;
         car_ctrl_pub.publish(drive_msg_stamped);
-        /*TO DO
-         * 1. make control value for steering angle using PID class. An instance is predefined as "pid_ctrl". Wirtz Area.
-        */
-
+      
         ros::spinOnce();
         control_rate.sleep();
         printf("car pose : %.2f,%.2f,%.2f \n", car_pose.x, car_pose.y, car_pose.th);

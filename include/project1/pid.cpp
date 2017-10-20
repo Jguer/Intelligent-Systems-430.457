@@ -1,10 +1,6 @@
 #include <project1/pid.h>
 
-PID::PID()  {}
-
-PID::~PID() {}
-
-void PID::Init(double Kp_in, double Ki_in, double Kd_in) {
+PID::PID(double Kp_in, double Ki_in, double Kd_in)  {
     Kp = Kp_in;
     Ki = Ki_in;
     Kd = Kd_in;
@@ -15,6 +11,8 @@ void PID::Init(double Kp_in, double Ki_in, double Kd_in) {
 
     freq = 0.1;
 }
+
+PID::~PID() {}
 
 float PID::get_control(point car_pose, point goal_pose) {
 
