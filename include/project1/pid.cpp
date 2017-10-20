@@ -13,7 +13,7 @@ void PID::Init(double Kp_in, double Ki_in, double Kd_in) {
     error_diff = 0;
     error_sum = 0;
 
-    freq = 0.002;
+    freq = 0.1;
 }
 
 float PID::get_control(point car_pose, point goal_pose) {
