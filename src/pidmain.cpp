@@ -12,6 +12,10 @@
 //car pose variable
 point car_pose;
 
+// at full joystick depression you'll go this fast
+double max_speed = 2.00;
+double max_turn = 60.0*M_PI/180.0;
+
 //vector type variable, which contains way points. the racecar has to fallowing these way points.
 //"point" is data type defined by TA. and it contains member variable x,y,th which are x,y coordinate and heading from x axis of car, respectively.
 std::vector<point> path;
@@ -22,6 +26,8 @@ void setpath();
 int main(int argc, char** argv){
     ros::init(argc,argv,"pidmain");
     ros::NodeHandle n;
+    double speed = max_speed;
+    double steering = 0.0;
 
     ros::Subscriber gazebo_pose_sub = n.subscribe("/gazebo/model_states",1,callback_state);
     ros::ServiceClient gazebo_spawn = n.serviceClient<gazebo_msgs::SpawnModel>("/gazebo/spawn_urdf_model");
@@ -120,18 +126,36 @@ int main(int argc, char** argv){
     PID pid_ctrl;
     ackermann_msgs::AckermannDriveStamped drive_msg_stamped;
 
+    point designated_point = point0;
+    int n = 0;  // nth element to be found.
+    double dist_to_target = 0.0;
     // control rate, 10 Hz
     ros::Rate control_rate(10);
     while(ros::ok()){
 
+        dist_to_target = math.sqrt((designated_point.x^2 - car_pose.x^2) + (designated_point.y^2 - car_pose.y^2));
+        if (dist_to_target <= 0.2) {
+            int i = 0;  // counter.
+            vector<point>::iterator it;
+
+            n++;
+            if (n > 8) {
+                break;
+            }
+
+            for (it = path.begin(); it != path.end(); it++, i++) {
+                if(i == n) {
+                    designated_point = *it;
+                    break;
+                }
+            }
+        }
+
+        drive_msg_stamped.drive.speed = speed;
+        drive_msg_stamped.drive.steering_angle = angle;
+        car_ctrl_pub.publish(drive_msg_stamped);
         /*TO DO
-         * 1. make control value for steering angle using PID class. An instance is predefined as "pid_ctrl".
-         * 2. publish control to racecar.
-         *    use predefined publisher, "car_ctrl_pub" and use predefined variable, "drive_msg_stamped".
-         * 3. check whether pioneer reached a currently following way point or not.
-         *    calculate distance between current pose of robot and currently following way point.
-         *    if distance is less than 0.2m (you can change this threshold), pursue next way point.
-         * 4. check whether car reached final way point(end of path). if it is, terminate controller.
+         * 1. make control value for steering angle using PID class. An instance is predefined as "pid_ctrl". Wirtz Area.
         */
 
         ros::spinOnce();
@@ -155,15 +179,15 @@ void callback_state(gazebo_msgs::ModelStatesConstPtr msgs){
 
 void setpath(){
 
-    point point0;    point0.x = -4.0;    point0.y = -4.0;    point0.th = 0.0;
-    point point1;    point1.x = -4.0;    point1.y = 0.0;    point1.th = 0.5 * M_PI;
-    point point2;    point2.x = -4.0;    point2.y = 4.0;    point2.th = 0.25 * M_PI;
+    point point0;    point0.x = -4.0;   point0.y = -4.0;  point0.th = 0.0;
+    point point1;    point1.x = -4.0;   point1.y = 0.0;   point1.th = 0.5 * M_PI;
+    point point2;    point2.x = -4.0;   point2.y = 4.0;   point2.th = 0.25 * M_PI;
 
     point point3;    point3.x = 0.0;    point3.y = 4.0;    point3.th = -0.5 * M_PI;
     point point4;    point4.x = 0.0;    point4.y = 0.0;    point4.th = -0.5 * M_PI;
-    point point5;    point5.x = 0.0;    point5.y = -4.0;    point5.th = -0.25 * M_PI;
+    point point5;    point5.x = 0.0;    point5.y = -4.0;   point5.th = -0.25 * M_PI;
 
-    point point6;    point6.x = 4.0;    point6.y = -4.0;    point6.th = 0.5 * M_PI;
+    point point6;    point6.x = 4.0;    point6.y = -4.0;   point6.th = 0.5 * M_PI;
     point point7;    point7.x = 4.0;    point7.y = 0.0;    point7.th = 0.5 * M_PI;
     point point8;    point8.x = 4.0;    point8.y = 4.0;    point8.th = 0.5 * M_PI;
 
