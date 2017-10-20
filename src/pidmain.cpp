@@ -126,26 +126,24 @@ int main(int argc, char** argv){
     PID pid_ctrl;
     ackermann_msgs::AckermannDriveStamped drive_msg_stamped;
 
-    point designated_point = point0;
-    int n = 0;  // nth element to be found.
+    point designated_point = path.begin();
+    int f = 0;  // nth element to be found.
     double dist_to_target = 0.0;
     // control rate, 10 Hz
     ros::Rate control_rate(10);
     while(ros::ok()){
-
         dist_to_target = math.sqrt((designated_point.x^2 - car_pose.x^2) + (designated_point.y^2 - car_pose.y^2));
         if (dist_to_target <= 0.2) {
             int i = 0;  // counter.
-            vector<point>::iterator it;
-
-            n++;
-            if (n > 8) {
+            f++;
+            if (f > 8) {
                 break;
             }
 
-            for (it = path.begin(); it != path.end(); it++, i++) {
-                if(i == n) {
-                    designated_point = *it;
+            for(point ip : path) {
+                i++;
+                if (i == n) {
+                    designated_point = *ip;
                     break;
                 }
             }
