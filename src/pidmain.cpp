@@ -25,7 +25,7 @@ void setpath();
 int main(int argc, char** argv){
     ros::init(argc,argv,"pidmain");
     ros::NodeHandle n;
-    double speed = max_speed;
+    double speed = 1.0;
     double angle = 0.0;
 
     ros::Subscriber gazebo_pose_sub = n.subscribe("/gazebo/model_states",1,callback_state);
