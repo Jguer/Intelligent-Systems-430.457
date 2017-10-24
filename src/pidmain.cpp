@@ -26,7 +26,7 @@ void setpath();
 int main(int argc, char** argv){
     ros::init(argc,argv,"pidmain");
     ros::NodeHandle n;
-    double speed = max_speed;
+    double speed = 1.0;
     double angle = 0.0;
 
     ros::Subscriber gazebo_pose_sub = n.subscribe("/gazebo/model_states",1,callback_state);
@@ -58,7 +58,7 @@ int main(int argc, char** argv){
                 std::string("<collision>") +
                 std::string("<origin xyz=\"0 0 0\" rpy=\"0 0 0\" />") +
                 std::string("<geometry>") +
-                std::string("<sphere radius=\"0\"/>") +
+                std::string("<sphere radius=\"0.09\"/>") +
                 std::string("</geometry>") +
                 std::string("</collision>") +
                 std::string("</link>") +
@@ -123,7 +123,7 @@ int main(int argc, char** argv){
     /* controller */
 
     int current_goal = 1;
-    PID pid_ctrl = new PID(10,0,5);
+    PID *pid_ctrl = new PID(10,0,5);
     ackermann_msgs::AckermannDriveStamped drive_msg_stamped;
 
     point *designated_point = &path.back();
@@ -140,12 +140,12 @@ int main(int argc, char** argv){
                 }
         }
 
-        angle = pid_ctrl.get_control(car_pose, *designated_point);        
+        angle = pid_ctrl->get_control(car_pose, *designated_point);
 
         drive_msg_stamped.drive.speed = speed;
         drive_msg_stamped.drive.steering_angle = angle;
         car_ctrl_pub.publish(drive_msg_stamped);
-      
+
         ros::spinOnce();
         control_rate.sleep();
         printf("car pose : %.2f,%.2f,%.2f \n", car_pose.x, car_pose.y, car_pose.th);
