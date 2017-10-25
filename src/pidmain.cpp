@@ -123,7 +123,7 @@ int main(int argc, char** argv){
     /* controller */
 
     int current_goal = 1;
-    PID *pid_ctrl = new PID(1,0.4,0.4);
+    PID *pid_ctrl = new PID(0.6,0.3,0.0);
     ackermann_msgs::AckermannDriveStamped drive_msg_stamped;
 
     point *designated_point = &path.back();
@@ -143,7 +143,7 @@ int main(int argc, char** argv){
                 }
         }
 
-        speed = 2.0 - 1.7/(1.0 + ((pow(designated_point->x - car_pose.x, 2)) + (pow(designated_point->y - car_pose.y, 2))));
+        speed = 2.0 - 1.5/(1.0 + ((pow(designated_point->x - car_pose.x, 2)) + (pow(designated_point->y - car_pose.y, 2))));
         angle = pid_ctrl->get_control(car_pose, *designated_point);
 
         if (speed > max_speed) {

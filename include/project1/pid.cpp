@@ -23,17 +23,12 @@ float PID::get_control(point car_pose, point goal_pose) {
     float i;
     float d;
     float des_angle;
-    float car_angle;
 
     // Angle
     des_angle = atan2(goal_pose.y - car_pose.y, goal_pose.x - car_pose.x) - car_pose.th;
-
-    printf("Atan, Theta: %0.2f %0.2f\n", des_angle, car_pose.th);
+    printf("Atan, Theta: %0.2f %0.2f %0.2f\n", des_angle, car_pose.th, error_sum);
 
     // Updating Error
-    //error_diff = error - (des_angle - car_pose.th);
-    //error = des_angle - car_pose.th;
-    //error_sum += error;
     error_diff = error - des_angle;
     error = des_angle;
     error_sum += error;
@@ -44,7 +39,7 @@ float PID::get_control(point car_pose, point goal_pose) {
     d = Kd * error_diff / freq;
     
     // Control Value
-    //ctrl = p + i + d;    
+    ctrl = p + i + d;    
 
-    return des_angle;
+    return ctrl;
 }
