@@ -128,14 +128,14 @@ int main(int argc, char** argv){
 
     point *designated_point = &path.back();
     path.pop_back();
-    
+
     // control rate, 10 Hz
     ros::Rate control_rate(10);
     while(ros::ok()){
         double dist_to_target = sqrt((pow(designated_point->x - car_pose.x, 2)) + (pow(designated_point->y - car_pose.y, 2)));
         printf("%fs\n", dist_to_target);
         if (dist_to_target <= 0.2) {
-            printf("Change Triggered\n");            
+            printf("Change Triggered\n");
             designated_point = &path.back();
             path.pop_back();
                 if (designated_point == NULL) {
@@ -143,7 +143,15 @@ int main(int argc, char** argv){
                 }
         }
 
+        speed = 2.0 - 1.0/(1.0 + sqrt((pow(designated_point->x - car_pose.x, 2)) + (pow(designated_point->y - car_pose.y, 2))));
         angle = pid_ctrl->get_control(car_pose, *designated_point);
+
+        if (speed > max_speed) {
+            speed = max_speed;
+        } else if ( speed < - max_speed) {
+            speed = - max_speed;
+        }
+
         if (angle > max_turn) {
             angle = max_turn;
         } else if ( angle < - max_turn) {
