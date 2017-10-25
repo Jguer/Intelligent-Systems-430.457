@@ -20,10 +20,14 @@ float PID::get_control(point car_pose, point goal_pose) {
     float p;
     float i;
     float d;
+    float des_angle;
+
+    // Angle
+    des_angle = atan2(goal_pose.y - car_pose.y, goal_pose.x - car_pose.y) - car_pose.th;
 
     // Updating Error
-    error_diff = error - (goal_pose.th - car_pose.th);
-    error = goal_pose.th - car_pose.th;
+    error_diff = error - (des_angle - car_pose.th);
+    error = des_angle - car_pose.th;
     error_sum += error;
 
     // Calculating P I D
