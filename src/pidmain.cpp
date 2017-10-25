@@ -123,7 +123,7 @@ int main(int argc, char** argv){
     /* controller */
 
     int current_goal = 1;
-    PID *pid_ctrl = new PID(0.5,0.4,0.4);
+    PID *pid_ctrl = new PID(1,0.4,0.4);
     ackermann_msgs::AckermannDriveStamped drive_msg_stamped;
 
     point *designated_point = &path.back();
@@ -155,7 +155,7 @@ int main(int argc, char** argv){
         if (angle > max_turn) {
             angle = max_turn;
         } else if ( angle < - max_turn) {
-            angle = -max_turn;
+            angle = - max_turn;
         }
         drive_msg_stamped.drive.speed = speed;
         drive_msg_stamped.drive.steering_angle = angle;
@@ -163,6 +163,8 @@ int main(int argc, char** argv){
 
         ros::spinOnce();
         control_rate.sleep();
+        printf("Speed, Angle : %.2f, %.2f \n", speed, angle);
+        
         printf("car pose : %.2f,%.2f,%.2f,%.2f,%.2f \n", car_pose.x, car_pose.y, car_pose.th, angle, designated_point->th);
     }
 

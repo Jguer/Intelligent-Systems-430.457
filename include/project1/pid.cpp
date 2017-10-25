@@ -1,4 +1,6 @@
 #include <project1/pid.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 PID::PID(double Kp_in, double Ki_in, double Kd_in)  {
     Kp = Kp_in;
@@ -21,13 +23,19 @@ float PID::get_control(point car_pose, point goal_pose) {
     float i;
     float d;
     float des_angle;
+    float car_angle;
 
     // Angle
-    des_angle = atan2(goal_pose.y - car_pose.y, goal_pose.x - car_pose.y) - car_pose.th;
+    des_angle = atan2(goal_pose.y - car_pose.y, goal_pose.x - car_pose.x) - car_pose.th;
+
+    printf("Atan, Theta: %0.2f %0.2f\n", des_angle, car_pose.th);
 
     // Updating Error
-    error_diff = error - (des_angle - car_pose.th);
-    error = des_angle - car_pose.th;
+    //error_diff = error - (des_angle - car_pose.th);
+    //error = des_angle - car_pose.th;
+    //error_sum += error;
+    error_diff = error - des_angle;
+    error = des_angle;
     error_sum += error;
 
     // Calculating P I D
@@ -36,7 +44,7 @@ float PID::get_control(point car_pose, point goal_pose) {
     d = Kd * error_diff / freq;
     
     // Control Value
-    ctrl = p + i + d;    
+    //ctrl = p + i + d;    
 
-    return ctrl;
+    return des_angle;
 }
