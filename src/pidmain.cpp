@@ -90,8 +90,8 @@ int main(int argc, char** argv){
 
     // set the car on the initial position
     geometry_msgs::Pose model_pose;
-    model_pose.position.x = path[0].x;
-    model_pose.position.y = path[0].y;
+    model_pose.position.x = path[8].x;
+    model_pose.position.y = path[8].y;
     model_pose.position.z = 0.3;
     model_pose.orientation.x = 0.0;
     model_pose.orientation.y = 0.0;
@@ -123,16 +123,19 @@ int main(int argc, char** argv){
     /* controller */
 
     int current_goal = 1;
-    PID *pid_ctrl = new PID(10,0,5);
+    PID *pid_ctrl = new PID(0.5,0.4,0.4);
     ackermann_msgs::AckermannDriveStamped drive_msg_stamped;
 
     point *designated_point = &path.back();
-
+    path.pop_back();
+    
     // control rate, 10 Hz
     ros::Rate control_rate(10);
     while(ros::ok()){
-        double dist_to_target = sqrt((pow(designated_point->x, 2) - pow(car_pose.x, 2)) + (pow(designated_point->y, 2) - pow(car_pose.y, 2)));
+        double dist_to_target = sqrt((pow(designated_point->x - car_pose.x, 2)) + (pow(designated_point->y - car_pose.y, 2)));
+        printf("%fs\n", dist_to_target);
         if (dist_to_target <= 0.2) {
+            printf("Change Triggered\n");            
             designated_point = &path.back();
             path.pop_back();
                 if (designated_point == NULL) {
@@ -141,14 +144,18 @@ int main(int argc, char** argv){
         }
 
         angle = pid_ctrl->get_control(car_pose, *designated_point);
-
+        if (angle > max_turn) {
+            angle = max_turn;
+        } else if ( angle < - max_turn) {
+            angle = -max_turn;
+        }
         drive_msg_stamped.drive.speed = speed;
         drive_msg_stamped.drive.steering_angle = angle;
         car_ctrl_pub.publish(drive_msg_stamped);
 
         ros::spinOnce();
         control_rate.sleep();
-        printf("car pose : %.2f,%.2f,%.2f \n", car_pose.x, car_pose.y, car_pose.th);
+        printf("car pose : %.2f,%.2f,%.2f,%.2f,%.2f \n", car_pose.x, car_pose.y, car_pose.th, angle, designated_point->th);
     }
 
     return 0;

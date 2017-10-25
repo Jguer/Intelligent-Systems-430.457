@@ -22,8 +22,8 @@ float PID::get_control(point car_pose, point goal_pose) {
     float d;
 
     // Updating Error
-    error_diff = error - (car_pose.th - goal_pose.th);
-    error = car_pose.th - goal_pose.th;
+    error_diff = error - (goal_pose.th - car_pose.th);
+    error = goal_pose.th - car_pose.th;
     error_sum += error;
 
     // Calculating P I D
