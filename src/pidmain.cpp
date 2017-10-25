@@ -143,7 +143,7 @@ int main(int argc, char** argv){
                 }
         }
 
-        speed = 2.0 - 1.0/(1.0 + sqrt((pow(designated_point->x - car_pose.x, 2)) + (pow(designated_point->y - car_pose.y, 2))));
+        speed = 2.0 - 1.7/(1.0 + ((pow(designated_point->x - car_pose.x, 2)) + (pow(designated_point->y - car_pose.y, 2))));
         angle = pid_ctrl->get_control(car_pose, *designated_point);
 
         if (speed > max_speed) {
