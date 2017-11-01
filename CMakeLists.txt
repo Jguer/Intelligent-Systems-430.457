@@ -1,15 +1,20 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(project1)
+project(project2)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+find_package(gazebo REQUIRED)
+
 find_package(catkin REQUIRED COMPONENTS
+  cv_bridge
   gazebo_msgs
   geometry_msgs
   joy
+  nav_msgs
   roscpp
   rospy
+  sensor_msgs
   tf
 )
 
@@ -84,7 +89,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES project1
+#  LIBRARIES project2
 #  CATKIN_DEPENDS cv_bridge gazebo_msgs geometry_msgs joy nav_msgs roscpp rospy sensor_msgs tf
 #  DEPENDS system_lib
 )
@@ -100,20 +105,23 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+include_directories(${GAZEBO_INCLUDE_DIRS})
+link_directories(${GAZEBO_LIBRARY_DIRS})
+
 ## Declare a cpp library
-# add_library(project1
-#   src/${PROJECT_NAME}/project1.cpp
+# add_library(project2
+#   src/${PROJECT_NAME}/project2.cpp
 # )
 
 ## Declare a cpp executable
-# add_executable(project1_node src/project1_node.cpp)
+# add_executable(project2_node src/project2_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(project1_node project1_generate_messages_cpp)
+# add_dependencies(project2_node project2_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(project1_node
+# target_link_libraries(project2_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -132,7 +140,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS project1 project1_node
+# install(TARGETS project2 project2_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -157,7 +165,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_project1.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_project2.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
@@ -165,7 +173,11 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(project1 src/pidmain.cpp include/project1/pid.cpp)
-target_link_libraries(project1
-   ${catkin_LIBRARIES}
+#############
+## custom  ##
+#############
+
+add_executable(project2 src/main.cpp include/project2/rrtTree.cpp include/project2/pid.cpp)
+target_link_libraries(project2
+   ${catkin_LIBRARIES} ${GAZEBO_INCLUDE_DIRS}
 )
