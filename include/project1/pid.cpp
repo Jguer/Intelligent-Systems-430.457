@@ -29,7 +29,7 @@ float PID::get_control(point car_pose, point goal_pose) {
     printf("Atan, Theta: %0.2f %0.2f %0.2f\n", des_angle, car_pose.th, error_sum);
 
     // Updating Error
-    error_diff = error - des_angle;
+    error_diff = des_angle - error;
     error = des_angle;
     error_sum += error;
 
