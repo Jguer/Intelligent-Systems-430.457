@@ -214,19 +214,21 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
 
 int rrtTree::nearestNeighbor(point x_rand) {
     int distance_min;
-    // network = new rrtTree(point x_init, point x_goal, cv::Mat map,
-    // double map_origin_x, double map_origin_y, double res, int margin);
-    distance_min = INT_MAX;
-    for (int i = 1; i < this->count; i++) {
-        point x_near = this->ptrTable[i]->location;
-        int distance = sqrt(((x_rand.x - x_near.x)*(x_rand.x - x_near.x)) +
-                ((x_rand.y - x_near.y)*(x_rand.y - x_near.y)));
+    int idx_near;
 
-        if (distance != 0 && distance < distance_min) {
-            distance_min = distance;
+    distance_min = INT_MAX;
+    for (int i = 0; i < this->count; i++) {
+        point x_near = this->ptrTable[i]->location;
+        double dist_to_rand = sqrt(
+                (pow(x_near.x - x_rand.x, 2)) +
+                (pow(x_near.y - x_rand.y, 2)));
+
+        if (dist_to_rand != 0 && dist_to_rand < distance_min) {
+            distance_min = dist_to_rand;
+            idx_near = i;
         }
-        return distance_min;
     }
+    return idx_near;
 }
 
 int rrtTree::newState(double *out, point x_near, point x_rand,
