@@ -87,7 +87,7 @@ void rrtTree::visualizeTree(){
     cv::Mat imgResult;
     cv::cvtColor(this->map, map_c, CV_GRAY2BGR);
     cv::resize(map_c, imgResult, cv::Size(), Res, Res);
-    
+
     for(int i = 1; i < this->count; i++) {
         idx_parent = this->ptrTable[i]->idx_parent;
 	for(int j = 0; j < 10; j++) {
@@ -166,7 +166,18 @@ void rrtTree::visualizeTree(std::vector<traj> path){
 }
 
 void rrtTree::addVertex(point x_new, point x_rand, int idx_near, double alpha, double d) {
-    //TODO
+    new_node = new node;
+    new_node->idx = this->count;
+    new_node->idx_parent = idx_near;
+    new_node->location = x_new;
+    new_node->rand = x_rand;
+    new_node->alpha = alpha;
+    new_node->d = d;
+
+    ptrTable[this->count] = new_node;
+    this->count++;
+
+    return;
 }
 
 
