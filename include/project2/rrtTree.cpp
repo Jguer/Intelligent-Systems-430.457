@@ -21,7 +21,7 @@ rrtTree::rrtTree(point x_init, point x_goal) {
     root = new node;
     ptrTable[0] = root;
     root->idx = 0;
-    root->idx_parent = NULL;
+    root->idx_parent = 0;
     root->location = x_init;
     root->rand = x_init;
     root->alpha = 0;
@@ -48,7 +48,7 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x, d
     root = new node;
     ptrTable[0] = root;
     root->idx = 0;
-    root->idx_parent = NULL;
+    root->idx_parent = 0;
     root->location = x_init;
     root->rand = x_init;
 }
@@ -166,7 +166,7 @@ void rrtTree::visualizeTree(std::vector<traj> path){
 }
 
 void rrtTree::addVertex(point x_new, point x_rand, int idx_near, double alpha, double d) {
-    new_node = new node;
+    node *new_node = new node;
     new_node->idx = this->count;
     new_node->idx_parent = idx_near;
     new_node->location = x_new;
