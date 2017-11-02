@@ -17,7 +17,7 @@ rrtTree::rrtTree(point x_init, point x_goal) {
     this->x_init = x_init;
     this->x_goal = x_goal;
 
-    std::srand(std::time(NULL));
+    std::srand(std::time(nullptr));
     count = 1;
     root = new node;
     ptrTable[0] = root;
@@ -182,22 +182,24 @@ void rrtTree::addVertex(point x_new, point x_rand, int idx_near, double alpha, d
 }
 
 
-int rrtTree::generateRRT(double x_max, double x_min, double y_max, double y_min, int K, double MaxStep) {
+int rrtTree::generateRRT(double x_max, double x_min, double y_max,
+        double y_min, int K, double MaxStep) {
     //TODO
 }
 
-point rrtTree::randomState(double x_max, double x_min, double y_max, double y_min, point x_goal) {
+point rrtTree::randomState(double x_max, double x_min, double y_max,
+        double y_min, point x_goal) {
     point x_rand;
 
-    if(rrtTree::countGoalBias == 0) {
+    if (rrtTree::countGoalBias == 0) {
         x_rand = x_goal;
         rrtTree::countGoalBias = 4;
-    }
-    else {
-        x_rand = {rand() % (x_max - x_min) + x_min, rand() % (y_max - y_min) + y_min, 0};
+    } else {
+        x_rand = {<double>rand() % (x_max - x_min) + x_min,
+            <double>rand() % (y_max - y_min) + y_min, 0};
         --rrtTree::countGoalBias;
     }
-    
+
     return x_rand;
 }
 
@@ -211,34 +213,32 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
 
 int rrtTree::nearestNeighbor(point x_rand) {
     int distance_min;
-    int idx_parent;
-
-
-//network = new rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x, double map_origin_y, double res, int margin);
-for (int i = 1; i < this->count; i++) {
-        point x_near = this->ptrTable[i]->location ;
-        int distance_min = INT_MAX;
-       int distance = sqrt(((x_rand.x - x_near.x)*(x_rand.x - x_near.x)) + ((x_rand.y - x_near.y)*(x_rand.y - x_near.y)));
+    // network = new rrtTree(point x_init, point x_goal, cv::Mat map,
+    // double map_origin_x, double map_origin_y, double res, int margin);
+    distance_min = INT_MAX;
+    for (int i = 1; i < this->count; i++) {
+        point x_near = this->ptrTable[i]->location;
+        int distance = sqrt(((x_rand.x - x_near.x)*(x_rand.x - x_near.x)) +
+                ((x_rand.y - x_near.y)*(x_rand.y - x_near.y)));
 
         if (distance != 0 && distance < distance_min) {
-        distance_min= distance ;
-
-      }
-      return distance_min ;
+            distance_min = distance;
+        }
+        return distance_min;
+    }
 }
-}
 
-int rrtTree::newState(double *out, point x_near, point x_rand, double MaxStep ) {
-  //  for (int i ; i<10 ; i++) {
-        /* point x_new = rrtTree::randomState( x_max,  x_min,  y_max,  y_min); */
-        /* rrtTree::addVertex( x_new,  x_rand,  idx_near,  alpha,  d); */
-  //  }
+int rrtTree::newState(double *out, point x_near, point x_rand,
+        double MaxStep ) {
+    //  for (int i ; i<10 ; i++) {
+    /* point x_new = rrtTree::randomState( x_max,  x_min,  y_max,  y_min); */
+    /* rrtTree::addVertex( x_new,  x_rand,  idx_near,  alpha,  d); */
+    //  }
 
-  //  point nearestNeighbor = rttTree::nearestNeighbor(x_rand);
+    //  point nearestNeighbor = rttTree::nearestNeighbor(x_rand);
 
-  //  if ((abs(nearestNeighbor.th) < max_alpha) and d < MaxStep) {
-        //TODO
-  //  }
+    //  if ((abs(nearestNeighbor.th) < max_alpha) and d < MaxStep) {
+    //  }
 
-  //  return 0;
+    //  return 0;
 }
