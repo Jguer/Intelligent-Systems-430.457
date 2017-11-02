@@ -7,15 +7,20 @@
 
 class PID{
 public:
-    PID();
+    PID(double Kp_in, double Ki_in, double Kd_in);
+    ~PID();
 
     //this function makes control output using arguments which are the current value and the target setpoint.
-    float get_control(point car_pose, traj prev_goal, traj cur_goal);
+    float get_control(point car_pose, traj goal_pose);
+
 private:
+
+    // you can use this private member variables or additionally define other member variables as you want.
     float error;
     float error_sum;
     float error_diff;
     float Kp;
     float Ki;
     float Kd;
+    float freq;
 };

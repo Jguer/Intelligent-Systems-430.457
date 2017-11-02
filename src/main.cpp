@@ -47,6 +47,8 @@ std::vector<traj> path_RRT;
 //robot
 point robot_pose;
 ackermann_msgs::AckermannDriveStamped cmd;
+double speed;
+double angle;
 
 //FSM state
 int state;
@@ -57,7 +59,7 @@ void generate_path_RRT();
 void callback_state(gazebo_msgs::ModelStatesConstPtr msgs);
 void setcmdvel(double v, double w);
 
-int main(int argc, char** argv){
+int main(int argc, char** argv) {
     ros::init(argc, argv, "rrt_main");
     ros::NodeHandle n;
 
@@ -72,8 +74,8 @@ int main(int argc, char** argv){
 
     char* user = getpwuid(getuid())->pw_name;
     map = cv::imread((std::string("/home/") +
-		      std::string(user) + 
-                      std::string("/catkin_ws/src/project2/src/ground_truth_map.pgm")).c_str(), CV_LOAD_IMAGE_GRAYSCALE);
+                std::string(user) +
+                std::string("/catkin_ws/src/project2/src/ground_truth_map.pgm")).c_str(), CV_LOAD_IMAGE_GRAYSCALE);
 
     map_y_range = map.cols;
     map_x_range = map.rows;
@@ -87,7 +89,7 @@ int main(int argc, char** argv){
     printf("Load map\n");
 
 
-     if(! map.data )                              // Check for invalid input
+    if(! map.data )                              // Check for invalid input
     {
         printf("Could not open or find the image\n");
         return -1;
@@ -109,17 +111,14 @@ int main(int argc, char** argv){
 
     while(running){
         switch (state) {
-        case INIT: {
-            look_ahead_idx = 0;
-	    printf("path size : %d\n", path_RRT.size());
-            //visualize path
-	
-            for(int i = 0; i < path_RRT.size(); i++){
-		
-	    
-                gazebo_msgs::SpawnModel model;
-                model.request.model_xml = std::string("<robot name=\"simple_ball\">") +
-			std::string("<static>true</static>") +
+            case INIT: {
+                look_ahead_idx = 0;
+                printf("path size : %d\n", path_RRT.size());
+                //visualize path
+                for(int i = 0; i < path_RRT.size(); i++) {
+                    gazebo_msgs::SpawnModel model;
+                    model.request.model_xml = std::string("<robot name=\"simple_ball\">") +
+                        std::string("<static>true</static>") +
                         std::string("<link name=\"ball\">") +
                         std::string("<inertial>") +
                         std::string("<mass value=\"1.0\" />") +
@@ -146,82 +145,117 @@ int main(int argc, char** argv){
                         std::string("<turnGravityOff>true</turnGravityOff>") +
                         std::string("</gazebo>") +
                         std::string("</robot>");
+                    std::ostringstream ball_name;
 
-                std::ostringstream ball_name;
-                ball_name << i;
-                model.request.model_name = ball_name.str();
-                model.request.reference_frame = "world";
-                model.request.initial_pose.position.x = path_RRT[i].x;
-                model.request.initial_pose.position.y = path_RRT[i].y;
-                model.request.initial_pose.position.z = 0.7;
-                model.request.initial_pose.orientation.w = 0.0;
-                model.request.initial_pose.orientation.x = 0.0;
-                model.request.initial_pose.orientation.y = 0.0;
-                model.request.initial_pose.orientation.z = 0.0;
-                gazebo_spawn.call(model);
+                    ball_name << i;
+                    model.request.model_name = ball_name.str();
+                    model.request.reference_frame = "world";
+                    model.request.initial_pose.position.x = path_RRT[i].x;
+                    model.request.initial_pose.position.y = path_RRT[i].y;
+                    model.request.initial_pose.position.z = 0.7;
+                    model.request.initial_pose.orientation.w = 0.0;
+                    model.request.initial_pose.orientation.x = 0.0;
+                    model.request.initial_pose.orientation.y = 0.0;
+                    model.request.initial_pose.orientation.z = 0.0;
+                    gazebo_spawn.call(model);
+                    ros::spinOnce();
+                }
+
+                printf("Spawn path\n");
+
+                //initialize robot position
+                geometry_msgs::Pose model_pose;
+                model_pose.position.x = waypoints[0].x;
+                model_pose.position.y = waypoints[0].y;
+                model_pose.position.z = 0.3;
+                model_pose.orientation.x = 0.0;
+                model_pose.orientation.y = 0.0;
+                model_pose.orientation.z = 0.0;
+                model_pose.orientation.w = 1.0;
+
+                geometry_msgs::Twist model_twist;
+                model_twist.linear.x = 0.0;
+                model_twist.linear.y = 0.0;
+                model_twist.linear.z = 0.0;
+                model_twist.angular.x = 0.0;
+                model_twist.angular.y = 0.0;
+                model_twist.angular.z = 0.0;
+
+                gazebo_msgs::ModelState modelstate;
+                modelstate.model_name = "racecar";
+                modelstate.reference_frame = "world";
+                modelstate.pose = model_pose;
+                modelstate.twist = model_twist;
+
+                gazebo_msgs::SetModelState setmodelstate;
+                setmodelstate.request.model_state = modelstate;
+
+                gazebo_set.call(setmodelstate);
                 ros::spinOnce();
-            }
-            printf("Spawn path\n");
-	
-            //initialize robot position
-            geometry_msgs::Pose model_pose;
-            model_pose.position.x = waypoints[0].x;
-            model_pose.position.y = waypoints[0].y;
-            model_pose.position.z = 0.3;
-            model_pose.orientation.x = 0.0;
-            model_pose.orientation.y = 0.0;
-            model_pose.orientation.z = 0.0;
-            model_pose.orientation.w = 1.0;
+                ros::Rate(0.33).sleep();
 
-            geometry_msgs::Twist model_twist;
-            model_twist.linear.x = 0.0;
-            model_twist.linear.y = 0.0;
-            model_twist.linear.z = 0.0;
-            model_twist.angular.x = 0.0;
-            model_twist.angular.y = 0.0;
-            model_twist.angular.z = 0.0;
+                printf("Initialize ROBOT\n");
+                state = RUNNING;
+            } break;
+            case RUNNING: {
+                //TODO
+                /*
+                1. make control following point in the variable "path_RRT"
+                use function setcmdvel(double v, double w) which set cmd_vel as desired input value.
+                2. publish
+                3. check distance between robot and current goal point
+                4. if distance is less than 0.2 (update next goal point) (you can change the distance if you want)
+                look_ahead_idx++
+                5. if robot reach the final goal
+                finish RUNNING (state = FINISH)
+                */
 
-            gazebo_msgs::ModelState modelstate;
-            modelstate.model_name = "racecar";
-            modelstate.reference_frame = "world";
-            modelstate.pose = model_pose;
-            modelstate.twist = model_twist;
+                speed = 2.0 - 1.5/(1.0
+                      + ((pow(path_RRT[look_ahead_idx].x - robot_pose.x, 2))
+                      + (pow(path_RRT[look_ahead_idx].y - robot_pose.y, 2))));
+                angle = pid_ctrl->get_control(robot_pose, path_RRT[look_ahead_idx]);
 
-            gazebo_msgs::SetModelState setmodelstate;
-            setmodelstate.request.model_state = modelstate;
+                if (speed > max_speed) {
+                    speed = max_speed;
+                } else if ( speed < - max_speed) {
+                    speed = - max_speed;
+                }
 
-            gazebo_set.call(setmodelstate);
-            ros::spinOnce();
-            ros::Rate(0.33).sleep();
+                if (angle > max_turn) {
+                    angle = max_turn;
+                } else if ( angle < - max_turn) {
+                    angle = - max_turn;
+                }
 
-            printf("Initialize ROBOT\n");
-            state = RUNNING;
-        } break;
+                setcmdvel(speed,angle);
+                printf("Debug Parameters\n");
+                printf("Speed, Angle : %.2f, %.2f \n", speed, angle);
+                printf("Car Pose : %.2f,%.2f,%.2f,%.2f,%.2f \n", robot_pose.x,
+                    robot_pose.y, robot_pose.th, angle, path_RRT[look_ahead_idx].th);
+                cmd_vel_pub.publish(cmd);
 
-        case RUNNING: {
-	    //TODO
-	    /*
-		1. make control following point in the variable "path_RRT"
-			use function setcmdvel(double v, double w) which set cmd_vel as desired input value.
-		2. publish
-		3. check distance between robot and current goal point
-		4. if distance is less than 0.2 (update next goal point) (you can change the distance if you want)
-			look_ahead_idx++
-		5. if robot reach the final goal
-			finish RUNNING (state = FINISH)
-	    */
-        } break;
+                double dist_to_target = sqrt(
+                (pow(path_RRT[look_ahead_idx].x - robot_pose.x, 2)) +
+                (pow(path_RRT[look_ahead_idx].y - robot_pose.y, 2)));
 
-        case FINISH: {
-            setcmdvel(0,0);
-            cmd_vel_pub.publish(cmd);
-            running = false;
-            ros::spinOnce();
-            control_rate.sleep();
-        } break;
-
-        default: {
-        } break;
+                printf("%fs\n", dist_to_target);
+                if (dist_to_target <= 0.2) {
+                    printf("New destination Point\n");
+                    look_ahead_idx++;
+                    if look_ahead_idx == path_RRT.size() {
+                        state = FINISH;
+                    }
+                }
+            } break;
+            case FINISH: {
+                setcmdvel(0,0);
+                cmd_vel_pub.publish(cmd);
+                running = false;
+                ros::spinOnce();
+                control_rate.sleep();
+            } break;
+            default: {
+            } break;
         }
     }
     return 0;

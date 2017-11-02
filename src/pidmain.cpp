@@ -164,7 +164,7 @@ int main(int argc, char** argv){
         ros::spinOnce();
         control_rate.sleep();
         printf("Speed, Angle : %.2f, %.2f \n", speed, angle);
-        
+
         printf("car pose : %.2f,%.2f,%.2f,%.2f,%.2f \n", car_pose.x, car_pose.y, car_pose.th, angle, designated_point->th);
     }
 
