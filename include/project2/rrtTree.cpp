@@ -201,29 +201,32 @@ int rrtTree::nearestNeighbor(point x_rand) {
     int distance_min;
     int idx_parent;
 
-int distance_min
+
 //network = new rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x, double map_origin_y, double res, int margin);
-for(int i = 1; i < this->count; i++) {
+for (int i = 1; i < this->count; i++) {
         point x_near = this->ptrTable[i]->location ;
         int distance_min = INT_MAX;
-       int distance = sqrt((x_rand.x - x_near.x)^2 + (x_rand.y - x_near.y)^2)
+       int distance = sqrt(((x_rand.x - x_near.x)*(x_rand.x - x_near.x)) + ((x_rand.y - x_near.y)*(x_rand.y - x_near.y)));
 
         if (distance != 0 && distance < distance_min) {
         distance_min= distance ;
+
       }
+      return distance_min ;
+}
 }
 
 int rrtTree::newState(double *out, point x_near, point x_rand, double MaxStep ) {
-    for (int i ; i<10 ; i++) {
+  //  for (int i ; i<10 ; i++) {
         /* point x_new = rrtTree::randomState( x_max,  x_min,  y_max,  y_min); */
         /* rrtTree::addVertex( x_new,  x_rand,  idx_near,  alpha,  d); */
-    }
+  //  }
 
-    point nearestNeighbor = rtTree::nearestNeighbor(x_rand);
+  //  point nearestNeighbor = rttTree::nearestNeighbor(x_rand);
 
-    if ((abs(nearestNeighbor.th) < max_alpha) and d<MaxStep) {
+  //  if ((abs(nearestNeighbor.th) < max_alpha) and d < MaxStep) {
         //TODO
-    }
+  //  }
 
-    return 0;
+  //  return 0;
 }
