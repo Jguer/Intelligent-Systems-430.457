@@ -195,8 +195,9 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
         x_rand = x_goal;
         rrtTree::countGoalBias = 4;
     } else {
-        x_rand = {<double>rand() % (x_max - x_min) + x_min,
-            <double>rand() % (y_max - y_min) + y_min, 0};
+        x_rand.x  = <double>rand() % (x_max - x_min) + x_min;
+        x_rand.y  = <double>rand() % (y_max - y_min) + y_min;
+        x_rand.th = 0;
         --rrtTree::countGoalBias;
     }
 
