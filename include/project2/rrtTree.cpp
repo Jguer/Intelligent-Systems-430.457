@@ -208,12 +208,13 @@ int rrtTree::nearestNeighbor(point x_rand) {
 int distance_min
 //network = new rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x, double map_origin_y, double res, int margin);
 for(int i = 1; i < this->count; i++) {
-        idx_parent = this->ptrTable[i]->idx_parent;
+        point x_near = this->ptrTable[i]->location ;
         int distance_min = INT_MAX;
+       int distance = sqrt((x_rand.x - x_near.x)^2 + (x_rand.y - x_near.y)^2)
 
-        if abs(x_rand - idx_parent) /= 0 and  (x_rand - idx_parent)< distance_min
+        if (distance /= 0 and  distance < distance_min
       {
-        distance_min= abs(x_rand - idx_parent)
+        distance_min= distance ;
       }
 
 
@@ -230,7 +231,7 @@ point nearestNeighbor = rtTree::nearestNeighbor(x_rand);
 
 
   if ((abs(nearestNeighbor.th) < max_alpha) and d<MaxStep))
-  
+
 
 
 
