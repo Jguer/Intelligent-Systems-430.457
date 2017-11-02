@@ -17,7 +17,7 @@ rrtTree::rrtTree(point x_init, point x_goal) {
     this->x_init = x_init;
     this->x_goal = x_goal;
 
-    std::srand(std::time(nullptr));
+    std::srand(std::time(NULL));
     count = 1;
     root = new node;
     ptrTable[0] = root;
@@ -195,8 +195,8 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
         x_rand = x_goal;
         rrtTree::countGoalBias = 4;
     } else {
-        x_rand.x  = <double>rand() % (x_max - x_min) + x_min;
-        x_rand.y  = <double>rand() % (y_max - y_min) + y_min;
+        x_rand.x  = (double)rand() % (x_max - x_min) + x_min;
+        x_rand.y  = (double)rand() % (y_max - y_min) + y_min;
         x_rand.th = 0;
         --rrtTree::countGoalBias;
     }
