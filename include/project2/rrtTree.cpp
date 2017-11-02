@@ -224,13 +224,3 @@ int rrtTree::newState(double *out, point x_near, point x_rand, double MaxStep ) 
 
     return 0;
 }
-
-
-
-std::vector<traj> rrtTree::backtracking_traj(vector aaa){
-    new_vector.size = aaa.size;
-    for (int i = 0; i<aaa.size(); i++) {
-        new_vector(aaa.size-i) = aaa(i);
-    }
-    return new_vector;
-}
