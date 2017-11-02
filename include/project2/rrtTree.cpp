@@ -10,6 +10,7 @@ rrtTree::rrtTree() {
     count = 0;
     root = NULL;
     ptrTable[0] = NULL;
+    countGoalBias = 4;
 }
 
 rrtTree::rrtTree(point x_init, point x_goal) {
@@ -185,8 +186,19 @@ int rrtTree::generateRRT(double x_max, double x_min, double y_max, double y_min,
     //TODO
 }
 
-point rrtTree::randomState(double x_max, double x_min, double y_max, double y_min) {
-    //TODO
+point rrtTree::randomState(double x_max, double x_min, double y_max, double y_min, point x_goal) {
+    point x_rand;
+
+    if(rrtTree::countGoalBias == 0) {
+        x_rand = x_goal;
+        rrtTree::countGoalBias = 4;
+    }
+    else {
+        x_rand = {rand() % (x_max - x_min) + x_min, rand() % (y_max - y_min) + y_min, 0};
+        --rrtTree::countGoalBias;
+    }
+    
+    return x_rand;
 }
 
 int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
