@@ -199,6 +199,8 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
 
 int rrtTree::nearestNeighbor(point x_rand) {
     int distance_min;
+    int idx_parent;
+
     //network = new rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x, double map_origin_y, double res, int margin);
     for (int i = 1; i < this->count; i++) {
         idx_parent = this->ptrTable[i]->idx_parent;
@@ -212,8 +214,8 @@ int rrtTree::nearestNeighbor(point x_rand) {
 
 int rrtTree::newState(double *out, point x_near, point x_rand, double MaxStep ) {
     for (int i ; i<10 ; i++) {
-        point x_new = rrtTree::randomState( x_max,  x_min,  y_max,  y_min);
-        rrtTree::addVertex( x_new,  x_rand,  idx_near,  alpha,  d);
+        /* point x_new = rrtTree::randomState( x_max,  x_min,  y_max,  y_min); */
+        /* rrtTree::addVertex( x_new,  x_rand,  idx_near,  alpha,  d); */
     }
 
     point nearestNeighbor = rtTree::nearestNeighbor(x_rand);
