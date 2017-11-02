@@ -49,6 +49,10 @@ point robot_pose;
 ackermann_msgs::AckermannDriveStamped cmd;
 double speed;
 double angle;
+//
+// at full joystick depression you'll go this fast
+double max_speed = 2.00;
+double max_turn = 60.0*M_PI/180.0;
 
 //FSM state
 int state;
@@ -107,13 +111,14 @@ int main(int argc, char** argv) {
     state = INIT;
     bool running = true;
     int look_ahead_idx;
+    PID *pid_ctrl = new PID(0.6,0.3,0.0);
     ros::Rate control_rate(60);
 
     while(running){
         switch (state) {
             case INIT: {
                 look_ahead_idx = 0;
-                printf("path size : %d\n", path_RRT.size());
+                printf("path size : %lu\n", path_RRT.size());
                 //visualize path
                 for(int i = 0; i < path_RRT.size(); i++) {
                     gazebo_msgs::SpawnModel model;
@@ -198,7 +203,6 @@ int main(int argc, char** argv) {
                 state = RUNNING;
             } break;
             case RUNNING: {
-                //TODO
                 /*
                 1. make control following point in the variable "path_RRT"
                 use function setcmdvel(double v, double w) which set cmd_vel as desired input value.
@@ -215,17 +219,12 @@ int main(int argc, char** argv) {
                       + (pow(path_RRT[look_ahead_idx].y - robot_pose.y, 2))));
                 angle = pid_ctrl->get_control(robot_pose, path_RRT[look_ahead_idx]);
 
-                if (speed > max_speed) {
-                    speed = max_speed;
-                } else if ( speed < - max_speed) {
-                    speed = - max_speed;
-                }
-
-                if (angle > max_turn) {
-                    angle = max_turn;
-                } else if ( angle < - max_turn) {
-                    angle = - max_turn;
-                }
+                // Validate Speed
+                speed = (speed > max_speed) ? max_speed : speed;
+                speed = (speed < - max_speed) ? - max_speed : speed;
+                // Validate Angle
+                angle = (angle > max_turn) ? max_turn : angle;
+                angle = (angle < - max_turn) ? - max_turn : angle;
 
                 setcmdvel(speed,angle);
                 printf("Debug Parameters\n");
@@ -242,7 +241,7 @@ int main(int argc, char** argv) {
                 if (dist_to_target <= 0.2) {
                     printf("New destination Point\n");
                     look_ahead_idx++;
-                    if look_ahead_idx == path_RRT.size() {
+                    if (look_ahead_idx == path_RRT.size()) {
                         state = FINISH;
                     }
                 }
