@@ -92,8 +92,8 @@ void rrtTree::visualizeTree(){
     for (int i = 1; i < this->count; i++) {
         idx_parent = this->ptrTable[i]->idx_parent;
     for (int j = 0; j < 10; j++) {
-        double alpha = this->ptrTable.at(i)->alpha;
-        double d = this->ptrTable.at(i)->d;
+        double alpha = this->ptrTable[i]->alpha;
+        double d = this->ptrTable[i]->d;
         double p1_th = this->ptrTable[idx_parent]->location.th + d*j/10*tan(alpha)/L;
         double p2_th = this->ptrTable[idx_parent]->location.th + d*(j+1)/10*tan(alpha)/L;
         double p1_x = this->ptrTable[idx_parent]->location.x + L/tan(alpha)*(sin(p1_th) - sin(ptrTable[idx_parent]->location.th));
@@ -238,7 +238,6 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 }
 
 bool rrtTree::isCollision(point x1, point x2, double d, double R) {
-    this->map->
 }
 
 int rrtTree::nearestNeighbor(point x_rand) {
