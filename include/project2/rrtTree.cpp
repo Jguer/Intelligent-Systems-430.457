@@ -89,21 +89,21 @@ void rrtTree::visualizeTree(){
     cv::cvtColor(this->map, map_c, CV_GRAY2BGR);
     cv::resize(map_c, imgResult, cv::Size(), Res, Res);
 
-    for(int i = 1; i < this->count; i++) {
+    for (int i = 1; i < this->count; i++) {
         idx_parent = this->ptrTable[i]->idx_parent;
-	for(int j = 0; j < 10; j++) {
-	    double alpha = this->ptrTable[i]->alpha;
-	    double d = this->ptrTable[i]->d;
-	    double p1_th = this->ptrTable[idx_parent]->location.th + d*j/10*tan(alpha)/L;
-            double p2_th = this->ptrTable[idx_parent]->location.th + d*(j+1)/10*tan(alpha)/L;
-            double p1_x = this->ptrTable[idx_parent]->location.x + L/tan(alpha)*(sin(p1_th) - sin(ptrTable[idx_parent]->location.th));
-	    double p1_y = this->ptrTable[idx_parent]->location.y + L/tan(alpha)*(cos(ptrTable[idx_parent]->location.th) - cos(p1_th));
-            double p2_x = this->ptrTable[idx_parent]->location.x + L/tan(alpha)*(sin(p2_th) - sin(ptrTable[idx_parent]->location.th));
-	    double p2_y = this->ptrTable[idx_parent]->location.y + L/tan(alpha)*(cos(ptrTable[idx_parent]->location.th) - cos(p2_th));
+    for (int j = 0; j < 10; j++) {
+        double alpha = this->ptrTable.at(i)->alpha;
+        double d = this->ptrTable.at(i)->d;
+        double p1_th = this->ptrTable[idx_parent]->location.th + d*j/10*tan(alpha)/L;
+        double p2_th = this->ptrTable[idx_parent]->location.th + d*(j+1)/10*tan(alpha)/L;
+        double p1_x = this->ptrTable[idx_parent]->location.x + L/tan(alpha)*(sin(p1_th) - sin(ptrTable[idx_parent]->location.th));
+        double p1_y = this->ptrTable[idx_parent]->location.y + L/tan(alpha)*(cos(ptrTable[idx_parent]->location.th) - cos(p1_th));
+        double p2_x = this->ptrTable[idx_parent]->location.x + L/tan(alpha)*(sin(p2_th) - sin(ptrTable[idx_parent]->location.th));
+        double p2_y = this->ptrTable[idx_parent]->location.y + L/tan(alpha)*(cos(ptrTable[idx_parent]->location.th) - cos(p2_th));
             x1 = cv::Point((int)(Res*(p1_y/res + map_origin_y)), (int)(Res*(p1_x/res + map_origin_x)));
             x2 = cv::Point((int)(Res*(p2_y/res + map_origin_y)), (int)(Res*(p2_x/res + map_origin_x)));
             cv::line(imgResult, x1, x2, cv::Scalar(255, 0, 0), thickness, lineType);
-	}
+    }
     }
     cv::namedWindow("Mapping");
     cv::Rect imgROI((int)Res*200,(int)Res*200,(int)Res*400,(int)Res*400);
@@ -129,36 +129,46 @@ void rrtTree::visualizeTree(std::vector<traj> path){
 
     for(int i = 1; i < this->count; i++) {
         idx_parent = this->ptrTable[i]->idx_parent;
-	for(int j = 0; j < 10; j++) {
-	    double alpha = this->ptrTable[i]->alpha;
-	    double d = this->ptrTable[i]->d;
-	    double p1_th = this->ptrTable[idx_parent]->location.th + d*j/10*tan(alpha)/L;
-            double p2_th = this->ptrTable[idx_parent]->location.th + d*(j+1)/10*tan(alpha)/L;
-            double p1_x = this->ptrTable[idx_parent]->location.x + L/tan(alpha)*(sin(p1_th) - sin(ptrTable[idx_parent]->location.th));
-	    double p1_y = this->ptrTable[idx_parent]->location.y + L/tan(alpha)*(cos(ptrTable[idx_parent]->location.th) - cos(p1_th));
-            double p2_x = this->ptrTable[idx_parent]->location.x + L/tan(alpha)*(sin(p2_th) - sin(ptrTable[idx_parent]->location.th));
-	    double p2_y = this->ptrTable[idx_parent]->location.y + L/tan(alpha)*(cos(ptrTable[idx_parent]->location.th) - cos(p2_th));
-            x1 = cv::Point((int)(Res*(p1_y/res + map_origin_y)), (int)(Res*(p1_x/res + map_origin_x)));
-            x2 = cv::Point((int)(Res*(p2_y/res + map_origin_y)), (int)(Res*(p2_x/res + map_origin_x)));
-            cv::line(imgResult, x1, x2, cv::Scalar(255, 0, 0), thickness, lineType);
-	}
+    for(int j = 0; j < 10; j++) {
+        double alpha = this->ptrTable[i]->alpha;
+        double d = this->ptrTable[i]->d;
+        double p1_th = this->ptrTable[idx_parent]->location.th
+            + d*j/10*tan(alpha)/L;
+        double p2_th = this->ptrTable[idx_parent]->location.th
+            + d*(j+1)/10*tan(alpha)/L;
+        double p1_x = this->ptrTable[idx_parent]->location.x
+        + L/tan(alpha)*(sin(p1_th) - sin(ptrTable[idx_parent]->location.th));
+
+        double p1_y = this->ptrTable[idx_parent]->location.y
+        + L/tan(alpha)*(cos(ptrTable[idx_parent]->location.th) - cos(p1_th));
+
+        double p2_x = this->ptrTable[idx_parent]->location.x
+        + L/tan(alpha)*(sin(p2_th) - sin(ptrTable[idx_parent]->location.th));
+        double p2_y = this->ptrTable[idx_parent]->location.y
+        + L/tan(alpha)*(cos(ptrTable[idx_parent]->location.th) - cos(p2_th));
+        x1 = cv::Point((int)(Res*(p1_y/res + map_origin_y)),
+                (int)(Res*(p1_x/res + map_origin_x)));
+        x2 = cv::Point((int)(Res*(p2_y/res + map_origin_y)),
+                (int)(Res*(p2_x/res + map_origin_x)));
+        cv::line(imgResult, x1, x2, cv::Scalar(255, 0, 0), thickness, lineType);
+    }
     }
 
     thickness = 3;
     for(int i = 1; i < path.size(); i++) {
-	for(int j = 0; j < 10; j++) {
-	    double alpha = path[i].alpha;
-	    double d = path[i].d;
-	    double p1_th = path[i-1].th + d*j/10*tan(alpha)/L; // R = L/tan(alpha)
+    for(int j = 0; j < 10; j++) {
+        double alpha = path[i].alpha;
+        double d = path[i].d;
+        double p1_th = path[i-1].th + d*j/10*tan(alpha)/L; // R = L/tan(alpha)
             double p2_th = path[i-1].th + d*(j+1)/10*tan(alpha)/L;
             double p1_x = path[i-1].x + L/tan(alpha)*(sin(p1_th) - sin(path[i-1].th));
-	    double p1_y = path[i-1].y + L/tan(alpha)*(cos(path[i-1].th) - cos(p1_th));
+        double p1_y = path[i-1].y + L/tan(alpha)*(cos(path[i-1].th) - cos(p1_th));
             double p2_x = path[i-1].x + L/tan(alpha)*(sin(p2_th) - sin(path[i-1].th));
-	    double p2_y = path[i-1].y + L/tan(alpha)*(cos(path[i-1].th) - cos(p2_th));
+        double p2_y = path[i-1].y + L/tan(alpha)*(cos(path[i-1].th) - cos(p2_th));
             x1 = cv::Point((int)(Res*(p1_y/res + map_origin_y)), (int)(Res*(p1_x/res + map_origin_x)));
             x2 = cv::Point((int)(Res*(p2_y/res + map_origin_y)), (int)(Res*(p2_x/res + map_origin_x)));
             cv::line(imgResult, x1, x2, cv::Scalar(255, 0, 0), thickness, lineType);
-	}
+    }
     }
     cv::namedWindow("Mapping");
     cv::Rect imgROI((int)Res*200,(int)Res*200,(int)Res*400,(int)Res*400);
@@ -228,7 +238,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 }
 
 bool rrtTree::isCollision(point x1, point x2, double d, double R) {
-    //TODO
+    this->map->
 }
 
 int rrtTree::nearestNeighbor(point x_rand) {
