@@ -242,15 +242,13 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
     double delta_x = x1.x - x2.x;
     double delta_y = x1.y - x2.y;
 
-    int i = x/this->res + this->map_origin_x;
-    int j = y/this->res + this->map_origin_y;
-    const float max{std::max(std::fabs(delta_x), std::fabs(delta_y))};
+    const float max = std::max(std::fabs(delta_x), std::fabs(delta_y));
     delta_x /= max; y /= max;
 
-    for (float n{0}, n < max, ++n) {
-        int i += delta_x/this->res + this->map_origin_x;
-        int j += delta_y/this->res + this->map_origin_y;
-        if (this->map.at<uchar>(i, j) != 255) {
+    for (float n= 0; n < max; ++n) {
+        x1.x += delta_x/this->res + this->map_origin_x;
+        x1.y += delta_y/this->res + this->map_origin_y;
+        if (this->map.at<uchar>((int)round(x1.x),(int)round(x1.y)) != 255) {
             return true;
         }
     }
