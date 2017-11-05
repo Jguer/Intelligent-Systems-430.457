@@ -1,5 +1,6 @@
 #include "rrtTree.h"
 #include <unistd.h>
+#include <algorithm>
 #include <ros/ros.h>
 #define PI 3.14159265358979323846
 
@@ -238,6 +239,23 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 }
 
 bool rrtTree::isCollision(point x1, point x2, double d, double R) {
+    double delta_x = x1.x - x2.x;
+    double delta_y = x1.y - x2.y;
+
+    int i = x/this->res + this->map_origin_x;
+    int j = y/this->res + this->map_origin_y;
+    const float max{std::max(std::fabs(delta_x), std::fabs(delta_y))};
+    delta_x /= max; y /= max;
+
+    for (float n{0}, n < max, ++n) {
+        int i += delta_x/this->res + this->map_origin_x;
+        int j += delta_y/this->res + this->map_origin_y;
+        if (this->map.at<uchar>(i, j) != 255) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 int rrtTree::nearestNeighbor(point x_rand) {
