@@ -4,4 +4,5 @@ struct traj {
   double th;
   double d;
   double alpha;
+  void print();
 };
