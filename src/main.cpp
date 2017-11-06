@@ -100,8 +100,7 @@ int main(int argc, char **argv) {
   res = 0.05;
   printf("Load map\n");
 
-  if (!map.data) // Check for invalid input
-  {
+  if (!map.data) {
     printf("Could not open or find the image\n");
     return -1;
   }

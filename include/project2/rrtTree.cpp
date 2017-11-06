@@ -232,7 +232,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   point x_rand;
   point x_near;
   traj *x_new = new traj;
-  int valid;
+  bool valid = false;
   int neighbor_id;
 
   printf("Here 1\n");
@@ -252,7 +252,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
               (pow(x_new->y - this->x_goal.y, 2))) > MaxStep) {
     // checking if path is free of obstacles
     printf("Here 3\n");
-    while (valid == 0) {
+    while (valid == false) {
       x_rand = this->randomState(x_max, x_min, y_max, y_min, x_goal);
       neighbor_id = this->nearestNeighbor(x_rand, MaxStep);
       if (neighbor_id == -1) {
@@ -271,10 +271,11 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     printf("Here 6\n");
 
     path.push_back(*x_new);
+    this->visualizeTree(path);
   }
-  std::reverse(path.begin(), path.end());
-
   printf("Here 7\n");
+  std::reverse(path.begin(), path.end());
+  printf("Here 7.1\n");
   x_new = new traj;
   x_new->x = this->x_goal.x;
   x_new->y = this->x_goal.y;
