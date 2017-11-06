@@ -245,12 +245,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
   // building vector x_init to x_goal
   // checking if distance of x_near is close enough to reach in last step
-  while (sqrt((pow(x_new.x - this->x_goal.x, 2)) +
-              (pow(x_new.y - this->x_goal.y, 2))) > MaxStep) {
-    printf("Distance from goal %0.2f\n",
-           sqrt((pow(x_new.x - this->x_goal.x, 2)) +
-                (pow(x_new.y - this->x_goal.y, 2))));
-    // checking if path is free of obstacles
+
+  do {
     do {
       x_rand = this->randomState(x_max, x_min, y_max, y_min, x_goal);
       neighbor_id = this->nearestNeighbor(x_rand, MaxStep);
@@ -268,7 +264,11 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
     printf("Pushed %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
     path.push_back(x_new);
-  }
+    printf("Distance from goal %0.2f\n",
+           sqrt((pow(x_new.x - this->x_goal.x, 2)) +
+                (pow(x_new.y - this->x_goal.y, 2))));
+  } while (sqrt((pow(x_new.x - this->x_goal.x, 2)) +
+                (pow(x_new.y - this->x_goal.y, 2))) > MaxStep);
   std::reverse(path.begin(), path.end());
   x_new.x = this->x_goal.x;
   x_new.y = this->x_goal.y;
@@ -387,7 +387,8 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
         sqrt((pow(new_x - x_rand.x, 2)) + (pow(new_y - x_rand.y, 2)));
     if (dist_to_rand <
         sqrt((pow(x_new->x - x_rand.x, 2)) + (pow(x_new->y - x_rand.y, 2)))) {
-      printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y, new_theta);
+      /* printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y, new_theta);
+       */
       x_new->x = new_x;
       x_new->y = new_y;
       x_new->th = new_theta;
@@ -400,7 +401,8 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
   p_new.x = x_new->x;
   p_new.y = x_new->y;
   p_new.th = x_new->th;
-  printf("Point generated %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
+  /* printf("Point generated %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
+   */
 
   if (this->isCollision(x_near, p_new, x_new->d, L / tan(x_new->alpha))) {
     /* printf("I'm colliding\n"); */
