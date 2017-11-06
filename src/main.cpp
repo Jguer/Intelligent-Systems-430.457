@@ -264,9 +264,14 @@ int main(int argc, char **argv) {
 }
 
 void generate_path_RRT() {
-    vector<traj> path_RRT;
+  vector<traj> path_tmp;
+
   for (int i = 0; i < waypoints.size() - 1; i++) {
-      g
+    rrtTree *tree = new rrtTree(waypoints.at(i), waypoints.at(i + 1), map,
+                                map_origin_x, map_origin_y, res, margin);
+
+    path_tmp = tree.generateRRT(world_x_max, world_x_min, world_y_max,
+                                world_y_min, K, MaxStep);
   }
   /*
    * 1. for loop
