@@ -352,8 +352,8 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
   p_new.x = tmp_traj->y;
   p_new.th = tmp_traj->th;
   if (this->isCollision(x_near, p_new, tmp_traj->d, L / tan(tmp_traj->alpha))) {
-    return false
+    return false;
   }
 
-  return true
+  return true;
 }
