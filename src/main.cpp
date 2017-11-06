@@ -47,6 +47,7 @@ std::vector<traj> path_RRT;
 // robot
 point robot_pose;
 ackermann_msgs::AckermannDriveStamped cmd;
+gazebo_msgs::ModelStatesConstPtr model_states;
 double speed;
 double angle;
 //
@@ -126,6 +127,7 @@ int main(int argc, char **argv) {
       look_ahead_idx = 0;
       printf("path size : %lu\n", path_RRT.size());
       // visualize path
+      visualizeTree(path_RRT);
       ros::spinOnce();
       for (int i = 0; i < path_RRT.size(); i++) {
         for (int j = 0; j < model_states->name.size(); j++) {
