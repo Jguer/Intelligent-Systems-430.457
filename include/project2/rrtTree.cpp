@@ -138,15 +138,17 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
   cv::cvtColor(this->map, map_c, CV_GRAY2BGR);
   cv::resize(map_c, imgResult, cv::Size(), Res, Res);
 
-  cv::circle(imgResult,
-             cv::Point((int)(Res * (path[0].y / res + map_origin_y)),
-                       (int)(Res * (path[0].x / res + map_origin_x))),
-             radius, cv::Scalar(0, 0, 255), CV_FILLED);
   cv::circle(
       imgResult,
-      cv::Point((int)(Res * (path[path.size() - 1].y / res + map_origin_y)),
-                (int)(Res * (path[path.size() - 1].x / res + map_origin_x))),
+      cv::Point(static_cast<int>(Res * (path[0].y / res + map_origin_y)),
+                static_cast<int>(Res * (path[0].x / res + map_origin_x))),
       radius, cv::Scalar(0, 0, 255), CV_FILLED);
+  cv::circle(imgResult,
+             cv::Point(static_cast<int>(Res * (path[path.size() - 1].y / res +
+                                               map_origin_y)),
+                       static_cast<int>(Res * (path[path.size() - 1].x / res +
+                                               map_origin_x))),
+             radius, cv::Scalar(0, 0, 255), CV_FILLED);
 
   for (int i = 1; i < this->count; i++) {
     int idx_parent = this->ptrTable[i]->idx_parent;
@@ -284,14 +286,14 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
                            double y_min, point x_goal) {
   point x_rand;
 
-  if (rrtTree::countGoalBias == 0) {
+  if (this->countGoalBias == 0) {
     x_rand = x_goal;
-    rrtTree::countGoalBias = 4;
+    this->countGoalBias = 4;
   } else {
-    x_rand.x = static_cast<double>(rand()) / (x_max - x_min) + x_min;
-    x_rand.y = static_cast<double>(rand()) / (y_max - y_min) + y_min;
+    x_rand.x = x_min + static_cast<double>(rand()) / (x_max - x_min);
+    x_rand.y = y_min + static_cast<double>(rand()) / (y_max - y_min);
     x_rand.th = atan2(x_rand.y, x_rand.x);
-    --rrtTree::countGoalBias;
+    --this->countGoalBias;
   }
 
   return x_rand;
