@@ -270,7 +270,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     printf("Here 6\n");
 
     path.push_back(*x_new);
-    this->visualizeTree(path);
   }
   printf("Here 7\n");
   std::reverse(path.begin(), path.end());
