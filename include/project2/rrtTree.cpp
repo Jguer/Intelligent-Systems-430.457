@@ -396,6 +396,7 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
         sqrt((pow(new_x - x_rand.x, 2)) + (pow(new_y - x_rand.y, 2)));
     if (dist_to_rand <
         sqrt((pow(x_new->x - x_rand.x, 2)) + (pow(x_new->y - x_rand.y, 2)))) {
+      printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y, new_theta);
       x_new->x = new_x;
       x_new->y = new_y;
       x_new->th = new_theta;
