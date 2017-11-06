@@ -274,7 +274,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   x_new->th = this->x_goal.th;
   x_new->alpha = 0;
   x_new->d = 0;
-  path.push_back(x_new);
+  path.push_back(*x_new);
 
   return path;
 }
