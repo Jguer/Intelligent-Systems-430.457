@@ -127,7 +127,6 @@ int main(int argc, char **argv) {
       look_ahead_idx = 0;
       printf("path size : %lu\n", path_RRT.size());
       // visualize path
-      visualizeTree(path_RRT);
       ros::spinOnce();
       for (int i = 0; i < path_RRT.size(); i++) {
         for (int j = 0; j < model_states->name.size(); j++) {
@@ -312,6 +311,7 @@ void generate_path_RRT() {
 
     std::vector<traj> path_tmp = tree->generateRRT(
         world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
+    tree.visualizeTree(path_RRT);
     path_RRT.insert(path_RRT.end(), path_tmp.begin(), path_tmp.end());
   }
   /*
