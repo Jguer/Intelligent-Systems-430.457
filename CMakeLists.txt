@@ -178,8 +178,7 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 #############
 
 add_executable(project2 src/main.cpp include/project2/rrtTree.cpp
-  include/project2/pid.cpp include /project2/traj.cpp include
-  /project2/point.cpp)
+  include/project2/pid.cpp include/project2/traj.cpp include/project2/point.cpp)
 target_link_libraries(project2
   ${catkin_LIBRARIES} ${GAZEBO_INCLUDE_DIRS}
   )
