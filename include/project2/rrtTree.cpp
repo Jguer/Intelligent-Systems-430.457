@@ -376,11 +376,6 @@ int rrtTree::nearestNeighbor(point x_rand) {
 // false - invalid
 bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
                        double MaxStep) {
-  traj *tmp_traj = new traj;
-  tmp_traj->x = -1;
-  tmp_traj->y = -1;
-  tmp_traj->th = -1;
-
   for (int i = 0; i < 10; i++) {
     double alpha =
         -max_alpha +
@@ -399,21 +394,20 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
 
     double dist_to_rand =
         sqrt((pow(new_x - x_rand.x, 2)) + (pow(new_y - x_rand.y, 2)));
-    if (tmp_traj->x == -1 ||
-        dist_to_rand < sqrt((pow(tmp_traj->x - x_rand.x, 2)) +
-                            (pow(tmp_traj->y - x_rand.y, 2)))) {
-      tmp_traj->x = new_x;
-      tmp_traj->y = new_y;
-      tmp_traj->th = new_theta;
-      tmp_traj->d = MaxStep;
-      tmp_traj->alpha = alpha;
+    if (dist_to_rand <
+        sqrt((pow(x_new->x - x_rand.x, 2)) + (pow(x_new->y - x_rand.y, 2)))) {
+      x_new->x = new_x;
+      x_new->y = new_y;
+      x_new->th = new_theta;
+      x_new->d = MaxStep;
+      x_new->alpha = alpha;
     }
   }
 
   point p_new;
-  p_new.x = tmp_traj->x;
-  p_new.y = tmp_traj->y;
-  p_new.th = tmp_traj->th;
+  p_new.x = x_new->x;
+  p_new.y = x_new->y;
+  p_new.th = x_new->th;
   printf("Point generated %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
 
   if (this->isCollision(x_near, p_new, tmp_traj->d, L / tan(tmp_traj->alpha))) {
@@ -421,6 +415,5 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
     return false;
   }
 
-  x_new = tmp_traj;
   return true;
 }
