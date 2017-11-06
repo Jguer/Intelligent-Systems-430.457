@@ -247,12 +247,12 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   printf("Here 2\n");
   // building vector x_init to x_goal
   // checking if distance of x_near is close enough to reach in last step
-  while (sqrt((pow(x_new->x - this->x_goal.x, 2)) +
-              (pow(x_new->y - this->x_goal.y, 2))) > MaxStep) {
+  while (sqrt((pow(x_new.x - this->x_goal.x, 2)) +
+              (pow(x_new.y - this->x_goal.y, 2))) > MaxStep) {
 
     printf("Distance from goal %0.2f\n",
-           sqrt((pow(x_new->x - this->x_goal.x, 2)) +
-                (pow(x_new->y - this->x_goal.y, 2))));
+           sqrt((pow(x_new.x - this->x_goal.x, 2)) +
+                (pow(x_new.y - this->x_goal.y, 2))));
     // checking if path is free of obstacles
     printf("Here 3\n");
     do {
@@ -281,13 +281,13 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   std::reverse(path.begin(), path.end());
   printf("Here 7.1\n");
   x_new = new traj;
-  x_new->x = this->x_goal.x;
-  x_new->y = this->x_goal.y;
-  x_new->th = this->x_goal.th;
-  x_new->alpha = 0;
-  x_new->d = 0;
+  x_new.x = this->x_goal.x;
+  x_new.y = this->x_goal.y;
+  x_new.th = this->x_goal.th;
+  x_new.alpha = 0;
+  x_new.d = 0;
   printf("Here 8\n");
-  path.push_back(*x_new);
+  path.push_back(x_new);
 
   return path;
 }
