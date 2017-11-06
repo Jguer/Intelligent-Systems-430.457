@@ -1,3 +1,7 @@
+#pragma once
+#include <cstdio>
+#include <cstdlib>
+
 struct traj {
   double x;
   double y;
