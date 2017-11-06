@@ -311,7 +311,7 @@ void generate_path_RRT() {
 
     std::vector<traj> path_tmp = tree->generateRRT(
         world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
-    tree.visualizeTree(path_RRT);
+    tree->visualizeTree(path_RRT);
     path_RRT.insert(path_RRT.end(), path_tmp.begin(), path_tmp.end());
   }
   /*
