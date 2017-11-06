@@ -263,14 +263,12 @@ int main(int argc, char **argv) {
 }
 
 void generate_path_RRT() {
-  std::vector<traj> path_tmp;
-
   for (int i = 0; i < waypoints.size() - 1; i++) {
     rrtTree *tree = new rrtTree(waypoints.at(i), waypoints.at(i + 1), map,
                                 map_origin_x, map_origin_y, res, margin);
 
-    path_tmp = tree.generateRRT(world_x_max, world_x_min, world_y_max,
-                                world_y_min, K, MaxStep);
+    std::vector<traj> path_tmp = tree->generateRRT(
+        world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
     path_RRT.insert(path_RRT.end(), path_tmp.begin(), path_tmp.end());
   }
   /*
@@ -299,7 +297,7 @@ void set_waypoints() {
 
   int order[] = {3, 1, 2, 3};
 
-  for (int i = 0; i < order.size(); i++) {
+  for (int i; i < order.size(); i++) {
     waypoints.push_back(waypoint_candid[order[i]]);
   }
 }
