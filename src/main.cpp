@@ -296,8 +296,9 @@ void set_waypoints() {
   waypoint_candid[3].th = 0.0;
 
   int order[] = {3, 1, 2, 3};
+  int order_size = 4;
 
-  for (int i; i < order.size(); i++) {
+  for (int i = 0; i < order_size; i++) {
     waypoints.push_back(waypoint_candid[order[i]]);
   }
 }
