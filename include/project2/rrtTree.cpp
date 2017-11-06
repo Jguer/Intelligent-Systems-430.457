@@ -334,12 +334,12 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
   for (double n = 0; n <= d; n += 0.5) {
     double beta = d / R;
     double new_x = x_c + R * sin(x1.th + beta);
-    double new_y = y_c + R * cos(x1.th + beta);
+    double new_y = y_c - R * cos(x1.th + beta);
 
     int i = static_cast<int>(round(new_x / this->res + this->map_origin_x));
     int j = static_cast<int>(round(new_y / this->res + this->map_origin_y));
 
-    printf("Checking (%d %d)->(%d %d)(%d)for collision. Value: \n", new_x,
+    printf("Checking (%0.2f %0.2f)->(%d %d)(%d)for collision. Value: \n", new_x,
            new_y, i, j, this->map.at<uchar>(i, j));
 
     if (this->map.at<uchar>(i, j) != 255) {
@@ -391,7 +391,7 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
     double beta = MaxStep / R;
 
     double new_x = x_c + R * sin(x_near.th + beta);
-    double new_y = y_c + R * cos(x_near.th + beta);
+    double new_y = y_c - R * cos(x_near.th + beta);
     double new_theta = x_near.th + beta;
 
     double dist_to_rand =
