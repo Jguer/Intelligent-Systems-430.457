@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <ros/ros.h>
 #include <unistd.h>
-#include <vector>
 #define PI 3.14159265358979323846
 
 double max_alpha = 0.2;
@@ -227,8 +226,8 @@ void rrtTree::addVertex(point x_new, point x_rand, int idx_near, double alpha,
   return;
 }
 
-vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
-                                  double y_min, int K, double MaxStep) {
+std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
+                                       double y_min, int K, double MaxStep) {
   double out;
   point new_point = randomState(x_max, x_min, y_max, y_min, this->x_goal);
   int neighbor_id = nearestNeighbor(new_point, MaxStep);

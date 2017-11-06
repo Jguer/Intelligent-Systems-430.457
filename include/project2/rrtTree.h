@@ -12,7 +12,6 @@
 #include <project2/control.h>
 #include <project2/point.h>
 #include <project2/traj.h>
-#include <vector>
 #endif
 
 class rrtTree {
@@ -54,6 +53,6 @@ public:
 
   void visualizeTree();
   void visualizeTree(std::vector<traj> path);
-  vector<traj> generateRRT(double x_max, double x_min, double y_max,
-                           double y_min, int K, double MaxStep);
+  std::vector<traj> generateRRT(double x_max, double x_min, double y_max,
+                                double y_min, int K, double MaxStep);
 };

@@ -16,7 +16,6 @@
 #include <ros/ros.h>
 #include <tf/transform_datatypes.h>
 #include <unistd.h>
-#include <vector>
 
 // map spec
 cv::Mat map;
@@ -36,11 +35,11 @@ int K = 1500;
 double MaxStep = 4;
 
 // way points
-vector<point> waypoints;
+std::vector<point> waypoints;
 
 // path
 // std::vector<point> path_RRT;
-vector<traj> path_RRT;
+std::vector<traj> path_RRT;
 
 // control
 // std::vector<control> control_RRT;
@@ -264,7 +263,7 @@ int main(int argc, char **argv) {
 }
 
 void generate_path_RRT() {
-  vector<traj> path_tmp;
+  std::vector<traj> path_tmp;
 
   for (int i = 0; i < waypoints.size() - 1; i++) {
     rrtTree *tree = new rrtTree(waypoints.at(i), waypoints.at(i + 1), map,
