@@ -267,7 +267,14 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     path.push_back(*x_new);
   }
   std::reverse(path.begin(), path.end());
-  path.push_back(this->x_goal);
+
+  x_new = new traj;
+  x_new->x = this->x_goal.x;
+  x_new->y = this->x_goal.y;
+  x_new->th = this->x_goal.th;
+  x_new->alpha = 0;
+  x_new->d = 0;
+  path.push_back(x_new);
 
   return path;
 }
