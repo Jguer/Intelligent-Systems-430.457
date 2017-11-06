@@ -256,21 +256,18 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         continue;
       }
 
-      std::cout << "Neighbor ID " << neighbor_id;
+      std::cout << "Neighbor ID " << neighbor_id << "\n";
       x_near = this->ptrTable[neighbor_id]->location;
-      std::cout << "x_near";
+      std::cout << "x_near ";
       x_near.print();
-      std::cout << "x_new";
+      std::cout << "x_new ";
       x_new.print();
       valid = this->newState(&x_new, x_near, x_rand, MaxStep);
     } while (valid == false);
-    point p_new;
-    p_new.x = x_new.x;
-    p_new.y = x_new.y;
-    p_new.th = x_new.th;
-    this->addVertex(p_new, x_rand, neighbor_id, x_new.alpha, x_new.d);
 
-    printf("Pushed %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
+    this->addVertex(x_new.convertToPoint(), x_rand, neighbor_id, x_new.alpha,
+                    x_new.d);
+
     std::cout << "Pushed ";
     x_new.print();
     path.push_back(x_new);
@@ -407,14 +404,11 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
     }
   }
 
-  point p_new;
-  p_new.x = x_new->x;
-  p_new.y = x_new->y;
-  p_new.th = x_new->th;
   /* printf("Point generated %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
    */
 
-  if (this->isCollision(x_near, p_new, x_new->d, L / tan(x_new->alpha))) {
+  if (this->isCollision(x_near, x_new->convertToPoint(), x_new->d,
+                        L / tan(x_new->alpha))) {
     /* printf("I'm colliding\n"); */
     return false;
   }

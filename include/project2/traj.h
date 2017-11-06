@@ -1,4 +1,5 @@
 #pragma once
+#include "point.h"
 #include <cstdio>
 #include <cstdlib>
 
@@ -9,4 +10,5 @@ struct traj {
   double d;
   double alpha;
   void print();
+  point convertToPoint();
 };
