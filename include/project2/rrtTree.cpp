@@ -310,16 +310,36 @@ int rrtTree::nearestNeighbor(point x_rand) {
   return idx_near;
 }
 
-int rrtTree::newState(double *out, point x_near, point x_rand, double MaxStep) {
-  //  for (int i ; i<10 ; i++) {
-  /* point x_new = rrtTree::randomState( x_max,  x_min,  y_max,  y_min); */
-  /* rrtTree::addVertex( x_new,  x_rand,  idx_near,  alpha,  d); */
-  //  }
+int rrtTree::newState(traj *x_new, point x_near, point x_rand, double MaxStep) {
+  traj *tmp_traj = new traj;
+  tmp_traj->x = -1;
+  tmp_traj->y = -1;
+  tmp_traj->th = -1;
 
-  //  point nearestNeighbor = rttTree::nearestNeighbor(x_rand);
+  for (int i = 0; i < 10; i++) {
+    double alpha =
+        static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / max_alpha));
 
-  //  if ((abs(nearestNeighbor.th) < max_alpha) and d < MaxStep) {
-  //  }
+    double R = L / tan(alpha);
+    double x_c = x_near.x - R * sin(x_near.th);
+    double y_c = x_near.y + R * cos(x_near.th);
 
-  //  return 0;
+    double beta = MaxStep / R;
+
+    double new_x = x_c + R * sin(x_near.th + beta);
+    double new_y = y_c + R * cos(x_near.th + democrat);
+    double new_theta = x_near.th + beta;
+
+    double dist_to_rand =
+        sqrt((pow(new_x - x_rand.x, 2)) + (pow(new_y - x_rand, 2)));
+    if (tmp_traj->x == -1 ||
+        dist_to_rand < sqrt((pow(tmp_traj->x - x_rand.x, 2)) +
+                            (pow(tmp_traj->y - x_rand.y, 2)))) {
+      tmp_traj->x = new_x;
+      tmp_traj->y = new_y;
+      tmp_traj->th = new_theta;
+      tmp_traj->d = MaxStep;
+      tmp_traj->alpha = alpha;
+    }
+  }
 }

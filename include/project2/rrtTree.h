@@ -42,7 +42,7 @@ private:
   bool isCollision(point x1, point x2, double d, double R);
   point randomState(double x_max, double x_min, double y_max, double y_min,
                     point x_goal);
-  int newState(double *out, point x_near, point x_rand, double MaxStep);
+  int newState(traj *x_new, point x_near, point x_rand, double MaxStep);
 
 public:
   rrtTree();
