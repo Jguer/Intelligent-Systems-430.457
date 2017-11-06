@@ -129,7 +129,6 @@ void rrtTree::visualizeTree() {
 void rrtTree::visualizeTree(std::vector<traj> path) {
   int thickness = 1;
   int lineType = 8;
-  int idx_parent;
   double Res = 2;
   double radius = 6;
   cv::Point x1, x2;
@@ -150,7 +149,7 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
       radius, cv::Scalar(0, 0, 255), CV_FILLED);
 
   for (int i = 1; i < this->count; i++) {
-    idx_parent = this->ptrTable[i]->idx_parent;
+    int idx_parent = this->ptrTable[i]->idx_parent;
     for (int j = 0; j < 10; j++) {
       double alpha = this->ptrTable[i]->alpha;
       double d = this->ptrTable[i]->d;
@@ -172,10 +171,10 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
       double p2_y = this->ptrTable[idx_parent]->location.y +
                     L / tan(alpha) *
                         (cos(ptrTable[idx_parent]->location.th) - cos(p2_th));
-      x1 = cv::Point((int)(Res * (p1_y / res + map_origin_y)),
-                     (int)(Res * (p1_x / res + map_origin_x)));
-      x2 = cv::Point((int)(Res * (p2_y / res + map_origin_y)),
-                     (int)(Res * (p2_x / res + map_origin_x)));
+      x1 = cv::Point(static_cast<int>(Res * (p1_y / res + map_origin_y)),
+                     static_cast<int>(Res * (p1_x / res + map_origin_x)));
+      x2 = cv::Point(static_cast<int>(Res * (p2_y / res + map_origin_y)),
+                     static_cast<int>(Res * (p2_x / res + map_origin_x)));
       cv::line(imgResult, x1, x2, cv::Scalar(255, 0, 0), thickness, lineType);
     }
   }
@@ -204,8 +203,8 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
     }
   }
   cv::namedWindow("Mapping");
-  cv::Rect imgROI((int)Res * 200, (int)Res * 200, (int)Res * 400,
-                  (int)Res * 400);
+  cv::Rect imgROI(static_cast<int>(Res * 200), static_cast<int>(Res * 200),
+                  static_cast<int>(Res * 400), static_cast<int>(Res * 400));
   cv::imshow("Mapping", imgResult(imgROI));
   cv::waitKey(1);
 }
