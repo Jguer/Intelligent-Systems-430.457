@@ -251,16 +251,17 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
               (pow(x_new->y - this->x_goal.y, 2))) > MaxStep) {
     // checking if path is free of obstacles
     printf("Here 3\n");
-    while (valid == false) {
+    do {
       x_rand = this->randomState(x_max, x_min, y_max, y_min, x_goal);
       neighbor_id = this->nearestNeighbor(x_rand, MaxStep);
       if (neighbor_id == -1) {
+        printf("Here neighbor\n");
         continue;
       }
       x_near = this->ptrTable[neighbor_id]->location;
+      printf("Here newState\n");
       valid = this->newState(x_new, x_near, x_rand, MaxStep);
-      printf("Here 4\n");
-    }
+    } while (valid == false);
     point p_new;
     p_new.x = x_new->x;
     p_new.x = x_new->y;
