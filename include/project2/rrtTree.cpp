@@ -246,13 +246,13 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
   // building vector x_init to x_goal
   // checking if distance of x_near is close enough to reach in last step
-  while (sqrt((pow(x_new.x - this->x_goal.x, 2)) +
-              (pow(x_new.y - this->x_goal.y, 2))) > MaxStep) {
+  while (sqrt((pow(x_new->x - this->x_goal.x, 2)) +
+              (pow(x_new->y - this->x_goal.y, 2))) > MaxStep) {
     // checking if path is free of obstacles
     while (valid == 0) {
-      x_rand = this->randomState(x_max, x_min, y_max, y_min, point x_goal);
-      neighbor_id =
-          this->nearestNeighbor(point x_rand, MaxStep) if (neighbor == -1) {
+      x_rand = this->randomState(x_max, x_min, y_max, y_min, x_goal);
+      neighbor_id = this->nearestNeighbor(x_rand, MaxStep);
+      if (neighbor_id == -1) {
         continue;
       }
       x_near = this->ptrTable[neighbor_id]->location;
@@ -264,7 +264,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     p_new.th = x_new->th;
     this->addVertex(p_new, x_rand, neighbor_id, x_new->alpha, x_new->d);
 
-    path.push_back(x_new);
+    path.push_back(*x_new);
   }
   std::reverse(path.begin(), path.end());
   path.push_back(this->x_goal);
