@@ -255,7 +255,13 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
       if (neighbor_id == -1) {
         continue;
       }
+
+      cout << "Neighbor ID " << neighbor_id;
       x_near = this->ptrTable[neighbor_id]->location;
+      cout << "x_near";
+      x_near.print();
+      cout << "x_new";
+      x_new.print();
       valid = this->newState(&x_new, x_near, x_rand, MaxStep);
     } while (valid == false);
     point p_new;
@@ -265,7 +271,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     this->addVertex(p_new, x_rand, neighbor_id, x_new.alpha, x_new.d);
 
     printf("Pushed %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
-    path.push_back(x_new);
+    cout << "Pushed ";
+    x_new.print() path.push_back(x_new);
     printf("Distance from goal %0.2f\n",
            sqrt((pow(x_new.x - this->x_goal.x, 2)) +
                 (pow(x_new.y - this->x_goal.y, 2))));
