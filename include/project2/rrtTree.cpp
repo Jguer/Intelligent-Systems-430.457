@@ -18,6 +18,7 @@ rrtTree::rrtTree() {
 rrtTree::rrtTree(point x_init, point x_goal) {
   this->x_init = x_init;
   this->x_goal = x_goal;
+  countGoalBias = 4;
 
   std::srand(std::time(NULL));
   count = 1;
@@ -236,6 +237,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   bool valid = false;
   int neighbor_id;
 
+  // INIT
   // initialization of x_near and x_new at start
   x_near = this->x_init;
 
@@ -248,17 +250,20 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   // building vector x_init to x_goal
   // checking if distance of x_near is close enough to reach in last step
 
-  do {
-    do {
-      x_rand = this->randomState(x_max, x_min, y_max, y_min, x_goal);
-      neighbor_id = this->nearestNeighbor(x_rand, MaxStep);
-      if (neighbor_id == -1) {
-        continue;
-      }
+  for (int k = 0; k < K; k++) {
+    /* do { */
+    x_rand = this->randomState(x_max, x_min, y_max, y_min, x_goal);
+    neighbor_id = this->nearestNeighbor(x_rand, MaxStep);
+    if (neighbor_id == -1) {
+      continue;
+    }
+    x_near = this->ptrTable[neighbor_id]->location;
 
-      x_near = this->ptrTable[neighbor_id]->location;
-      valid = this->newState(&x_new, x_near, x_rand, MaxStep);
-    } while (valid == false);
+    valid = this->newState(&x_new, x_near, x_rand, MaxStep);
+    if (!valid) {
+      continue;
+    }
+    /* } while (valid == false); */
 
     this->addVertex(x_new.convertToPoint(), x_rand, neighbor_id, x_new.alpha,
                     x_new.d);
@@ -266,11 +271,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     std::cout << "Pushed ";
     x_new.print();
     path.push_back(x_new);
-    double new_distance = printf("Distance from goal %0.2f\n",
-                                 sqrt((pow(x_new.x - this->x_goal.x, 2)) +
-                                      (pow(x_new.y - this->x_goal.y, 2))));
-  } while (sqrt((pow(x_new.x - this->x_goal.x, 2)) +
-                (pow(x_new.y - this->x_goal.y, 2))) > MaxStep);
+  }
   std::reverse(path.begin(), path.end());
   x_new.x = this->x_goal.x;
   x_new.y = this->x_goal.y;
@@ -352,8 +353,7 @@ int rrtTree::nearestNeighbor(point x_rand) {
   distance_min = INT_MAX;
   for (int i = 0; i < this->count; i++) {
     point x_near = this->ptrTable[i]->location;
-    double dist_to_rand =
-        sqrt((pow(x_near.x - x_rand.x, 2)) + (pow(x_near.y - x_rand.y, 2)));
+    double dist_to_rand = distance(x_near, x_rand);
 
     if (dist_to_rand != 0 && dist_to_rand < distance_min) {
       distance_min = dist_to_rand;
