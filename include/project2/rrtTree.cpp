@@ -275,7 +275,7 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
   } else {
     x_rand.x = static_cast<double>(rand()) / (x_max - x_min) + x_min;
     x_rand.y = static_cast<double>(rand()) / (y_max - y_min) + y_min;
-    x_rand.th = 0;
+    x_rand.th = atan2(x_rand.y, x_rand.x);
     --rrtTree::countGoalBias;
   }
 
