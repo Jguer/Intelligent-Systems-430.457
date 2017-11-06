@@ -234,7 +234,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   bool valid = false;
   int neighbor_id;
 
-  printf("Here 1\n");
   // initialization of x_near and x_new at start
   x_near = this->x_init;
 
@@ -244,7 +243,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   x_new.alpha = 0;
   x_new.d = 0;
 
-  printf("Here 2\n");
   // building vector x_init to x_goal
   // checking if distance of x_near is close enough to reach in last step
   while (sqrt((pow(x_new.x - this->x_goal.x, 2)) +
@@ -253,38 +251,30 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
            sqrt((pow(x_new.x - this->x_goal.x, 2)) +
                 (pow(x_new.y - this->x_goal.y, 2))));
     // checking if path is free of obstacles
-    printf("Here 3\n");
     do {
       x_rand = this->randomState(x_max, x_min, y_max, y_min, x_goal);
       neighbor_id = this->nearestNeighbor(x_rand, MaxStep);
       if (neighbor_id == -1) {
-        printf("Here neighbor\n");
         continue;
       }
       x_near = this->ptrTable[neighbor_id]->location;
-      printf("Here newState\n");
       valid = this->newState(&x_new, x_near, x_rand, MaxStep);
     } while (valid == false);
     point p_new;
     p_new.x = x_new.x;
     p_new.x = x_new.y;
     p_new.th = x_new.th;
-    printf("Here 5\n");
     this->addVertex(p_new, x_rand, neighbor_id, x_new.alpha, x_new.d);
-    printf("Here 6\n");
 
     printf("Pushed %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
     path.push_back(x_new);
   }
-  printf("Here 7\n");
   std::reverse(path.begin(), path.end());
-  printf("Here 7.1\n");
   x_new.x = this->x_goal.x;
   x_new.y = this->x_goal.y;
   x_new.th = this->x_goal.th;
   x_new.alpha = 0;
   x_new.d = 0;
-  printf("Here 8\n");
   path.push_back(x_new);
 
   return path;
@@ -342,8 +332,9 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
     int i = static_cast<int>(round(new_x / this->res + this->map_origin_x));
     int j = static_cast<int>(round(new_y / this->res + this->map_origin_y));
 
-    printf("Checking (%0.2f %0.2f)->(%d %d)(%d)for collision.\n", new_x, new_y,
-           i, j, this->map.at<uchar>(i, j));
+    /* printf("Checking (%0.2f %0.2f)->(%d %d)(%d)for collision.\n", new_x,
+     * new_y, */
+    /*        i, j, this->map.at<uchar>(i, j)); */
 
     if (this->map.at<uchar>(i, j) != 255) {
       return true;
@@ -412,7 +403,7 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
   printf("Point generated %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
 
   if (this->isCollision(x_near, p_new, x_new->d, L / tan(x_new->alpha))) {
-    printf("I'm colliding\n");
+    /* printf("I'm colliding\n"); */
     return false;
   }
 
