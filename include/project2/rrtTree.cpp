@@ -410,7 +410,7 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
   p_new.th = x_new->th;
   printf("Point generated %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
 
-  if (this->isCollision(x_near, p_new, tmp_traj->d, L / tan(tmp_traj->alpha))) {
+  if (this->isCollision(x_near, p_new, x_new->d, L / tan(x_new->alpha))) {
     printf("I'm colliding\n");
     return false;
   }
