@@ -235,6 +235,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   int valid;
   int neighbor_id;
 
+  printf("Here 1\n");
   // initialization of x_near and x_new at start
   x_near = this->x_init;
 
@@ -244,11 +245,13 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   x_new->alpha = 0;
   x_new->d = 0;
 
+  printf("Here 2\n");
   // building vector x_init to x_goal
   // checking if distance of x_near is close enough to reach in last step
   while (sqrt((pow(x_new->x - this->x_goal.x, 2)) +
               (pow(x_new->y - this->x_goal.y, 2))) > MaxStep) {
     // checking if path is free of obstacles
+    printf("Here 3\n");
     while (valid == 0) {
       x_rand = this->randomState(x_max, x_min, y_max, y_min, x_goal);
       neighbor_id = this->nearestNeighbor(x_rand, MaxStep);
@@ -257,23 +260,28 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
       }
       x_near = this->ptrTable[neighbor_id]->location;
       valid = this->newState(x_new, x_near, x_rand, MaxStep);
+      printf("Here 4\n");
     }
     point p_new;
     p_new.x = x_new->x;
     p_new.x = x_new->y;
     p_new.th = x_new->th;
+    printf("Here 5\n");
     this->addVertex(p_new, x_rand, neighbor_id, x_new->alpha, x_new->d);
+    printf("Here 6\n");
 
     path.push_back(*x_new);
   }
   std::reverse(path.begin(), path.end());
 
+  printf("Here 7\n");
   x_new = new traj;
   x_new->x = this->x_goal.x;
   x_new->y = this->x_goal.y;
   x_new->th = this->x_goal.th;
   x_new->alpha = 0;
   x_new->d = 0;
+  printf("Here 8\n");
   path.push_back(*x_new);
 
   return path;
