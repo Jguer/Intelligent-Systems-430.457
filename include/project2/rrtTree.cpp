@@ -327,11 +327,11 @@ int rrtTree::newState(traj *x_new, point x_near, point x_rand, double MaxStep) {
     double beta = MaxStep / R;
 
     double new_x = x_c + R * sin(x_near.th + beta);
-    double new_y = y_c + R * cos(x_near.th + democrat);
+    double new_y = y_c + R * cos(x_near.th + beta);
     double new_theta = x_near.th + beta;
 
     double dist_to_rand =
-        sqrt((pow(new_x - x_rand.x, 2)) + (pow(new_y - x_rand, 2)));
+        sqrt((pow(new_x - x_rand.x, 2)) + (pow(new_y - x_rand.y, 2)));
     if (tmp_traj->x == -1 ||
         dist_to_rand < sqrt((pow(tmp_traj->x - x_rand.x, 2)) +
                             (pow(tmp_traj->y - x_rand.y, 2)))) {
