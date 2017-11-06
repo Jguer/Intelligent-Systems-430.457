@@ -329,23 +329,21 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 }
 
 bool rrtTree::isCollision(point x1, point x2, double d, double R) {
-  double delta_x = x1.x - x2.x;
-  double delta_y = x1.y - x2.y;
+  double x_c = x1.x - R * sin(x_near.th);
+  double y_c = x2.y + R * cos(x_near.th);
 
-  const float max = std::max(std::fabs(delta_x), std::fabs(delta_y));
-  delta_x /= max;
-  delta_y /= max;
+  for (double n = 0; n <= d; n += 0.5) {
+    double beta = d / R;
+    double new_x = x_c + R * sin(x_near.th + beta);
+    double new_y = y_c + R * cos(x_near.th + beta);
 
-  for (float n = 0; n < max; ++n) {
-    x1.x += delta_x / this->res + this->map_origin_x;
-    x1.y += delta_y / this->res + this->map_origin_y;
-    printf("Checking %d %d for collision. Value: %d\n",
-           static_cast<int>(round(x1.x)), static_cast<int>(round(x1.y)),
-           this->map.at<uchar>(static_cast<int>(round(x1.x)),
-                               static_cast<int>(round(x1.y))));
+    int i = static_cast<int>(round(new_x / this->res + this->map_origin_x));
+    int j = static_cast<int>(round(new_y / this->res + this->map_origin_y));
 
-    if (this->map.at<uchar>(static_cast<int>(round(x1.x)),
-                            static_cast<int>(round(x1.y))) != 255) {
+    printf("Checking (%d %d)->(%d %d)(%d)for collision. Value: \n", new_x,
+           new_y, i, j, this->map.at<uchar>(i, j));
+
+    if (this->map.at<uchar>(i, j) != 255) {
       return true;
     }
   }
