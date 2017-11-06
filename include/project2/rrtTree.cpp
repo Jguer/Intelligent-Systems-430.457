@@ -196,10 +196,10 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
           path[i - 1].x + L / tan(alpha) * (sin(p2_th) - sin(path[i - 1].th));
       double p2_y =
           path[i - 1].y + L / tan(alpha) * (cos(path[i - 1].th) - cos(p2_th));
-      x1 = cv::Point((int)(Res * (p1_y / res + map_origin_y)),
-                     (int)(Res * (p1_x / res + map_origin_x)));
-      x2 = cv::Point((int)(Res * (p2_y / res + map_origin_y)),
-                     (int)(Res * (p2_x / res + map_origin_x)));
+      x1 = cv::Point(static_cast<int>(Res * (p1_y / res + map_origin_y)),
+                     static_cast<int>(Res * (p1_x / res + map_origin_x)));
+      x2 = cv::Point(static_cast<int>(Res * (p2_y / res + map_origin_y)),
+                     static_cast<int>(Res * (p2_x / res + map_origin_x)));
       cv::line(imgResult, x1, x2, cv::Scalar(255, 0, 0), thickness, lineType);
     }
   }
@@ -232,29 +232,37 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   point x_rand;
   point x_near;
   traj x_new;
-  double out[5];
   int valid;
+  int neighbor_id;
 
   // initialisation of x_near and x_new at start
   x_near = this->x_init;
-  
-  x_new.x = this->x_init.x;   x_new.y = this->x_init.y;
-  x_new.th = this->x_init.th;  x_new.alpha = 0;
+
+  x_new.x = this->x_init.x;
+  x_new.y = this->x_init.y;
+  x_new.th = this->x_init.th;
+  x_new.alpha = 0;
   x_new.d = 0;
 
   // building vector x_init to x_goal
   // checking if distance of x_near is close enough to reach in last step
-  while(sqrt((pow(x_new.x - this->x_goal.x, 2)) + (pow(x_new.y - this->x_goal.y, 2))) > MaxStep) {
+  while (sqrt((pow(x_new.x - this->x_goal.x, 2)) +
+              (pow(x_new.y - this->x_goal.y, 2))) > MaxStep) {
     // checking if path is free of obstacles
     while (valid == 0) {
-      x_rand = this->randomState(double x_max, double x_min, double y_max,
-                                      double y_min, point x_goal);
-      x_near = this->ptrTable[this->nearestNeighbor(point x_rand, double MaxStep)]->location;
-      valid = this->newState(double *out, point x_near, point x_rand, double MaxStep);
+      x_rand = this->randomState(x_max, x_min, y_max, y_min, point x_goal);
+      neighbor_id =
+          this->nearestNeighbor(point x_rand, MaxStep) if (neighbor == -1) {
+        continue;
+      }
+      x_near = this->ptrTable[neighbor_id]->location;
+      valid = this->newState(&x_new, point x_near, point x_rand, MaxStep);
     }
 
-    x_new.x = d[0];   x_new.y = d[1];
-    x_new.th = d[2];  x_new.alpha = d[4];
+    x_new.x = d[0];
+    x_new.y = d[1];
+    x_new.th = d[2];
+    x_new.alpha = d[4];
     x_new.d = d[3];
 
     path.push_back(x_new);
@@ -284,7 +292,7 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
 
 int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
   int distance_min;
-  int idx_near;
+  int idx_near = -1;
 
   distance_min = INT_MAX;
   for (int i = 0; i < this->count; i++) {
@@ -292,7 +300,8 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
     double dist_to_rand =
         sqrt((pow(x_near.x - x_rand.x, 2)) + (pow(x_near.y - x_rand.y, 2)));
 
-    if (dist_to_rand > MaxStep) {
+    double max_th = x_near.th + (MaxStep * tan(max_alpha)) / (L);
+    if (fabs(x_rand.th) > max_th) {
       continue;
     }
 
@@ -353,8 +362,10 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
   tmp_traj->th = -1;
 
   for (int i = 0; i < 10; i++) {
-    double alpha = static_cast<double>(rand()) /
-                   (static_cast<double>(RAND_MAX / max_alpha));
+    double alpha =
+        -max_alpha +
+        static_cast<double>(rand()) /
+            (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
 
     double R = L / tan(alpha);
     double x_c = x_near.x - R * sin(x_near.th);
