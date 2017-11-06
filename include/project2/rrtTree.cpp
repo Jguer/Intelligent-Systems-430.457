@@ -258,7 +258,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     } while (valid == false);
     point p_new;
     p_new.x = x_new.x;
-    p_new.x = x_new.y;
+    p_new.y = x_new.y;
     p_new.th = x_new.th;
     this->addVertex(p_new, x_rand, neighbor_id, x_new.alpha, x_new.d);
 
