@@ -235,20 +235,32 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   double out[5];
   int valid;
 
-  // initialisation of x_near at start
+  // initialisation of x_near and x_new at start
   x_near = this->x_init;
   
-  // checks if path is free, if not generates new points
-  while (valid == 0) {
-    x_rand = this->randomState(double x_max, double x_min, double y_max,
-                                     double y_min, point x_goal);
-    x_near = this->ptrTable[this->nearestNeighbor(point x_rand, double MaxStep)]->location;
-    valid = this->newState(double *out, point x_near, point x_rand, double MaxStep);
+  x_new.x = this->x_init.x;   x_new.y = this->x_init.y;
+  x_new.th = this->x_init.th;  x_new.alpha = 0;
+  x_new.d = 0;
+
+  // building vector x_init to x_goal
+  // checking if distance of x_near is close enough to reach in last step
+  while(sqrt((pow(x_new.x - this->x_goal.x, 2)) + (pow(x_new.y - this->x_goal.y, 2))) > MaxStep) {
+    // checking if path is free of obstacles
+    while (valid == 0) {
+      x_rand = this->randomState(double x_max, double x_min, double y_max,
+                                      double y_min, point x_goal);
+      x_near = this->ptrTable[this->nearestNeighbor(point x_rand, double MaxStep)]->location;
+      valid = this->newState(double *out, point x_near, point x_rand, double MaxStep);
+    }
+
+    x_new.x = d[0];   x_new.y = d[1];
+    x_new.th = d[2];  x_new.alpha = d[4];
+    x_new.d = d[3];
+
+    path.push_back(x_new);
   }
-  
-  x_new.x = d[0];   x_new.y = d[1];
-  x_new.th = d[2];  x_new.alpha = d[4];
-  x_new.d = d[3];
+  std::reverse(path.begin(), path.end());
+  path.push_back(this->x_goal);
 
   return path;
 }
