@@ -272,7 +272,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
     printf("Pushed %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
     std::cout << "Pushed ";
-    x_new.print() path.push_back(x_new);
+    x_new.print();
+    path.push_back(x_new);
     printf("Distance from goal %0.2f\n",
            sqrt((pow(x_new.x - this->x_goal.x, 2)) +
                 (pow(x_new.y - this->x_goal.y, 2))));
