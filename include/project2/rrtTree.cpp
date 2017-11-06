@@ -230,7 +230,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   std::vector<traj> path;
   point x_rand;
   point x_near;
-  traj *x_new = new traj;
+  traj x_new;
   bool valid = false;
   int neighbor_id;
 
@@ -238,17 +238,18 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   // initialization of x_near and x_new at start
   x_near = this->x_init;
 
-  x_new->x = this->x_init.x;
-  x_new->y = this->x_init.y;
-  x_new->th = this->x_init.th;
-  x_new->alpha = 0;
-  x_new->d = 0;
+  x_new.x = this->x_init.x;
+  x_new.y = this->x_init.y;
+  x_new.th = this->x_init.th;
+  x_new.alpha = 0;
+  x_new.d = 0;
 
   printf("Here 2\n");
   // building vector x_init to x_goal
   // checking if distance of x_near is close enough to reach in last step
   while (sqrt((pow(x_new->x - this->x_goal.x, 2)) +
               (pow(x_new->y - this->x_goal.y, 2))) > MaxStep) {
+
     printf("Distance from goal %0.2f\n",
            sqrt((pow(x_new->x - this->x_goal.x, 2)) +
                 (pow(x_new->y - this->x_goal.y, 2))));
@@ -263,17 +264,18 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
       }
       x_near = this->ptrTable[neighbor_id]->location;
       printf("Here newState\n");
-      valid = this->newState(x_new, x_near, x_rand, MaxStep);
+      valid = this->newState(&x_new, x_near, x_rand, MaxStep);
     } while (valid == false);
     point p_new;
-    p_new.x = x_new->x;
-    p_new.x = x_new->y;
-    p_new.th = x_new->th;
+    p_new.x = x_new.x;
+    p_new.x = x_new.y;
+    p_new.th = x_new.th;
     printf("Here 5\n");
-    this->addVertex(p_new, x_rand, neighbor_id, x_new->alpha, x_new->d);
+    this->addVertex(p_new, x_rand, neighbor_id, x_new.alpha, x_new.d);
     printf("Here 6\n");
 
-    path.push_back(*x_new);
+    printf("Pushed %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
+    path.push_back(x_new);
   }
   printf("Here 7\n");
   std::reverse(path.begin(), path.end());
@@ -335,7 +337,7 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
   double y_c = x1.y + R * cos(x1.th);
 
   for (double n = 0; n <= d; n += 0.5) {
-    double beta = d / R;
+    double beta = n / R;
     double new_x = x_c + R * sin(x1.th + beta);
     double new_y = y_c - R * cos(x1.th + beta);
 
