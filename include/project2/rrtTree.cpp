@@ -249,6 +249,9 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   // checking if distance of x_near is close enough to reach in last step
   while (sqrt((pow(x_new->x - this->x_goal.x, 2)) +
               (pow(x_new->y - this->x_goal.y, 2))) > MaxStep) {
+    printf("Distance from goal %0.2f\n",
+           sqrt((pow(x_new->x - this->x_goal.x, 2)) +
+                (pow(x_new->y - this->x_goal.y, 2))));
     // checking if path is free of obstacles
     printf("Here 3\n");
     do {
@@ -339,8 +342,8 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
     int i = static_cast<int>(round(new_x / this->res + this->map_origin_x));
     int j = static_cast<int>(round(new_y / this->res + this->map_origin_y));
 
-    printf("Checking (%0.2f %0.2f)->(%d %d)(%d)for collision. Value: \n", new_x,
-           new_y, i, j, this->map.at<uchar>(i, j));
+    printf("Checking (%0.2f %0.2f)->(%d %d)(%d)for collision.\n", new_x, new_y,
+           i, j, this->map.at<uchar>(i, j));
 
     if (this->map.at<uchar>(i, j) != 255) {
       return true;
