@@ -228,10 +228,29 @@ void rrtTree::addVertex(point x_new, point x_rand, int idx_near, double alpha,
 
 std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                                        double y_min, int K, double MaxStep) {
-  double out;
-  point new_point = randomState(x_max, x_min, y_max, y_min, this->x_goal);
-  int neighbor_id = nearestNeighbor(new_point, MaxStep);
-  int new_state = newState(&out, point x_near, point x_rand, MaxStep);
+  std::vector<traj> path;
+  point x_rand;
+  point x_near;
+  traj x_new;
+  double out[5];
+  int valid;
+
+  // initialisation of x_near at start
+  x_near = this->x_init;
+  
+  // checks if path is free, if not generates new points
+  while (valid == 0) {
+    x_rand = this->randomState(double x_max, double x_min, double y_max,
+                                     double y_min, point x_goal);
+    x_near = this->ptrTable[this->nearestNeighbor(point x_rand, double MaxStep)]->location;
+    valid = this->newState(double *out, point x_near, point x_rand, double MaxStep);
+  }
+  
+  x_new.x = d[0];   x_new.y = d[1];
+  x_new.th = d[2];  x_new.alpha = d[4];
+  x_new.d = d[3];
+
+  return path;
 }
 
 point rrtTree::randomState(double x_max, double x_min, double y_max,
