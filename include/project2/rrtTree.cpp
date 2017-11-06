@@ -249,7 +249,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   // checking if distance of x_near is close enough to reach in last step
   while (sqrt((pow(x_new.x - this->x_goal.x, 2)) +
               (pow(x_new.y - this->x_goal.y, 2))) > MaxStep) {
-
     printf("Distance from goal %0.2f\n",
            sqrt((pow(x_new.x - this->x_goal.x, 2)) +
                 (pow(x_new.y - this->x_goal.y, 2))));
@@ -422,5 +421,6 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
     return false;
   }
 
+  x_new = tmp_traj;
   return true;
 }
