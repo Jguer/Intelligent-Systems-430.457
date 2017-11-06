@@ -242,8 +242,8 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
     x_rand = x_goal;
     rrtTree::countGoalBias = 4;
   } else {
-    x_rand.x = static_cast<double> rand() / (x_max - x_min) + x_min;
-    x_rand.y = static_cast<double> rand() / (y_max - y_min) + y_min;
+    x_rand.x = static_cast<double>(rand()) / (x_max - x_min) + x_min;
+    x_rand.y = static_cast<double>(rand()) / (y_max - y_min) + y_min;
     x_rand.th = 0;
     --rrtTree::countGoalBias;
   }
@@ -284,8 +284,8 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
   for (float n = 0; n < max; ++n) {
     x1.x += delta_x / this->res + this->map_origin_x;
     x1.y += delta_y / this->res + this->map_origin_y;
-    if (this->map.at<uchar>(static_cast<int> round(x1.x),
-                            static_cast<int> round(x1.y)) != 255) {
+    if (this->map.at<uchar>(static_cast<int>(round(x1.x)),
+                            static_cast<int>(round(x1.y))) != 255) {
       return true;
     }
   }
@@ -351,7 +351,7 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
   p_new.x = tmp_traj->x;
   p_new.x = tmp_traj->y;
   p_new.th = tmp_traj->th;
-  if (isCollision(x_near, p_new)) {
+  if (this->isCollision(x_near, p_new, tmp_traj->d, L / tan(tmp_traj->alpha))) {
     return false
   }
 
