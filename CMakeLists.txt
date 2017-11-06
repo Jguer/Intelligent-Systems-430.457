@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   tf
-)
+  )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -88,11 +88,11 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES project2
-#  CATKIN_DEPENDS cv_bridge gazebo_msgs geometry_msgs joy nav_msgs roscpp rospy sensor_msgs tf
-#  DEPENDS system_lib
-)
+  #  INCLUDE_DIRS include
+  #  LIBRARIES project2
+  #  CATKIN_DEPENDS cv_bridge gazebo_msgs geometry_msgs joy nav_msgs roscpp rospy sensor_msgs tf
+  #  DEPENDS system_lib
+  )
 
 ###########
 ## Build ##
@@ -103,7 +103,7 @@ catkin_package(
 include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
-)
+  )
 
 include_directories(${GAZEBO_INCLUDE_DIRS})
 link_directories(${GAZEBO_LIBRARY_DIRS})
@@ -177,7 +177,9 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 ## custom  ##
 #############
 
-add_executable(project2 src/main.cpp include/project2/rrtTree.cpp include/project2/pid.cpp)
+add_executable(project2 src/main.cpp include/project2/rrtTree.cpp
+  include/project2/pid.cpp include /project2/traj.cpp include
+  /project2/point.cpp)
 target_link_libraries(project2
-   ${catkin_LIBRARIES} ${GAZEBO_INCLUDE_DIRS}
-)
+  ${catkin_LIBRARIES} ${GAZEBO_INCLUDE_DIRS}
+  )
