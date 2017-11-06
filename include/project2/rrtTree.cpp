@@ -273,8 +273,8 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
     x_rand = x_goal;
     rrtTree::countGoalBias = 4;
   } else {
-    x_rand.x = (double)rand() / (x_max - x_min) + x_min;
-    x_rand.y = (double)rand() / (y_max - y_min) + y_min;
+    x_rand.x = static_cast<double>(rand()) / (x_max - x_min) + x_min;
+    x_rand.y = static_cast<double>(rand()) / (y_max - y_min) + y_min;
     x_rand.th = 0;
     --rrtTree::countGoalBias;
   }
@@ -315,7 +315,8 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
   for (float n = 0; n < max; ++n) {
     x1.x += delta_x / this->res + this->map_origin_x;
     x1.y += delta_y / this->res + this->map_origin_y;
-    if (this->map.at<uchar>((int)round(x1.x), (int)round(x1.y)) != 255) {
+    if (this->map.at<uchar>(static_cast<int>(round(x1.x)),
+                            static_cast<int>(round(x1.y))) != 255) {
       return true;
     }
   }
@@ -341,15 +342,19 @@ int rrtTree::nearestNeighbor(point x_rand) {
   return idx_near;
 }
 
-int rrtTree::newState(traj *x_new, point x_near, point x_rand, double MaxStep) {
+// Returns:
+// true - valid
+// false - invalid
+bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
+                       double MaxStep) {
   traj *tmp_traj = new traj;
   tmp_traj->x = -1;
   tmp_traj->y = -1;
   tmp_traj->th = -1;
 
   for (int i = 0; i < 10; i++) {
-    double alpha =
-        static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / max_alpha));
+    double alpha = static_cast<double>(rand()) /
+                   (static_cast<double>(RAND_MAX / max_alpha));
 
     double R = L / tan(alpha);
     double x_c = x_near.x - R * sin(x_near.th);
@@ -373,4 +378,13 @@ int rrtTree::newState(traj *x_new, point x_near, point x_rand, double MaxStep) {
       tmp_traj->alpha = alpha;
     }
   }
+  point p_new;
+  p_new.x = tmp_traj->x;
+  p_new.x = tmp_traj->y;
+  p_new.th = tmp_traj->th;
+  if (this->isCollision(x_near, p_new, tmp_traj->d, L / tan(tmp_traj->alpha))) {
+    return false;
+  }
+
+  return true;
 }
