@@ -231,18 +231,18 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   std::vector<traj> path;
   point x_rand;
   point x_near;
-  traj x_new;
+  traj *x_new = new traj;
   int valid;
   int neighbor_id;
 
-  // initialisation of x_near and x_new at start
+  // initialization of x_near and x_new at start
   x_near = this->x_init;
 
-  x_new.x = this->x_init.x;
-  x_new.y = this->x_init.y;
-  x_new.th = this->x_init.th;
-  x_new.alpha = 0;
-  x_new.d = 0;
+  x_new->x = this->x_init.x;
+  x_new->y = this->x_init.y;
+  x_new->th = this->x_init.th;
+  x_new->alpha = 0;
+  x_new->d = 0;
 
   // building vector x_init to x_goal
   // checking if distance of x_near is close enough to reach in last step
@@ -256,14 +256,13 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         continue;
       }
       x_near = this->ptrTable[neighbor_id]->location;
-      valid = this->newState(&x_new, point x_near, point x_rand, MaxStep);
+      valid = this->newState(x_new, x_near, x_rand, MaxStep);
     }
-
-    x_new.x = d[0];
-    x_new.y = d[1];
-    x_new.th = d[2];
-    x_new.alpha = d[4];
-    x_new.d = d[3];
+    point p_new;
+    p_new.x = x_new->x;
+    p_new.x = x_new->y;
+    p_new.th = x_new->th;
+    this->addVertex(p_new, x_rand, neighbor_id, x_new->alpha, x_new->d);
 
     path.push_back(x_new);
   }
