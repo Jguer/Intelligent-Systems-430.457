@@ -272,6 +272,7 @@ void generate_path_RRT() {
 
     path_tmp = tree.generateRRT(world_x_max, world_x_min, world_y_max,
                                 world_y_min, K, MaxStep);
+    path_RRT.insert(path_RRT.end(), path_tmp.begin(), path_tmp.end());
   }
   /*
    * 1. for loop
