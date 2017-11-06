@@ -339,8 +339,10 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
   for (float n = 0; n < max; ++n) {
     x1.x += delta_x / this->res + this->map_origin_x;
     x1.y += delta_y / this->res + this->map_origin_y;
-    printf("Checking %d %d for collision\n", static_cast<int>(round(x1.x)),
-           static_cast<int>(round(x1.y)));
+    printf("Checking %d %d for collision. Value: %d\n",
+           static_cast<int>(round(x1.x)), static_cast<int>(round(x1.y)),
+           this->map.at<uchar>(static_cast<int>(round(x1.x)),
+                               static_cast<int>(round(x1.y))));
 
     if (this->map.at<uchar>(static_cast<int>(round(x1.x)),
                             static_cast<int>(round(x1.y))) != 255) {
