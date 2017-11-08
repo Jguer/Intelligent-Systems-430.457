@@ -5,8 +5,6 @@
 #include <unistd.h>
 #define PI 3.14159265358979323846
 
-using namespace std;
-
 double max_alpha = 0.15;
 double L = 0.325;
 
@@ -238,16 +236,16 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
     std::cout << "Xnear Point: " << ptrTable[x_near_id]->alpha;
     x_near.print();
-    std::cout << "Xgoal Point: " << endl;
+    std::cout << "Xgoal Point: " << std::endl;
     x_goal.print();
 
     if (this->isCollision(x_near, x_rand, MaxStep,
                           ptrTable[x_near_id]->alpha)) {
-      std::cout << "Collision detected" << endl;
+      std::cout << "Collision detected" << std::endl;
       continue;
     }
 
-    std::cout << "no collision detected" << endl;
+    std::cout << "no collision detected" << std::endl;
     x_new = newState(x_near, x_rand, MaxStep);
 
     std::cout << "Added Vertex ";
@@ -305,10 +303,10 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 }
 
 bool rrtTree::isCollision(point x1, point x2, double d, double R) {
-  std::cout << "collision detection" << endl;
+  std::cout << "collision detection" << std::endl;
   double x_c = x1.x - R * sin(x1.th);
   double y_c = x1.y + R * cos(x1.th);
-  std::cout << "collision detection" << endl;
+  std::cout << "collision detection" << std::endl;
 
   for (double n = 0; n < d; n += 0.4) {
     double beta = n / R;
