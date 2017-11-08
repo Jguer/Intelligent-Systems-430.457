@@ -360,11 +360,13 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
   og_dist = INT_MAX;
   traj x_new;
 
-  for (int i = 0; i < 200; i++) {
+  for (int i = 0; i < 50; i++) {
     alpha = -max_alpha +
             static_cast<double>(rand()) /
                 (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
     d = MaxStep;
+
+    printf("d: %f, alpha: %f\n", d, alpha);
 
     R = L / tan(alpha);
     x_c = x_near.x - R * sin(x_near.th);
