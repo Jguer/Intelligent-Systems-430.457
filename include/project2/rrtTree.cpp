@@ -353,7 +353,7 @@ int rrtTree::nearestNeighbor(point x_rand) {
 // true - valid
 // false - invalid
 traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
-  double og_dist, d, R, x_c, y_c, alpha, R, beta, new_x, new_y, new_theta,
+  double og_dist, d, x_c, y_c, alpha, R, beta, new_x, new_y, new_theta,
       dist_to_rand;
   og_dist = INT_MAX;
   traj x_new;
