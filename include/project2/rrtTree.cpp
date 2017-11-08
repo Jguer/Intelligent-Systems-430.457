@@ -364,7 +364,7 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
       /* printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y, new_theta);
        */
       og_dist = dist_to_rand;
-      x_new->set(new_x, new_y, new_theta, alpha, d);
+      x_new.set(new_x, new_y, new_theta, alpha, d);
     }
   }
 
