@@ -217,7 +217,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   point x_near;
   int x_near_id;
   traj x_new;
-  bool valid = false;
   // INIT
   // initialization of x_near and x_new at start
   x_near = x_init;
@@ -234,7 +233,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     x_near_id = this->nearestNeighbor(x_rand, MaxStep);
     x_near = ptrTable[x_near_id]->location;
 
-    if (this->isCollision(x_near, x_rand)) {
+    if (this->isCollision(x_near, x_rand, MaxStep,
+                          ptrTable[x_near_id]->alpha)) {
       continue;
     }
 
