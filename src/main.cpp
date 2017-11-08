@@ -205,6 +205,10 @@ int main(int argc, char **argv) {
       state = RUNNING;
     } break;
     case RUNNING: {
+      for (int qq = 0; qq < path_RRT.size(); qq++) {
+        printf("Path list:\n");
+        path_RRT[qq].print();
+      }
       if (path_RRT.size() == 0) {
         printf("Path is empty.\n");
         state = FINISH;
