@@ -29,6 +29,7 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
   this->map_origin_x = map_origin_x;
   this->map_origin_y = map_origin_y;
   this->res = res;
+
   srand(time(NULL));
 
   count = 1;
@@ -232,6 +233,10 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
     x_near_id = this->nearestNeighbor(x_rand, MaxStep);
     x_near = ptrTable[x_near_id]->location;
+
+    std::cout << : "Xnear Point: " << ptrTable[x_near_id]->alpha x_near.print();
+    std::cout << : "Xgoal Point: ";
+    x_goal.print();
 
     if (this->isCollision(x_near, x_rand, MaxStep,
                           ptrTable[x_near_id]->alpha)) {
