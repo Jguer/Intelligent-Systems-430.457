@@ -13,8 +13,8 @@ point traj::convertToPoint() {
   return p_new;
 }
 
-void traj::set(double new_x, double new_y, double new_th, double new_d,
-               double new_alpha) {
+void traj::set(double new_x, double new_y, double new_th, double new_alpha,
+               double new_d) {
   x = new_x;
   y = new_y;
   th = new_th;
