@@ -309,6 +309,7 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
   std::cout << "collision detection" << std::endl;
 
   for (double n = 0; n < d; n += 0.4) {
+    std::cout << "Ita fucking rating" << std::endl;
     double beta = n / R;
     double new_x = x_c + R * sin(x1.th + beta);
     double new_y = y_c - R * cos(x1.th + beta);
