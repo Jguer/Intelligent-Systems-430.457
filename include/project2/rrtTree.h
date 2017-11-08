@@ -26,7 +26,6 @@ private:
   } * root;
 
   int count;
-  int countGoalBias;
   point x_init, x_goal;
   cv::Mat map;
   cv::Mat map_original;
@@ -40,9 +39,8 @@ private:
   int nearestNeighbor(point x_rand, double MaxStep);
   int nearestNeighbor(point x_rand);
   bool isCollision(point x1, point x2, double d, double R);
-  point randomState(double x_max, double x_min, double y_max, double y_min,
-                    point x_goal);
-  bool newState(traj *x_new, point x_near, point x_rand, double MaxStep);
+  point randomState(double x_max, double x_min, double y_max, double y_min);
+  traj newState(traj *x_new, point x_near, point x_rand, double MaxStep);
 
 public:
   rrtTree();

@@ -242,41 +242,44 @@ int main(int argc, char **argv) {
       state = RUNNING;
     } break;
     case RUNNING: {
-      while (ros::ok()) {
-        speed = 2.0 -
-                1.5 / (1.0 + (robot_pose.distance(path_RRT[look_ahead_idx].x,
-                                                  path_RRT[look_ahead_idx].y)));
-        angle = pid_ctrl->get_control(robot_pose, path_RRT[look_ahead_idx]);
-
-        // Validate Speed
-        speed = (speed > max_speed) ? max_speed : speed;
-        speed = (speed < -max_speed) ? -max_speed : speed;
-        // Validate Angle
-        angle = (angle > max_turn) ? max_turn : angle;
-        angle = (angle < -max_turn) ? -max_turn : angle;
-
-        setcmdvel(speed, angle);
-        printf("Debug Parameters\n");
-        printf("Speed, Angle : %.2f, %.2f \n", speed, angle);
-        printf("Car Pose : %.2f,%.2f,%.2f,%.2f,%.2f \n", robot_pose.x,
-               robot_pose.y, robot_pose.th, angle, path_RRT[look_ahead_idx].th);
-        cmd_vel_pub.publish(cmd);
-
-        double dist_to_target = robot_pose.distance(path_RRT[look_ahead_idx].x,
-                                                    path_RRT[look_ahead_idx].y);
-
-        printf("%fs\n", dist_to_target);
-        if (dist_to_target <= 0.2) {
-          printf("New destination Point\n");
-          look_ahead_idx++;
-          if (look_ahead_idx == path_RRT.size()) {
-            state = FINISH;
-          }
-        }
-
-        ros::spinOnce();
-        control_rate.sleep();
+      if (path_RRT.size() == 0) {
+        printf("Path is empty.\n");
+        state = FINISH;
+        continue;
       }
+      speed =
+          2.0 - 1.5 / (1.0 + (robot_pose.distance(path_RRT[look_ahead_idx].x,
+                                                  path_RRT[look_ahead_idx].y)));
+      angle = pid_ctrl->get_control(robot_pose, path_RRT[look_ahead_idx]);
+
+      // Validate Speed
+      speed = (speed > max_speed) ? max_speed : speed;
+      speed = (speed < -max_speed) ? -max_speed : speed;
+      // Validate Angle
+      angle = (angle > max_turn) ? max_turn : angle;
+      angle = (angle < -max_turn) ? -max_turn : angle;
+
+      setcmdvel(speed, angle);
+      printf("Debug Parameters\n");
+      printf("Speed, Angle : %.2f, %.2f \n", speed, angle);
+      printf("Car Pose : %.2f,%.2f,%.2f,%.2f,%.2f \n", robot_pose.x,
+             robot_pose.y, robot_pose.th, angle, path_RRT[look_ahead_idx].th);
+      cmd_vel_pub.publish(cmd);
+
+      double dist_to_target = robot_pose.distance(path_RRT[look_ahead_idx].x,
+                                                  path_RRT[look_ahead_idx].y);
+
+      printf("%fs\n", dist_to_target);
+      if (dist_to_target <= 0.2) {
+        printf("New destination Point\n");
+        look_ahead_idx++;
+        if (look_ahead_idx == path_RRT.size()) {
+          state = FINISH;
+        }
+      }
+
+      ros::spinOnce();
+      control_rate.sleep();
     } break;
     case FINISH: {
       setcmdvel(0, 0);
@@ -299,9 +302,10 @@ void generate_path_RRT() {
     std::vector<traj> path_tmp = tree->generateRRT(
         world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
     printf("New trajectory generated.\n");
-    tree->visualizeTree(path_tmp);
     path_RRT.insert(path_RRT.end(), path_tmp.begin(), path_tmp.end());
   }
+
+  tree->visualizeTree(path_tmp);
 }
 
 void set_waypoints() {

@@ -12,15 +12,17 @@ rrtTree::rrtTree() {
   count = 0;
   root = NULL;
   ptrTable[0] = NULL;
-  countGoalBias = 4;
 }
 
 rrtTree::rrtTree(point x_init, point x_goal) {
   this->x_init = x_init;
   this->x_goal = x_goal;
-  countGoalBias = 4;
+  this->map_original = map.clone();
+  this->map = addMargin(map, margin);
+  this->map_origin_x = map_origin_x;
+  this->map_origin_y = map_origin_y;
+  this->res = res;
 
-  std::srand(std::time(NULL));
   count = 1;
   root = new node;
   ptrTable[0] = root;
@@ -28,8 +30,7 @@ rrtTree::rrtTree(point x_init, point x_goal) {
   root->idx_parent = 0;
   root->location = x_init;
   root->rand = x_init;
-  root->alpha = 0;
-  root->d = 0;
+  std::srand(std::time(NULL));
 }
 
 rrtTree::~rrtTree() {
@@ -233,40 +234,35 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   std::vector<traj> path;
   point x_rand;
   point x_near;
+  int x_near_id;
   traj x_new;
   bool valid = false;
-  int neighbor_id;
   // INIT
   // initialization of x_near and x_new at start
-  x_near = this->x_init;
-
-  x_new.x = this->x_init.x;
-  x_new.y = this->x_init.y;
-  x_new.th = this->x_init.th;
-  x_new.alpha = 0;
-  x_new.d = 0;
+  x_near = x_init;
+  x_new = convertFromPoint(x_init, 0, 0);
 
   // building vector x_init to x_goal
   // checking if distance of x_near is close enough to reach in last step
-
   for (int k = 0; k < K; k++) {
-    x_rand = this->randomState(x_max, x_min, y_max, y_min, x_goal);
-    neighbor_id = this->nearestNeighbor(x_rand, MaxStep);
-    if (neighbor_id == -1) {
-      continue;
-    }
-    x_near = this->ptrTable[neighbor_id]->location;
-
-    valid = this->newState(&x_new, x_near, x_rand, MaxStep);
-    if (!valid) {
-      continue;
+    x_rand = randomState(x_max, x_min, y_max, y_min);
+    if (k % 5 == 0) {
+      x_rand = this->x_goal;
     }
 
-    this->addVertex(x_new.convertToPoint(), x_rand, neighbor_id, x_new.alpha,
-                    x_new.d);
+    x_near_id = nearestNeighbor(x_rand, MaxStep);
+    x_near = ptrTable[x_near_id]->location;
+
+    if (isCollision(x_near, x_rand)) {
+      continue;
+    }
+
+    x_new = newState(x_near, x_rand, MaxStep);
 
     std::cout << "Added Vertex ";
     x_new.print();
+    this->addVertex(x_new.convertToPoint(), x_rand, x_near_id, x_new.alpha,
+                    x_new.d);
   }
 
   x_rand = x_goal;
@@ -282,18 +278,12 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 }
 
 point rrtTree::randomState(double x_max, double x_min, double y_max,
-                           double y_min, point x_goal) {
+                           double y_min) {
   point x_rand;
 
-  if (this->countGoalBias == 0) {
-    x_rand = x_goal;
-    this->countGoalBias = 4;
-  } else {
-    x_rand.x = x_min + static_cast<double>(rand()) / (x_max - x_min);
-    x_rand.y = y_min + static_cast<double>(rand()) / (y_max - y_min);
-    x_rand.th = atan2(x_rand.y, x_rand.x);
-    this->countGoalBias--;
-  }
+  x_rand.x = x_min + static_cast<double>(rand()) / (x_max - x_min);
+  x_rand.y = y_min + static_cast<double>(rand()) / (y_max - y_min);
+  x_rand.th = atan2(x_rand.y, x_rand.x);
 
   return x_rand;
 }
@@ -356,7 +346,7 @@ int rrtTree::nearestNeighbor(point x_rand) {
     point x_near = this->ptrTable[i]->location;
     double dist_to_rand = distance(x_near, x_rand);
 
-    if (dist_to_rand != 0 && dist_to_rand < distance_min) {
+    if (dist_to_rand < distance_min) {
       distance_min = dist_to_rand;
       idx_near = i;
     }
@@ -367,18 +357,16 @@ int rrtTree::nearestNeighbor(point x_rand) {
 // Returns:
 // true - valid
 // false - invalid
-bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
-                       double MaxStep) {
-  bool changed = false;
-  double og_dist = 10000.0;
+traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
+  double og_dist = INT_MAX;
+  traj x_new;
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 50; i++) {
     double alpha =
         -max_alpha +
         static_cast<double>(rand()) /
             (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
-    double d =
-        static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / MaxStep));
+    double d = MaxStep;
 
     double R = L / tan(alpha);
     double x_c = x_near.x - R * sin(x_near.th);
@@ -394,27 +382,10 @@ bool rrtTree::newState(traj *x_new, point x_near, point x_rand,
     if (dist_to_rand < og_dist) {
       /* printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y, new_theta);
        */
-      changed = true;
       og_dist = dist_to_rand;
-      x_new->x = new_x;
-      x_new->y = new_y;
-      x_new->th = new_theta;
-      x_new->d = d;
-      x_new->alpha = alpha;
+      x_new->set(new_x, new_y, new_theta, alpha, d);
     }
   }
-  /* printf("Point generated %.2f, %.2f, %.2f\n", p_new.x, p_new.y, p_new.th);
-   */
 
-  if (changed) {
-    if (this->isCollision(x_near, x_new->convertToPoint(), x_new->d,
-                          L / tan(x_new->alpha))) {
-      /* printf("I'm colliding\n"); */
-      return false;
-    }
-  } else {
-    return false;
-  }
-
-  return true;
+  return x_new;
 }

@@ -13,6 +13,15 @@ point traj::convertToPoint() {
   return p_new;
 }
 
+void traj::set(double new_x, double new_y, double new_th, double new_d,
+               double new_alpha) {
+  x = new_x;
+  y = new_y;
+  th = new_th;
+  d = new_d;
+  alpha = new_alpha;
+}
+
 traj convertFromPoint(point location, double alpha, double d) {
   traj t_new;
   t_new.x = location.x;
