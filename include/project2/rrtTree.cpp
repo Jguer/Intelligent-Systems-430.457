@@ -278,20 +278,24 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
 }
 
 int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
-  double distance_min;
+  double distance_min, dist_to_rand, R, beta, max_th, new_x, new_y;
   int idx_near = -1;
+  point x_near;
 
   distance_min = INT_MAX;
   for (int i = 0; i < this->count; i++) {
-    point x_near = this->ptrTable[i]->location;
-    double dist_to_rand = distance(x_near, x_rand);
+    x_near = this->ptrTable[i]->location;
+    dist_to_rand = distance(x_near, x_rand);
 
-    double R = L / tan(max_alpha);
-    double beta = MaxStep / R;
-    double max_th = x_near.th + beta;
+    R = L / tan(max_alpha);
+    new_x = R * sin((MaxStep * tan(max_alpha)) / L);
+    new_y = R - R * cos((MaxStep * tan(max_alpha)) / L);
 
-    if (fabs(x_rand.th) >= max_th) {
-      std::cout << "Fell out: " << std::endl;
+    max_th = atan((new_y - x_near.y) / (new_x - x_near.x));
+
+    if (fabs(x_near.th) >= max_th) {
+      std::cout << "Fell out: ";
+      x_near.print();
 
       continue;
     }
@@ -374,7 +378,8 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
 
     dist_to_rand = distance(x_rand, new_x, new_y);
     if (dist_to_rand < og_dist) {
-      /* printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y, new_theta);
+      /* printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y,
+       * new_theta);
        */
       og_dist = dist_to_rand;
       x_new.set(new_x, new_y, new_theta, alpha, d);
