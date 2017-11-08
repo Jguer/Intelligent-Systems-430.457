@@ -47,7 +47,6 @@ std::vector<traj> path_RRT;
 // robot
 point robot_pose;
 ackermann_msgs::AckermannDriveStamped cmd;
-gazebo_msgs::ModelStatesConstPtr model_states;
 double speed;
 double angle;
 //
@@ -126,70 +125,41 @@ int main(int argc, char **argv) {
       look_ahead_idx = 0;
       printf("path size : %lu\n", path_RRT.size());
       // visualize path
-      ros::spinOnce();
+
       for (int i = 0; i < path_RRT.size(); i++) {
-        for (int j = 0; j < model_states->name.size(); j++) {
-          std::ostringstream ball_name;
-          ball_name << i;
-          if (std::strcmp(model_states->name[j].c_str(),
-                          ball_name.str().c_str()) == 0) {
-            // initialize robot position
-            geometry_msgs::Pose model_pose;
-            model_pose.position.x = path_RRT[i].x;
-            model_pose.position.y = path_RRT[i].y;
-            model_pose.position.z = 0.7;
-            model_pose.orientation.x = 0.0;
-            model_pose.orientation.y = 0.0;
-            model_pose.orientation.z = 0.0;
-            model_pose.orientation.w = 1.0;
 
-            geometry_msgs::Twist model_twist;
-            model_twist.linear.x = 0.0;
-            model_twist.linear.y = 0.0;
-            model_twist.linear.z = 0.0;
-            model_twist.angular.x = 0.0;
-            model_twist.angular.y = 0.0;
-            model_twist.angular.z = 0.0;
-
-            gazebo_msgs::ModelState modelstate;
-            modelstate.model_name = ball_name.str();
-            modelstate.reference_frame = "world";
-            modelstate.pose = model_pose;
-            modelstate.twist = model_twist;
-
-            gazebo_msgs::SetModelState setmodelstate;
-            setmodelstate.request.model_state = modelstate;
-
-            gazebo_set.call(setmodelstate);
-            continue;
-          }
-        }
-
+        
         gazebo_msgs::SpawnModel model;
         model.request.model_xml =
             std::string("<robot name=\"simple_ball\">") +
             std::string("<static>true</static>") +
-            std::string("<link name=\"ball\">") + std::string("<inertial>") +
+            std::string("<link name=\"ball\">") + 
+            std::string("<inertial>") +
             std::string("<mass value=\"1.0\" />") +
             std::string("<origin xyz=\"0 0 0\" />") +
             std::string("<inertia  ixx=\"1.0\" ixy=\"1.0\"  ixz=\"1.0\"  "
                         "iyy=\"1.0\"  iyz=\"1.0\"  izz=\"1.0\" />") +
-            std::string("</inertial>") + std::string("<visual>") +
+            std::string("</inertial>") + 
+            std::string("<visual>") +
             std::string("<origin xyz=\"0 0 0\" rpy=\"0 0 0\" />") +
             std::string("<geometry>") +
             std::string("<sphere radius=\"0.09\"/>") +
-            std::string("</geometry>") + std::string("</visual>") +
+            std::string("</geometry>") + 
+            std::string("</visual>") +
             std::string("<collision>") +
             std::string("<origin xyz=\"0 0 0\" rpy=\"0 0 0\" />") +
             std::string("<geometry>") +
             std::string("<sphere radius=\"0.09\"/>") +
-            std::string("</geometry>") + std::string("</collision>") +
+            std::string("</geometry>") + 
+            std::string("</collision>") +
             std::string("</link>") +
             std::string("<gazebo reference=\"ball\">") +
-            std::string("<mu1>10</mu1>") + std::string("<mu2>10</mu2>") +
+            std::string("<mu1>10</mu1>") + 
+            std::string("<mu2>10</mu2>") +
             std::string("<material>Gazebo/Blue</material>") +
             std::string("<turnGravityOff>true</turnGravityOff>") +
-            std::string("</gazebo>") + std::string("</robot>");
+            std::string("</gazebo>") + 
+            std::string("</robot>");
 
         std::ostringstream ball_name;
         ball_name << i;
@@ -247,7 +217,6 @@ int main(int argc, char **argv) {
         state = FINISH;
         continue;
       }
-      std::cout << "Now we're driving" << std::endl;
       speed =
           2.0 - 1.5 / (1.0 + (robot_pose.distance(path_RRT[look_ahead_idx].x,
                                                   path_RRT[look_ahead_idx].y)));
