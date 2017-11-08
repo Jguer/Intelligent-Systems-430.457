@@ -123,43 +123,36 @@ int main(int argc, char **argv) {
     switch (state) {
     case INIT: {
       look_ahead_idx = 0;
+      srand(time(NULL));
       printf("path size : %lu\n", path_RRT.size());
       // visualize path
 
       for (int i = 0; i < path_RRT.size(); i++) {
-
-        
         gazebo_msgs::SpawnModel model;
         model.request.model_xml =
             std::string("<robot name=\"simple_ball\">") +
             std::string("<static>true</static>") +
-            std::string("<link name=\"ball\">") + 
-            std::string("<inertial>") +
+            std::string("<link name=\"ball\">") + std::string("<inertial>") +
             std::string("<mass value=\"1.0\" />") +
             std::string("<origin xyz=\"0 0 0\" />") +
             std::string("<inertia  ixx=\"1.0\" ixy=\"1.0\"  ixz=\"1.0\"  "
                         "iyy=\"1.0\"  iyz=\"1.0\"  izz=\"1.0\" />") +
-            std::string("</inertial>") + 
-            std::string("<visual>") +
+            std::string("</inertial>") + std::string("<visual>") +
             std::string("<origin xyz=\"0 0 0\" rpy=\"0 0 0\" />") +
             std::string("<geometry>") +
             std::string("<sphere radius=\"0.09\"/>") +
-            std::string("</geometry>") + 
-            std::string("</visual>") +
+            std::string("</geometry>") + std::string("</visual>") +
             std::string("<collision>") +
             std::string("<origin xyz=\"0 0 0\" rpy=\"0 0 0\" />") +
             std::string("<geometry>") +
             std::string("<sphere radius=\"0.09\"/>") +
-            std::string("</geometry>") + 
-            std::string("</collision>") +
+            std::string("</geometry>") + std::string("</collision>") +
             std::string("</link>") +
             std::string("<gazebo reference=\"ball\">") +
-            std::string("<mu1>10</mu1>") + 
-            std::string("<mu2>10</mu2>") +
+            std::string("<mu1>10</mu1>") + std::string("<mu2>10</mu2>") +
             std::string("<material>Gazebo/Blue</material>") +
             std::string("<turnGravityOff>true</turnGravityOff>") +
-            std::string("</gazebo>") + 
-            std::string("</robot>");
+            std::string("</gazebo>") + std::string("</robot>");
 
         std::ostringstream ball_name;
         ball_name << i;

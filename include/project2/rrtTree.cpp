@@ -30,8 +30,6 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
   this->map_origin_y = map_origin_y;
   this->res = res;
 
-  srand(time(NULL));
-
   count = 1;
   root = new node;
   ptrTable[0] = root;
@@ -234,15 +232,15 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     x_near_id = this->nearestNeighbor(x_rand, MaxStep);
     x_near = ptrTable[x_near_id]->location;
 
-    std::cout << "Xnear Alpha:" << ptrTable[x_near_id]->alpha << "Point";
+    std::cout << "Xnear Alpha:" << ptrTable[x_near_id]->alpha << " Point:";
     x_near.print();
 
-    std::cout << "Xgoal Point: " << std::endl;
+    std::cout << "Xgoal Point: ";
     x_goal.print();
 
     x_new = newState(x_near, x_rand, MaxStep);
 
-    std::cout << "X_new Point: " << std::endl;
+    std::cout << "X_new Point: ";
     x_new.print();
 
     if (this->isCollision(x_near, x_new.convertToPoint(), MaxStep,
@@ -313,7 +311,7 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
   x_c = x1.x - R * sin(x1.th);
   y_c = x1.y + R * cos(x1.th);
 
-  for (double n = 0; n < d; n += 0.5) {
+  for (double n = 0; n < d; n += 0.1) {
     beta = n / R;
     new_x = x_c + R * sin(x1.th + beta);
     new_y = y_c - R * cos(x1.th + beta);
