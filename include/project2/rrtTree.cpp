@@ -234,8 +234,9 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     x_near_id = this->nearestNeighbor(x_rand, MaxStep);
     x_near = ptrTable[x_near_id]->location;
 
-    std::cout << "Xnear Point: " << ptrTable[x_near_id]->alpha;
+    std::cout << "Xnear Alpha:" << ptrTable[x_near_id]->alpha << "Point";
     x_near.print();
+
     std::cout << "Xgoal Point: " << std::endl;
     x_goal.print();
 
@@ -292,6 +293,8 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
     double max_th = x_near.th + beta;
 
     if (fabs(x_rand.th) >= max_th) {
+      std::cout << "Fell out: " << std::endl;
+
       continue;
     }
 
@@ -315,9 +318,8 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
     new_x = x_c + R * sin(x1.th + beta);
     new_y = y_c - R * cos(x1.th + beta);
 
-    /* printf("Checking (%0.2f %0.2f)->(%d %d)(%d)for collision.\n", new_x,
-     * new_y, */
-    /*        i, j, this->map.at<uchar>(i, j)); */
+    printf("Checking (%0.2f %0.2f)->(%d %d)(%d)for collision.\n", new_x, new_y,
+           i, j, this->map.at<uchar>(i, j));
 
     if (this->map.at<uchar>(round(new_x / this->res + this->map_origin_x),
                             round(new_y / this->res + this->map_origin_y)) !=
