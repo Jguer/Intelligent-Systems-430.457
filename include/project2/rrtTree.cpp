@@ -288,10 +288,8 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
     dist_to_rand = distance(x_near, x_rand);
 
     R = L / tan(max_alpha);
-    new_x = R * sin((MaxStep * tan(max_alpha)) / L);
-    new_y = R - R * cos((MaxStep * tan(max_alpha)) / L);
-
-    max_th = atan((new_y - x_near.y) / (new_x - x_near.x));
+    beta = MaxStep / R;
+    max_th = x_near.th + beta;
 
     if (fabs(x_near.th) >= max_th) {
       std::cout << "Fell out: ";
