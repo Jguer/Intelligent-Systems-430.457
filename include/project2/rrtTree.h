@@ -46,7 +46,6 @@ public:
   rrtTree();
   rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
           double map_origin_y, double res, int margin);
-  rrtTree(point x_init, point x_goal);
   ~rrtTree();
 
   void visualizeTree();

@@ -14,25 +14,6 @@ rrtTree::rrtTree() {
   ptrTable[0] = NULL;
 }
 
-rrtTree::rrtTree(point x_init, point x_goal) {
-  this->x_init = x_init;
-  this->x_goal = x_goal;
-  this->map_original = map.clone();
-  this->map = addMargin(map, margin);
-  this->map_origin_x = map_origin_x;
-  this->map_origin_y = map_origin_y;
-  this->res = res;
-
-  count = 1;
-  root = new node;
-  ptrTable[0] = root;
-  root->idx = 0;
-  root->idx_parent = 0;
-  root->location = x_init;
-  root->rand = x_init;
-  std::srand(std::time(NULL));
-}
-
 rrtTree::~rrtTree() {
   for (int i = 1; i <= count; i++) {
     delete ptrTable[i];
@@ -245,15 +226,15 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   // building vector x_init to x_goal
   // checking if distance of x_near is close enough to reach in last step
   for (int k = 0; k < K; k++) {
-    x_rand = randomState(x_max, x_min, y_max, y_min);
+    x_rand = this->randomState(x_max, x_min, y_max, y_min);
     if (k % 5 == 0) {
       x_rand = this->x_goal;
     }
 
-    x_near_id = nearestNeighbor(x_rand, MaxStep);
+    x_near_id = this->nearestNeighbor(x_rand, MaxStep);
     x_near = ptrTable[x_near_id]->location;
 
-    if (isCollision(x_near, x_rand)) {
+    if (this->isCollision(x_near, x_rand)) {
       continue;
     }
 
@@ -266,9 +247,9 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   }
 
   x_rand = x_goal;
-  neighbor_id = this->nearestNeighbor(x_rand);
+  x_near_id = this->nearestNeighbor(x_rand);
   path.push_back(convertFromPoint(x_goal, 0, 0));
-  for (int i = neighbor_id; i != 0; i = ptrTable[i]->idx_parent) {
+  for (int i = x_near_id; i != 0; i = ptrTable[i]->idx_parent) {
     path.push_back(convertFromPoint(ptrTable[i]->location, ptrTable[i]->alpha,
                                     ptrTable[i]->d));
   }
