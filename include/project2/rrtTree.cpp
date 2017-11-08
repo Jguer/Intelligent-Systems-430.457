@@ -272,7 +272,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   x_rand = x_goal;
   neighbor_id = this->nearestNeighbor(x_rand);
   path.push_back(convertFromPoint(x_goal, 0, 0));
-  while (int i = neighbor_id; i != 0; i = ptrTable[i]->idx_parent) {
+  for (int i = neighbor_id; i != 0; i = ptrTable[i]->idx_parent) {
     path.push_back(convertFromPoint(ptrTable[i].location, alpha, d));
   }
   std::reverse(path.begin(), path.end());
@@ -308,7 +308,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 
     double R = L / tan(max_alpha);
     double beta = MaxStep / R;
-    double max_theta = x_near.th + beta;
+    double max_th = x_near.th + beta;
 
     if (fabs(x_rand.th) >= max_th) {
       continue;
