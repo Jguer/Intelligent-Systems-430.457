@@ -258,6 +258,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     path.push_back(convertFromPoint(ptrTable[i]->location, ptrTable[i]->alpha,
                                     ptrTable[i]->d));
   }
+  path.push_back(convertFromPoint(x_init, 0, 0));
+
   std::reverse(path.begin(), path.end());
 
   return path;
