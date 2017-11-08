@@ -247,6 +247,7 @@ int main(int argc, char **argv) {
         state = FINISH;
         continue;
       }
+      std::cout << "Now we're driving" << std::endl;
       speed =
           2.0 - 1.5 / (1.0 + (robot_pose.distance(path_RRT[look_ahead_idx].x,
                                                   path_RRT[look_ahead_idx].y)));
