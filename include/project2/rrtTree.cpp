@@ -24,7 +24,7 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
                  double map_origin_y, double res, int margin) {
   this->x_init = x_init;
   this->x_goal = x_goal;
-  this->map_original = map.clone();
+  this->map_original = map;
   this->map = addMargin(map, margin);
   this->map_origin_x = map_origin_x;
   this->map_origin_y = map_origin_y;
@@ -318,11 +318,14 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
      * new_y, */
     /*        i, j, this->map.at<uchar>(i, j)); */
 
+    std::cout << "Guess what" << std::endl;
     if (this->map.at<uchar>(round(new_x / this->res + this->map_origin_x),
                             round(new_y / this->res + this->map_origin_y)) !=
         255) {
+      std::cout << "Nailed it" << std::endl;
       return true;
     }
+    std::cout << "Nailed it" << std::endl;
   }
 
   return false;
