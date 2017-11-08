@@ -240,8 +240,12 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     x_goal.print();
 
     x_new = newState(x_near, x_rand, MaxStep);
+
+    std::cout << "X_new Point: " << std::endl;
+    x_new.print();
+
     if (this->isCollision(x_near, x_new.convertToPoint(), MaxStep,
-                          L / tan(ptrTable[x_near_id]->alpha))) {
+                          L / tan(x_new->alpha))) {
       std::cout << "Collision detected" << std::endl;
       continue;
     }
@@ -301,16 +305,19 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 }
 
 bool rrtTree::isCollision(point x1, point x2, double d, double R) {
+  double new_x;
+  double new_y;
+
   std::cout << "collision detection" << std::endl;
-  double x_c = x1.x - R * sin(x2.th);
-  double y_c = x1.y + R * cos(x2.th);
+  double x_c = x1.x - R * sin(x1.th);
+  double y_c = x1.y + R * cos(x1.th);
   std::cout << "collision detection" << std::endl;
 
   for (double n = 0; n < d; n += 0.5) {
     std::cout << "Ita fucking rating" << std::endl;
     double beta = n / R;
-    double new_x = x_c + R * sin(x2.th + beta);
-    double new_y = y_c - R * cos(x2.th + beta);
+    new_x = x_c + R * sin(x1.th + beta);
+    new_y = y_c - R * cos(x1.th + beta);
 
     /* printf("Checking (%0.2f %0.2f)->(%d %d)(%d)for collision.\n", new_x,
      * new_y, */
