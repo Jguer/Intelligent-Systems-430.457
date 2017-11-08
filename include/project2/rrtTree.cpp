@@ -307,23 +307,24 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 }
 
 bool rrtTree::isCollision(point x1, point x2, double d, double R) {
-  double new_x;
-  double new_y;
+  double new_x, new_y, x_c, y_c, beta;
+  int i, j;
 
-  double x_c = x1.x - R * sin(x1.th);
-  double y_c = x1.y + R * cos(x1.th);
+  x_c = x1.x - R * sin(x1.th);
+  y_c = x1.y + R * cos(x1.th);
 
   for (double n = 0; n < d; n += 0.5) {
-    double beta = n / R;
+    beta = n / R;
     new_x = x_c + R * sin(x1.th + beta);
     new_y = y_c - R * cos(x1.th + beta);
+
+    i = round(new_x / this->res + this->map_origin_x);
+    j = round(new_y / this->res + this->map_origin_y);
 
     printf("Checking (%0.2f %0.2f)->(%d %d)(%d)for collision.\n", new_x, new_y,
            i, j, this->map.at<uchar>(i, j));
 
-    if (this->map.at<uchar>(round(new_x / this->res + this->map_origin_x),
-                            round(new_y / this->res + this->map_origin_y)) !=
-        255) {
+    if (this->map.at<uchar>(i, j) != 255) {
       return true;
     }
   }
@@ -352,27 +353,28 @@ int rrtTree::nearestNeighbor(point x_rand) {
 // true - valid
 // false - invalid
 traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
-  double og_dist = INT_MAX;
+  double og_dist, d, R, x_c, y_c, alpha, R, beta, new_x, new_y, new_theta,
+      dist_to_rand;
+  og_dist = INT_MAX;
   traj x_new;
 
   for (int i = 0; i < 200; i++) {
-    double alpha =
-        -max_alpha +
-        static_cast<double>(rand()) /
-            (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
-    double d = MaxStep;
+    alpha = -max_alpha +
+            static_cast<double>(rand()) /
+                (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
+    d = MaxStep;
 
-    double R = L / tan(alpha);
-    double x_c = x_near.x - R * sin(x_near.th);
-    double y_c = x_near.y + R * cos(x_near.th);
+    R = L / tan(alpha);
+    x_c = x_near.x - R * sin(x_near.th);
+    y_c = x_near.y + R * cos(x_near.th);
 
-    double beta = d / R;
+    beta = d / R;
 
-    double new_x = x_c + R * sin(x_near.th + beta);
-    double new_y = y_c - R * cos(x_near.th + beta);
-    double new_theta = x_near.th + beta;
+    new_x = x_c + R * sin(x_near.th + beta);
+    new_y = y_c - R * cos(x_near.th + beta);
+    new_theta = x_near.th + beta;
 
-    double dist_to_rand = distance(x_rand, new_x, new_y);
+    dist_to_rand = distance(x_rand, new_x, new_y);
     if (dist_to_rand < og_dist) {
       /* printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y, new_theta);
        */
