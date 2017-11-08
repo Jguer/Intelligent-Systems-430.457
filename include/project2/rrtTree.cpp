@@ -246,7 +246,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
     if (this->isCollision(x_near, x_new.convertToPoint(), MaxStep,
                           L / tan(x_new.alpha))) {
-      std::cout << "Collision detected" << std::endl;
       continue;
     }
 
@@ -308,13 +307,10 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
   double new_x;
   double new_y;
 
-  std::cout << "collision detection" << std::endl;
   double x_c = x1.x - R * sin(x1.th);
   double y_c = x1.y + R * cos(x1.th);
-  std::cout << "collision detection" << std::endl;
 
   for (double n = 0; n < d; n += 0.5) {
-    std::cout << "Ita fucking rating" << std::endl;
     double beta = n / R;
     new_x = x_c + R * sin(x1.th + beta);
     new_y = y_c - R * cos(x1.th + beta);
@@ -323,7 +319,6 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
      * new_y, */
     /*        i, j, this->map.at<uchar>(i, j)); */
 
-    std::cout << "Guess what. X:" << new_x << "Y:" << new_y << std::endl;
     if (this->map.at<uchar>(round(new_x / this->res + this->map_origin_x),
                             round(new_y / this->res + this->map_origin_y)) !=
         255) {
@@ -360,7 +355,7 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
   double og_dist = INT_MAX;
   traj x_new;
 
-  for (int i = 0; i < 50; i++) {
+  for (int i = 0; i < 200; i++) {
     double alpha =
         -max_alpha +
         static_cast<double>(rand()) /
