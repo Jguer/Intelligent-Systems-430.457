@@ -13,7 +13,7 @@ PID::PID(double Kp_in, double Ki_in, double Kd_in) {
   error_diff = 0;
   error_sum = 0;
 
-  freq = 1 / 60;
+  freq = 0.016666;
 }
 
 PID::~PID() {}
