@@ -5,7 +5,9 @@
 #include <unistd.h>
 #define PI 3.14159265358979323846
 
-double max_alpha = 0.2;
+using namespace std;
+
+double max_alpha = 0.15;
 double L = 0.325;
 
 rrtTree::rrtTree() {
@@ -132,7 +134,7 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
                                                map_origin_y)),
                        static_cast<int>(Res * (path[path.size() - 1].x / res +
                                                map_origin_x))),
-             radius, cv::Scalar(0, 0, 255), CV_FILLED);
+             radiuisCollisions, cv::Scalar(0, 0, 255), CV_FILLED);
 
   for (int i = 1; i < this->count; i++) {
     int idx_parent = this->ptrTable[i]->idx_parent;
