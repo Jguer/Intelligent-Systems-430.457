@@ -240,7 +240,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     x_goal.print();
 
     x_new = newState(x_near, x_rand, MaxStep);
-    if (this->isCollision(x_near, x_new, MaxStep,
+    if (this->isCollision(x_near, convertToPoint(x_new), MaxStep,
                           L / tan(ptrTable[x_near_id]->alpha))) {
       std::cout << "Collision detected" << std::endl;
       continue;
