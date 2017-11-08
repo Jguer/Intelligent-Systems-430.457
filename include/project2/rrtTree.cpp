@@ -318,10 +318,10 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
      * new_y, */
     /*        i, j, this->map.at<uchar>(i, j)); */
 
-    std::cout << "Guess what" << std::endl;
-    if (this->map_original.at<uchar>(
-            round(new_x / this->res + this->map_origin_x),
-            round(new_y / this->res + this->map_origin_y)) != 255) {
+    std::cout << "Guess what. X:" << new_x << "Y:" << new_y << std::endl;
+    if (this->map.at<uchar>(round(new_x / this->res + this->map_origin_x),
+                            round(new_y / this->res + this->map_origin_y)) !=
+        255) {
       std::cout << "Nailed it" << std::endl;
       return true;
     }
