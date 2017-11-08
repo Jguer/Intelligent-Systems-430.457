@@ -232,11 +232,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     x_near_id = this->nearestNeighbor(x_rand, MaxStep);
     x_near = ptrTable[x_near_id]->location;
 
-    std::cout << "Xnear Alpha:" << ptrTable[x_near_id]->alpha << " Point:";
+    std::cout << "X_Near Point: ";
     x_near.print();
-
-    std::cout << "Xgoal Point: ";
-    x_goal.print();
 
     x_new = newState(x_near, x_rand, MaxStep);
 
@@ -245,7 +242,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
     if (this->isCollision(x_near, x_new.convertToPoint(), MaxStep,
                           L / tan(x_new.alpha))) {
-      k--;
       continue;
     }
 
