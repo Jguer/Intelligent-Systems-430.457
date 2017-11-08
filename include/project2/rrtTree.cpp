@@ -245,6 +245,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
     if (this->isCollision(x_near, x_new.convertToPoint(), MaxStep,
                           L / tan(x_new.alpha))) {
+      k--;
       continue;
     }
 
@@ -363,8 +364,6 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
             static_cast<double>(rand()) /
                 (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
     d = MaxStep;
-
-    printf("d: %f, alpha: %f\n", d, alpha);
 
     R = L / tan(alpha);
     x_c = x_near.x - R * sin(x_near.th);
