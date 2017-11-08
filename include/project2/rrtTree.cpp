@@ -236,7 +236,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   traj x_new;
   bool valid = false;
   int neighbor_id;
-
   // INIT
   // initialization of x_near and x_new at start
   x_near = this->x_init;
@@ -251,7 +250,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   // checking if distance of x_near is close enough to reach in last step
 
   for (int k = 0; k < K; k++) {
-    /* do { */
     x_rand = this->randomState(x_max, x_min, y_max, y_min, x_goal);
     neighbor_id = this->nearestNeighbor(x_rand, MaxStep);
     if (neighbor_id == -1) {
@@ -263,22 +261,21 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     if (!valid) {
       continue;
     }
-    /* } while (valid == false); */
 
     this->addVertex(x_new.convertToPoint(), x_rand, neighbor_id, x_new.alpha,
                     x_new.d);
 
-    std::cout << "Pushed ";
+    std::cout << "Added Vertex ";
     x_new.print();
-    path.push_back(x_new);
+  }
+
+  x_rand = x_goal;
+  neighbor_id = this->nearestNeighbor(x_rand);
+  path.push_back(convertFromPoint(x_goal, 0, 0));
+  while (int i = neighbor_id; i != 0; i = ptrTable[i]->idx_parent) {
+    path.push_back(convertFromPoint(ptrTable[i].location, alpha, d));
   }
   std::reverse(path.begin(), path.end());
-  x_new.x = this->x_goal.x;
-  x_new.y = this->x_goal.y;
-  x_new.th = this->x_goal.th;
-  x_new.alpha = 0;
-  x_new.d = 0;
-  path.push_back(x_new);
 
   return path;
 }
@@ -309,8 +306,11 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
     point x_near = this->ptrTable[i]->location;
     double dist_to_rand = distance(x_near, x_rand);
 
-    double max_th = x_near.th + (MaxStep * tan(max_alpha)) / (L);
-    if (fabs(x_rand.th) > max_th) {
+    double R = L / tan(max_alpha);
+    double beta = MaxStep / R;
+    double max_theta = x_near.th + beta;
+
+    if (fabs(x_rand.th) >= max_th) {
       continue;
     }
 

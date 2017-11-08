@@ -243,10 +243,9 @@ int main(int argc, char **argv) {
     } break;
     case RUNNING: {
       while (ros::ok()) {
-        speed =
-            2.0 -
-            1.5 / (1.0 + ((pow(path_RRT[look_ahead_idx].x - robot_pose.x, 2)) +
-                          (pow(path_RRT[look_ahead_idx].y - robot_pose.y, 2))));
+        speed = 2.0 -
+                1.5 / (1.0 + (robot_pose.distance(path_RRT[look_ahead_idx].x,
+                                                  path_RRT[look_ahead_idx].y)));
         angle = pid_ctrl->get_control(robot_pose, path_RRT[look_ahead_idx]);
 
         // Validate Speed
@@ -263,9 +262,8 @@ int main(int argc, char **argv) {
                robot_pose.y, robot_pose.th, angle, path_RRT[look_ahead_idx].th);
         cmd_vel_pub.publish(cmd);
 
-        double dist_to_target =
-            sqrt((pow(path_RRT[look_ahead_idx].x - robot_pose.x, 2)) +
-                 (pow(path_RRT[look_ahead_idx].y - robot_pose.y, 2)));
+        double dist_to_target = robot_pose.distance(path_RRT[look_ahead_idx].x,
+                                                    path_RRT[look_ahead_idx].y);
 
         printf("%fs\n", dist_to_target);
         if (dist_to_target <= 0.2) {

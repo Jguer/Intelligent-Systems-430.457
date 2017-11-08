@@ -11,4 +11,5 @@ struct traj {
   double alpha;
   void print();
   point convertToPoint();
+  traj convertFromPoint(point location, double alpha, double d);
 };
