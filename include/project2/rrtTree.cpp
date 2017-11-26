@@ -287,8 +287,10 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 
     double R = L / tan(max_alpha);
     double beta = MaxStep / R;
-    double max_th = x_near.th + beta;
-    double min_th = x_near.th - beta;
+    double max_th = ((tan(max_alpha) * (MaxStep - L)) / (MaxStep)) + x_near.th;
+    /* double max_th = x_near.th + beta; */
+    /* double min_th = x_near.th - beta; */
+    double min_th = ((tan(max_alpha) * (MaxStep - L)) / (MaxStep)) - x_near.th;
 
     if (fabs(x_rand.th) >= max_th || fabs(x_rand.th) <= min_th) {
       continue;
