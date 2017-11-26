@@ -96,16 +96,14 @@ void rrtTree::visualizeTree() {
       double p2_y = this->ptrTable[idx_parent]->location.y +
                     L / tan(alpha) *
                         (cos(ptrTable[idx_parent]->location.th) - cos(p2_th));
-      x1 = cv::Point((int)(Res * (p1_y / res + map_origin_y)),
-                     (int)(Res * (p1_x / res + map_origin_x)));
-      x2 = cv::Point((int)(Res * (p2_y / res + map_origin_y)),
-                     (int)(Res * (p2_x / res + map_origin_x)));
+      x1 = cv::Point(static_cast<int>(Res * (p1_y / res + map_origin_y)),
+                     static_cast<int>(Res * (p1_x / res + map_origin_x)));
+      x2 = cv::Point(static_cast<int>(Res * (p2_y / res + map_origin_y)),
+                     static_cast<int>(Res * (p2_x / res + map_origin_x)));
       cv::line(imgResult, x1, x2, cv::Scalar(255, 0, 0), thickness, lineType);
     }
   }
   cv::namedWindow("Mapping");
-  cv::Rect imgROI((int)Res * 200, (int)Res * 200, (int)Res * 400,
-                  (int)Res * 400);
   cv::imshow("Mapping", imgResult(imgROI));
   cv::waitKey(1);
 }
@@ -189,8 +187,6 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
     }
   }
   cv::namedWindow("Mapping");
-  cv::Rect imgROI(static_cast<int>(Res * 200), static_cast<int>(Res * 200),
-                  static_cast<int>(Res * 400), static_cast<int>(Res * 400));
   cv::imshow("Mapping", imgResult(imgROI));
   cv::waitKey(1);
 }
@@ -304,28 +300,16 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 }
 
 bool rrtTree::isCollision(point x1, point x2, double d, double R) {
-  double new_x;
-  double new_y;
-
-  double x_c = x1.x - R * sin(x1.th);
-  double y_c = x1.y + R * cos(x1.th);
-
-  for (double n = 0; n < d; n += 0.5) {
-    double beta = n / R;
-    new_x = x_c + R * sin(x1.th + beta);
-    new_y = y_c - R * cos(x1.th + beta);
-
-    /* printf("Checking (%0.2f %0.2f)->(%d %d)(%d)for collision.\n", new_x,
-     * new_y, */
-    /*        i, j, this->map.at<uchar>(i, j)); */
-
-    if (this->map.at<uchar>(round(new_x / this->res + this->map_origin_x),
-                            round(new_y / this->res + this->map_origin_y)) !=
-        255) {
+  int i;
+  for (i = 0; i < 100; i++) {
+    double x = x1.x + (x2.x - x1.x) * i / 99;
+    double y = x1.y + (x2.y - x1.y) * i / 99;
+    if (map.at<uchar>(round(x / res + this->map_origin_x),
+                      round(y / res + this->map_origin_y)) == 0) {
+      // There was a obstruction
       return true;
     }
   }
-
   return false;
 }
 
