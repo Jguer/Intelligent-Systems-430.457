@@ -261,7 +261,7 @@ int main(int argc, char **argv) {
 }
 
 void generate_path_RRT() {
-  for (int i = 0; i < waypoints.size() - 1; i++) {
+  for (int i = 0; i < 3; i++) {
     rrtTree *tree = new rrtTree(waypoints.at(i), waypoints.at(i + 1), map,
                                 map_origin_x, map_origin_y, res, margin);
     printf("New rrtTree generated.\n");
