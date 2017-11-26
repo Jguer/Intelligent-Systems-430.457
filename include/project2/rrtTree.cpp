@@ -228,6 +228,9 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     }
 
     x_near_id = this->nearestNeighbor(x_rand, MaxStep);
+    if (x_near_id == -1) {
+      continue;
+    }
     x_near = ptrTable[x_near_id]->location;
 
     std::cout << "Xnear Point: " << ptrTable[x_near_id]->alpha;
@@ -251,8 +254,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                     x_new.d);
   }
 
-  x_rand = x_goal;
-  x_near_id = this->nearestNeighbor(x_rand);
+  x_near_id = this->nearestNeighbor(x_goal);
   path.push_back(convertFromPoint(x_goal, 0, 0));
   for (int i = x_near_id; i != 0; i = ptrTable[i]->idx_parent) {
     path.push_back(convertFromPoint(ptrTable[i]->location, ptrTable[i]->alpha,
@@ -286,8 +288,9 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
     double R = L / tan(max_alpha);
     double beta = MaxStep / R;
     double max_th = x_near.th + beta;
+    double min_th = x_near.th - beta;
 
-    if (fabs(x_rand.th) >= max_th) {
+    if (fabs(x_rand.th) >= max_th || fabs(x_rand.th) <= min_th) {
       continue;
     }
 
