@@ -277,7 +277,7 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
 }
 
 int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
-  double distance_min, dist_to_rand, R, beta, max_th, new_x, new_y;
+  double distance_min, dist_to_rand, R, beta, max_th, new_x, new_y, min_th;
   double rel_th;
   int idx_near = -1;
   point x_near;
