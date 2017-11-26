@@ -30,8 +30,6 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
   this->map_origin_y = map_origin_y;
   this->res = res;
 
-  srand(time(NULL));
-
   count = 1;
   root = new node;
   ptrTable[0] = root;
@@ -187,7 +185,9 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
     }
   }
   cv::namedWindow("Mapping");
-  cv::imshow("Mapping", imgResult);
+  cv::Rect imgROI(static_cast<int>(Res * 200), static_cast<int>(Res * 200),
+                  static_cast<int>(Res * 400), static_cast<int>(Res * 400));
+  cv::imshow("Mapping", imgResult(imgROI));
   cv::waitKey(1);
 }
 
@@ -233,14 +233,12 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     }
     x_near = ptrTable[x_near_id]->location;
 
-    std::cout << "Xnear Point: " << ptrTable[x_near_id]->alpha;
+    std::cout << "X_Near Point: ";
     x_near.print();
-    std::cout << "Xgoal Point: " << std::endl;
-    x_goal.print();
 
     x_new = newState(x_near, x_rand, MaxStep);
 
-    std::cout << "X_new Point: " << std::endl;
+    std::cout << "X_new Point: ";
     x_new.print();
 
     if (this->isCollision(x_near, x_new.convertToPoint(), MaxStep,
@@ -260,6 +258,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     path.push_back(convertFromPoint(ptrTable[i]->location, ptrTable[i]->alpha,
                                     ptrTable[i]->d));
   }
+  path.push_back(convertFromPoint(x_init, 0, 0));
+
   std::reverse(path.begin(), path.end());
 
   return path;
@@ -277,22 +277,25 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
 }
 
 int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
-  double distance_min;
+  double distance_min, dist_to_rand, R, beta, max_th, new_x, new_y;
+  double rel_th;
   int idx_near = -1;
+  point x_near;
 
   distance_min = INT_MAX;
   for (int i = 0; i < this->count; i++) {
-    point x_near = this->ptrTable[i]->location;
-    double dist_to_rand = distance(x_near, x_rand);
+    x_near = this->ptrTable[i]->location;
+    dist_to_rand = distance(x_near, x_rand);
 
-    double R = L / tan(max_alpha);
-    double beta = MaxStep / R;
-    double max_th = ((tan(max_alpha) * (MaxStep - L)) / (MaxStep)) + x_near.th;
-    /* double max_th = x_near.th + beta; */
-    /* double min_th = x_near.th - beta; */
-    double min_th = ((tan(max_alpha) * (MaxStep - L)) / (MaxStep)) - x_near.th;
+    R = L / tan(max_alpha);
+    beta = MaxStep / R;
+    max_th = x_near.th + beta;
 
-    if (fabs(x_rand.th) >= max_th || fabs(x_rand.th) <= min_th) {
+    rel_th = atan((x_rand.y - x_near.y) / (x_rand.x - x_near.x));
+
+    if (fabs(rel_th) >= max_th) {
+      std::cout << "Fell out (" << rel_th << ") Point: ";
+      x_near.print();
       continue;
     }
 
@@ -315,6 +318,7 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
       return true;
     }
   }
+
   return false;
 }
 
@@ -339,29 +343,31 @@ int rrtTree::nearestNeighbor(point x_rand) {
 // true - valid
 // false - invalid
 traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
-  double og_dist = INT_MAX;
+  double og_dist, d, x_c, y_c, alpha, R, beta, new_x, new_y, new_theta,
+      dist_to_rand;
+  og_dist = INT_MAX;
   traj x_new;
 
-  for (int i = 0; i < 200; i++) {
-    double alpha =
-        -max_alpha +
-        static_cast<double>(rand()) /
-            (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
-    double d = MaxStep;
+  for (int i = 0; i < 50; i++) {
+    alpha = -max_alpha +
+            static_cast<double>(rand()) /
+                (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
+    d = MaxStep;
 
-    double R = L / tan(alpha);
-    double x_c = x_near.x - R * sin(x_near.th);
-    double y_c = x_near.y + R * cos(x_near.th);
+    R = L / tan(alpha);
+    x_c = x_near.x - R * sin(x_near.th);
+    y_c = x_near.y + R * cos(x_near.th);
 
-    double beta = d / R;
+    beta = d / R;
 
-    double new_x = x_c + R * sin(x_near.th + beta);
-    double new_y = y_c - R * cos(x_near.th + beta);
-    double new_theta = x_near.th + beta;
+    new_x = x_c + R * sin(x_near.th + beta);
+    new_y = y_c - R * cos(x_near.th + beta);
+    new_theta = x_near.th + beta;
 
-    double dist_to_rand = distance(x_rand, new_x, new_y);
+    dist_to_rand = distance(x_rand, new_x, new_y);
     if (dist_to_rand < og_dist) {
-      /* printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y, new_theta);
+      /* printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y,
+       * new_theta);
        */
       og_dist = dist_to_rand;
       x_new.set(new_x, new_y, new_theta, alpha, d);

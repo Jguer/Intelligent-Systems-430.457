@@ -123,6 +123,7 @@ int main(int argc, char **argv) {
     switch (state) {
     case INIT: {
       look_ahead_idx = 0;
+      srand(time(NULL));
       printf("path size : %lu\n", path_RRT.size());
       // visualize path
 
@@ -204,6 +205,10 @@ int main(int argc, char **argv) {
       state = RUNNING;
     } break;
     case RUNNING: {
+      printf("Path list:\n");
+      for (int qq = 0; qq < path_RRT.size(); qq++) {
+        path_RRT[qq].print();
+      }
       if (path_RRT.size() == 0) {
         printf("Path is empty.\n");
         state = FINISH;
@@ -265,7 +270,10 @@ void generate_path_RRT() {
         world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
     printf("New trajectory generated.\n");
     tree->visualizeTree(path_tmp);
-    path_RRT.insert(path_RRT.end(), path_tmp.begin(), path_tmp.end());
+
+    for (int k = 0; k < path_tmp.size(); k++) {
+      path_RRT.push_back(path_tmp[k]);
+    }
   }
 }
 
