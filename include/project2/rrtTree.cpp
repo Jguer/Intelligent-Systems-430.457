@@ -294,7 +294,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 
     rel_th = atan((x_rand.y - x_near.y) / (x_rand.x - x_near.x));
 
-    if (fabs(rel_th) >= max_th || fabs(rel_th) <= min_th) {
+    if (rel_th >= max_th || rel_th <= min_th) {
       std::cout << "Fell out (" << rel_th << ") Point: ";
       x_near.print();
       continue;
