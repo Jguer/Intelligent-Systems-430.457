@@ -269,8 +269,8 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
                            double y_min) {
   point x_rand;
 
-  x_rand.x = rand()/(double)RAND_MAX*(x_max-x_min) + x_min;
-  x_rand.y = rand()/(double)RAND_MAX*(y_max-y_min) + y_min;
+  x_rand.x = rand() / (double)RAND_MAX * (x_max - x_min) + x_min;
+  x_rand.y = rand() / (double)RAND_MAX * (y_max - y_min) + y_min;
   x_rand.th = atan2(x_rand.y, x_rand.x);
 
   return x_rand;
@@ -294,11 +294,11 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 
     rel_th = atan((x_rand.y - x_near.y) / (x_rand.x - x_near.x));
 
-    if (rel_th >= max_th || rel_th <= min_th) {
-      std::cout << "Fell out (" << rel_th << ") Point: ";
-      x_near.print();
-      continue;
-    }
+    /* if (rel_th >= max_th || rel_th <= min_th) { */
+    /*   std::cout << "Fell out (" << rel_th << ") Point: "; */
+    /*   x_near.print(); */
+    /*   continue; */
+    /* } */
 
     if (dist_to_rand < distance_min) {
       distance_min = dist_to_rand;
