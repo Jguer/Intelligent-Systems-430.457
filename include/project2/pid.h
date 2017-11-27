@@ -1,7 +1,6 @@
 #include <cmath>
 #ifndef POINT_H
 #define POINT_H
-#include <project2/point.h>
 #include <project2/traj.h>
 #endif
 
