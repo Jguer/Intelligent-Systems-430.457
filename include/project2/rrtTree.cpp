@@ -292,6 +292,15 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
     max_th = x_near.th + beta;
     min_th = x_near.th - beta;
 
+    if (max_th > PI) {
+      max_th = min_th;
+      min_th = -2 * PI - min_th;
+    }
+    else if (min_th < -PI) {
+      min_th = max_th;
+      max_th = 2 * PI - max_th; 
+    }
+
     rel_th = atan2((x_rand.y - x_near.y), (x_rand.x - x_near.x));
 
     if (rel_th >= max_th || rel_th <= min_th) {
