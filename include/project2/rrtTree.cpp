@@ -236,32 +236,30 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
     x_near = ptrTable[x_near_id]->location;
 
-    std::cout << "X_Near Point: ";
-    x_near.print();
+    /* std::cout << "X_Near Point: "; */
+    /* x_near.print(); */
 
     x_new = newState(x_near, x_rand, MaxStep);
 
-    std::cout << "X_new Point: ";
-    x_new.print();
+    /* std::cout << "X_new Point: "; */
+    /* x_new.print(); */
 
     if (this->isCollision(x_near, x_new.convertToPoint(), MaxStep,
                           L / tan(x_new.alpha))) {
       continue;
     }
 
-    std::cout << "Added Vertex ";
-    x_new.print();
+    /* std::cout << "Added Vertex "; */
+    /* x_new.print(); */
     this->addVertex(x_new.convertToPoint(), x_rand, x_near_id, x_new.alpha,
                     x_new.d);
   }
 
   x_near_id = this->nearestNeighbor(x_goal);
-  /* path.push_back(convertFromPoint(x_goal, 0, 0)); */
   for (int i = x_near_id; i != 0; i = ptrTable[i]->idx_parent) {
     path.push_back(convertFromPoint(ptrTable[i]->location, ptrTable[i]->alpha,
                                     ptrTable[i]->d));
   }
-  /* path.push_back(convertFromPoint(x_init, 0, 0)); */
 
   std::reverse(path.begin(), path.end());
 
