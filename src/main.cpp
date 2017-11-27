@@ -213,7 +213,7 @@ int main(int argc, char **argv) {
                                                   path_RRT[look_ahead_idx].y);
       if (dist_to_target <= 0.2) {
         std::cout << "New destination" << std::endl;
-        delete_model(to_string(look_ahead_idx));
+        gazebo_delete(std::to_string(look_ahead_idx));
         look_ahead_idx++;
         if (look_ahead_idx == path_RRT.size()) {
           std::cout << "Circuit Complete" << std::endl;
