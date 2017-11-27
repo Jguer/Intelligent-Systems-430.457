@@ -7,6 +7,7 @@
 
 #include <ackermann_msgs/AckermannDriveStamped.h>
 #include <cmath>
+#include <gazebo_msgs/DeleteModel.h>
 #include <gazebo_msgs/ModelStates.h>
 #include <gazebo_msgs/SetModelState.h>
 #include <gazebo_msgs/SpawnModel.h>
@@ -108,8 +109,8 @@ int main(int argc, char **argv) {
       n.serviceClient<gazebo_msgs::SpawnModel>("/gazebo/spawn_urdf_model");
   ros::ServiceClient gazebo_set =
       n.serviceClient<gazebo_msgs::SetModelState>("/gazebo/set_model_state");
-  /* ros::ServiceClient gazebo_delete = */
-  /*     n.serviceClient<gazebo_msgs::DeleteModel>("/gazebo/delete_model"); */
+  ros::ServiceClient gazebo_delete =
+      n.serviceClient<gazebo_msgs::DeleteModel>("/gazebo/delete_model");
   printf("Initialize topics\n");
 
   // Load Map
@@ -173,8 +174,7 @@ int main(int argc, char **argv) {
         <sphere radius=\"0.09\"/></geometry></collision></link>
         <gazebo reference=\"ball\"><mu1>10</mu1><mu2>10</mu2>
         <material>Gazebo/Blue</material><turnGravityOff>true</turnGravityOff>
-        </gazebo></robot>
-        )";
+        </gazebo></robot>)";
 
         model.request.model_name = std::to_string(i);
         model.request.reference_frame = "world";
@@ -213,7 +213,7 @@ int main(int argc, char **argv) {
                                                   path_RRT[look_ahead_idx].y);
       if (dist_to_target <= 0.2) {
         std::cout << "New destination" << std::endl;
-        gazebo::physics::World::RemoveModel(look_ahead_idx.to_string());
+        delete_model(to_string(look_ahead_idx));
         look_ahead_idx++;
         if (look_ahead_idx == path_RRT.size()) {
           std::cout << "Circuit Complete" << std::endl;
