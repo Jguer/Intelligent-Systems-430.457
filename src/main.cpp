@@ -131,29 +131,17 @@ int main(int argc, char **argv) {
       for (int i = 0; i < path_RRT.size(); i++) {
         gazebo_msgs::SpawnModel model;
         model.request.model_xml = R"(<robot name=\"simple_ball\">
-          <static>true</static><link name=\"ball\"><inertial>
-          <mass value=\"1.0\" /><origin xyz=\"0 0 0\" />
-          <inertia  ixx=\"1.0\" ixy=\"1.0\"  ixz=\"1.0\" iyy=\"1.0\"  
-          iyz=\"1.0\"  izz=\"1.0\" /></inertial><visual>
-          <origin xyz=\"0 0 0\" rpy=\"0 0 0\" />
-          <geometry>
-            <sphere radius=\"0.09\"/>
-          </geometry>
-        </visual>
-        <collision>
-          <origin xyz=\"0 0 0\" rpy=\"0 0 0\" />
-          <geometry>
-          <sphere radius=\"0.09\"/>
-          </geometry>
-        </collision>
-        </link>
-        <gazebo reference=\"ball\">
-        <mu1>10</mu1>
-        <mu2>10</mu2>
-        <material>Gazebo/Blue</material>
-        <turnGravityOff>true</turnGravityOff>
-        </gazebo>
-        </robot>
+        <static>true</static><link name=\"ball\"><inertial>
+        <mass value=\"1.0\" /><origin xyz=\"0 0 0\" />
+        <inertia  ixx=\"1.0\" ixy=\"1.0\"  ixz=\"1.0\" iyy=\"1.0\"
+        iyz=\"1.0\"  izz=\"1.0\" /></inertial><visual>
+        <origin xyz=\"0 0 0\" rpy=\"0 0 0\" /><geometry>
+        <sphere radius=\"0.09\"/></geometry></visual><collision>
+        <origin xyz=\"0 0 0\" rpy=\"0 0 0\" /><geometry>
+        <sphere radius=\"0.09\"/></geometry></collision></link>
+        <gazebo reference=\"ball\"><mu1>10</mu1><mu2>10</mu2>
+        <material>Gazebo/Blue</material><turnGravityOff>true</turnGravityOff>
+        </gazebo></robot>
         )";
 
         std::ostringstream ball_name;
@@ -241,12 +229,13 @@ int main(int argc, char **argv) {
       angle = (angle < -max_turn) ? -max_turn : angle;
 
       setcmdvel(speed, angle);
+      cmd_vel_pub.publish(cmd);
+
       /* printf("Debug Parameters\n"); */
       /* printf("Speed, Angle : %.2f, %.2f \n", speed, angle); */
       /* printf("Car Pose : %.2f,%.2f,%.2f,%.2f,%.2f \n", robot_pose.x, */
       /*        robot_pose.y, robot_pose.th, angle,
        * path_RRT[look_ahead_idx].th); */
-      cmd_vel_pub.publish(cmd);
 
       ros::spinOnce();
       control_rate.sleep();
