@@ -272,8 +272,12 @@ void generate_path_RRT() {
     printf("New trajectory generated.\n");
     tree->visualizeTree(path_tmp);
 
+    path_RRT.push_back(waypoints.at(i));
     for (int k = 0; k < path_tmp.size(); k++) {
       path_RRT.push_back(path_tmp[k]);
+    }
+    if (i == waypoints.size() - 2) {
+      path_RRT.push_back(waypoints.at(i + 1));
     }
   }
 }

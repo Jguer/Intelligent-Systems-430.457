@@ -256,12 +256,12 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   }
 
   x_near_id = this->nearestNeighbor(x_goal);
-  path.push_back(convertFromPoint(x_goal, 0, 0));
+  /* path.push_back(convertFromPoint(x_goal, 0, 0)); */
   for (int i = x_near_id; i != 0; i = ptrTable[i]->idx_parent) {
     path.push_back(convertFromPoint(ptrTable[i]->location, ptrTable[i]->alpha,
                                     ptrTable[i]->d));
   }
-  path.push_back(convertFromPoint(x_init, 0, 0));
+  /* path.push_back(convertFromPoint(x_init, 0, 0)); */
 
   std::reverse(path.begin(), path.end());
 
