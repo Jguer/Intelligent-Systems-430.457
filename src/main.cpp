@@ -124,7 +124,8 @@ int main(int argc, char **argv) {
     case INIT: {
       look_ahead_idx = 0;
       srand(time(NULL));
-      printf("path size : %lu\n", path_RRT.size());
+      std::cout << "Path Size: " << path_RRT.size() << std::endl;
+
       // visualize path
 
       for (int i = 0; i < path_RRT.size(); i++) {
@@ -168,7 +169,7 @@ int main(int argc, char **argv) {
         gazebo_spawn.call(model);
         ros::spinOnce();
       }
-      printf("Spawn path\n");
+      std::cout << "Spawn Path" << std::endl;
 
       // initialize robot position
       geometry_msgs::Pose model_pose;
@@ -201,14 +202,14 @@ int main(int argc, char **argv) {
       ros::spinOnce();
       ros::Rate(0.33).sleep();
 
-      printf("Initialize ROBOT\n");
-      state = RUNNING;
-    } break;
-    case RUNNING: {
-      printf("Path list:\n");
+      std::cout << "Initialize Robot" << std::endl;
+      std::cout << "Path List" << std::endl;
       for (int qq = 0; qq < path_RRT.size(); qq++) {
         path_RRT[qq].print();
       }
+      state = RUNNING;
+    } break;
+    case RUNNING: {
       if (path_RRT.size() == 0) {
         printf("Path is empty.\n");
         state = FINISH;
