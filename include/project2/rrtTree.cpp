@@ -353,7 +353,10 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
     alpha = -max_alpha +
             static_cast<double>(rand()) /
                 (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
-    d = MaxStep;
+
+    d = (MaxStep / 5) +
+        static_cast<double>(rand()) /
+            (static_cast<double>(RAND_MAX / (MaxStep - (MaxStep / 5))));
 
     R = L / tan(alpha);
     x_c = x_near.x - R * sin(x_near.th);
