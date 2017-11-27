@@ -17,7 +17,6 @@ struct traj : point {
   double d;
   double alpha;
   void print();
-  point convertToPoint();
   void set(double new_x, double new_y, double new_th, double new_alpha,
            double new_d);
 };

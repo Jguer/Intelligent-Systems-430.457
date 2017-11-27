@@ -63,6 +63,37 @@ void generate_path_RRT();
 void callback_state(gazebo_msgs::ModelStatesConstPtr msgs);
 void setcmdvel(double v, double w);
 
+void spawn_robot(ros::ServiceClient gazebo_set) {
+  geometry_msgs::Pose model_pose;
+  geometry_msgs::Twist model_twist;
+  gazebo_msgs::ModelState modelstate;
+  gazebo_msgs::SetModelState setmodelstate;
+
+  model_pose.position.x = waypoints[0].x;
+  model_pose.position.y = waypoints[0].y;
+  model_pose.position.z = 0.3;
+  model_pose.orientation.x = 0.0;
+  model_pose.orientation.y = 0.0;
+  model_pose.orientation.z = 0.0;
+  model_pose.orientation.w = 1.0;
+
+  model_twist.linear.x = 0.0;
+  model_twist.linear.y = 0.0;
+  model_twist.linear.z = 0.0;
+  model_twist.angular.x = 0.0;
+  model_twist.angular.y = 0.0;
+  model_twist.angular.z = 0.0;
+
+  modelstate.model_name = "racecar";
+  modelstate.reference_frame = "world";
+  modelstate.pose = model_pose;
+  modelstate.twist = model_twist;
+
+  setmodelstate.request.model_state = modelstate;
+
+  gazebo_set.call(setmodelstate);
+}
+
 int main(int argc, char **argv) {
   ros::init(argc, argv, "rrt_main");
   ros::NodeHandle n;
@@ -77,6 +108,8 @@ int main(int argc, char **argv) {
       n.serviceClient<gazebo_msgs::SpawnModel>("/gazebo/spawn_urdf_model");
   ros::ServiceClient gazebo_set =
       n.serviceClient<gazebo_msgs::SetModelState>("/gazebo/set_model_state");
+  /* ros::ServiceClient gazebo_delete = */
+  /*     n.serviceClient<gazebo_msgs::DeleteModel>("/gazebo/delete_model"); */
   printf("Initialize topics\n");
 
   // Load Map
@@ -127,7 +160,6 @@ int main(int argc, char **argv) {
       std::cout << "Path Size: " << path_RRT.size() << std::endl;
 
       // visualize path
-
       for (int i = 0; i < path_RRT.size(); i++) {
         gazebo_msgs::SpawnModel model;
         model.request.model_xml = R"(<robot name=\"simple_ball\">
@@ -144,9 +176,7 @@ int main(int argc, char **argv) {
         </gazebo></robot>
         )";
 
-        std::ostringstream ball_name;
-        ball_name << i;
-        model.request.model_name = ball_name.str();
+        model.request.model_name = std::to_string(i);
         model.request.reference_frame = "world";
         model.request.initial_pose.position.x = path_RRT[i].x;
         model.request.initial_pose.position.y = path_RRT[i].y;
@@ -161,33 +191,7 @@ int main(int argc, char **argv) {
       std::cout << "Spawn Path" << std::endl;
 
       // initialize robot position
-      geometry_msgs::Pose model_pose;
-      model_pose.position.x = waypoints[0].x;
-      model_pose.position.y = waypoints[0].y;
-      model_pose.position.z = 0.3;
-      model_pose.orientation.x = 0.0;
-      model_pose.orientation.y = 0.0;
-      model_pose.orientation.z = 0.0;
-      model_pose.orientation.w = 1.0;
-
-      geometry_msgs::Twist model_twist;
-      model_twist.linear.x = 0.0;
-      model_twist.linear.y = 0.0;
-      model_twist.linear.z = 0.0;
-      model_twist.angular.x = 0.0;
-      model_twist.angular.y = 0.0;
-      model_twist.angular.z = 0.0;
-
-      gazebo_msgs::ModelState modelstate;
-      modelstate.model_name = "racecar";
-      modelstate.reference_frame = "world";
-      modelstate.pose = model_pose;
-      modelstate.twist = model_twist;
-
-      gazebo_msgs::SetModelState setmodelstate;
-      setmodelstate.request.model_state = modelstate;
-
-      gazebo_set.call(setmodelstate);
+      spawn_robot(gazebo_set);
       ros::spinOnce();
       ros::Rate(0.33).sleep();
 
@@ -209,6 +213,7 @@ int main(int argc, char **argv) {
                                                   path_RRT[look_ahead_idx].y);
       if (dist_to_target <= 0.2) {
         std::cout << "New destination" << std::endl;
+        gazebo::physics::World::RemoveModel(look_ahead_idx.to_string());
         look_ahead_idx++;
         if (look_ahead_idx == path_RRT.size()) {
           std::cout << "Circuit Complete" << std::endl;
