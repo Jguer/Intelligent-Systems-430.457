@@ -109,6 +109,8 @@ int main(int argc, char **argv) {
       n.serviceClient<gazebo_msgs::SpawnModel>("/gazebo/spawn_urdf_model");
   ros::ServiceClient gazebo_set =
       n.serviceClient<gazebo_msgs::SetModelState>("/gazebo/set_model_state");
+  ros::ServiceClient deleteClient =
+      n.serviceClient<gazebo_msgs::DeleteModel>("/gazebo/delete_model");
   printf("Initialize topics\n");
 
   // Load Map
@@ -211,10 +213,10 @@ int main(int argc, char **argv) {
                                                   path_RRT[look_ahead_idx].y);
       if (dist_to_target <= 0.2) {
         std::cout << "New destination" << std::endl;
-        ros::ServiceClient gazebo_delete =
-            n.serviceClient<gazebo_msgs::DeleteModel>(
-                std::to_string(look_ahead_idx));
-        gazebo_delete();
+        gazebo_msgs::DeleteModelRequest dreq;
+        gazebo_msgs::DeleteModelResponse dresp;
+        dreq.model_name = std::to_string(look_ahead_idx);
+        deleteClient.call(dreq, dresp);
         look_ahead_idx++;
         if (look_ahead_idx == path_RRT.size()) {
           std::cout << "Circuit Complete" << std::endl;
