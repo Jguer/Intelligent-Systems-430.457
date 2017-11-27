@@ -217,6 +217,8 @@ int main(int argc, char **argv) {
         continue;
       }
 
+      double dist_to_target = robot_pose.distance(path_RRT[look_ahead_idx].x,
+                                                  path_RRT[look_ahead_idx].y);
       if (dist_to_target <= 0.2) {
         std::cout << "New destination" << std::endl;
         look_ahead_idx++;
@@ -245,9 +247,6 @@ int main(int argc, char **argv) {
       /*        robot_pose.y, robot_pose.th, angle,
        * path_RRT[look_ahead_idx].th); */
       cmd_vel_pub.publish(cmd);
-
-      double dist_to_target = robot_pose.distance(path_RRT[look_ahead_idx].x,
-                                                  path_RRT[look_ahead_idx].y);
 
       ros::spinOnce();
       control_rate.sleep();
