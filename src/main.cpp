@@ -130,30 +130,31 @@ int main(int argc, char **argv) {
 
       for (int i = 0; i < path_RRT.size(); i++) {
         gazebo_msgs::SpawnModel model;
-        model.request.model_xml =
-            std::string("<robot name=\"simple_ball\">") +
-            std::string("<static>true</static>") +
-            std::string("<link name=\"ball\">") + std::string("<inertial>") +
-            std::string("<mass value=\"1.0\" />") +
-            std::string("<origin xyz=\"0 0 0\" />") +
-            std::string("<inertia  ixx=\"1.0\" ixy=\"1.0\"  ixz=\"1.0\"  "
-                        "iyy=\"1.0\"  iyz=\"1.0\"  izz=\"1.0\" />") +
-            std::string("</inertial>") + std::string("<visual>") +
-            std::string("<origin xyz=\"0 0 0\" rpy=\"0 0 0\" />") +
-            std::string("<geometry>") +
-            std::string("<sphere radius=\"0.09\"/>") +
-            std::string("</geometry>") + std::string("</visual>") +
-            std::string("<collision>") +
-            std::string("<origin xyz=\"0 0 0\" rpy=\"0 0 0\" />") +
-            std::string("<geometry>") +
-            std::string("<sphere radius=\"0.09\"/>") +
-            std::string("</geometry>") + std::string("</collision>") +
-            std::string("</link>") +
-            std::string("<gazebo reference=\"ball\">") +
-            std::string("<mu1>10</mu1>") + std::string("<mu2>10</mu2>") +
-            std::string("<material>Gazebo/Blue</material>") +
-            std::string("<turnGravityOff>true</turnGravityOff>") +
-            std::string("</gazebo>") + std::string("</robot>");
+        model.request.model_xml = R"(<robot name=\"simple_ball\">
+          <static>true</static><link name=\"ball\"><inertial>
+          <mass value=\"1.0\" /><origin xyz=\"0 0 0\" />
+          <inertia  ixx=\"1.0\" ixy=\"1.0\"  ixz=\"1.0\" iyy=\"1.0\"  
+          iyz=\"1.0\"  izz=\"1.0\" /></inertial><visual>
+          <origin xyz=\"0 0 0\" rpy=\"0 0 0\" />
+          <geometry>
+            <sphere radius=\"0.09\"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz=\"0 0 0\" rpy=\"0 0 0\" />
+          <geometry>
+          <sphere radius=\"0.09\"/>
+          </geometry>
+        </collision>
+        </link>
+        <gazebo reference=\"ball\">
+        <mu1>10</mu1>
+        <mu2>10</mu2>
+        <material>Gazebo/Blue</material>
+        <turnGravityOff>true</turnGravityOff>
+        </gazebo>
+        </robot>
+        )";
 
         std::ostringstream ball_name;
         ball_name << i;
@@ -215,6 +216,16 @@ int main(int argc, char **argv) {
         state = FINISH;
         continue;
       }
+
+      if (dist_to_target <= 0.2) {
+        std::cout << "New destination" << std::endl;
+        look_ahead_idx++;
+        if (look_ahead_idx == path_RRT.size()) {
+          std::cout << "Circuit Complete" << std::endl;
+          state = FINISH;
+        }
+      }
+
       speed =
           2.0 - 1.2 / (1.0 + (robot_pose.distance(path_RRT[look_ahead_idx].x,
                                                   path_RRT[look_ahead_idx].y)));
@@ -228,23 +239,15 @@ int main(int argc, char **argv) {
       angle = (angle < -max_turn) ? -max_turn : angle;
 
       setcmdvel(speed, angle);
-      printf("Debug Parameters\n");
-      printf("Speed, Angle : %.2f, %.2f \n", speed, angle);
-      printf("Car Pose : %.2f,%.2f,%.2f,%.2f,%.2f \n", robot_pose.x,
-             robot_pose.y, robot_pose.th, angle, path_RRT[look_ahead_idx].th);
+      /* printf("Debug Parameters\n"); */
+      /* printf("Speed, Angle : %.2f, %.2f \n", speed, angle); */
+      /* printf("Car Pose : %.2f,%.2f,%.2f,%.2f,%.2f \n", robot_pose.x, */
+      /*        robot_pose.y, robot_pose.th, angle,
+       * path_RRT[look_ahead_idx].th); */
       cmd_vel_pub.publish(cmd);
 
       double dist_to_target = robot_pose.distance(path_RRT[look_ahead_idx].x,
                                                   path_RRT[look_ahead_idx].y);
-
-      printf("%fs\n", dist_to_target);
-      if (dist_to_target <= 0.2) {
-        printf("New destination Point\n");
-        look_ahead_idx++;
-        if (look_ahead_idx == path_RRT.size()) {
-          state = FINISH;
-        }
-      }
 
       ros::spinOnce();
       control_rate.sleep();
