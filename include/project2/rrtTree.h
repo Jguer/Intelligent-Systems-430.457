@@ -10,7 +10,6 @@
 #ifndef POINT_H
 #define POINT_H
 #include <project2/control.h>
-#include <project2/point.h>
 #include <project2/traj.h>
 #endif
 
