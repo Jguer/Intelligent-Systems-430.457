@@ -214,6 +214,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   point x_near;
   int x_near_id;
   traj x_new;
+  int batch_size = 5;
+
   // INIT
   // initialization of x_near and x_new at start
   x_near = x_init;
@@ -223,7 +225,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
   // checking if distance of x_near is close enough to reach in last step
   for (int k = 0; k < K; k++) {
     x_rand = this->randomState(x_max, x_min, y_max, y_min);
-    if (k % 5 == 0) {
+    if (k % 10 == 0) {
       x_rand = this->x_goal;
     }
 
@@ -231,6 +233,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     if (x_near_id == -1) {
       continue;
     }
+
     x_near = ptrTable[x_near_id]->location;
 
     std::cout << "X_Near Point: ";
@@ -295,18 +298,17 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
     if (max_th > PI) {
       max_th = min_th;
       min_th = -2 * PI - min_th;
-    }
-    else if (min_th < -PI) {
+    } else if (min_th < -PI) {
       min_th = max_th;
-      max_th = 2 * PI - max_th; 
+      max_th = 2 * PI - max_th;
     }
 
     rel_th = atan2((x_rand.y - x_near.y), (x_rand.x - x_near.x));
 
     if (rel_th >= max_th || rel_th <= min_th) {
-      std::cout << "Fell out (" << rel_th << "). Limits were: (" << max_th
-                << "," << min_th << ") Point: ";
-      x_near.print();
+      /* std::cout << "Fell out (" << rel_th << "). Limits were: (" << max_th */
+      /*           << "," << min_th << ") Point: "; */
+      /* x_near.print(); */
       continue;
     }
 
@@ -359,7 +361,7 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
   og_dist = INT_MAX;
   traj x_new;
 
-  for (int i = 0; i < 50; i++) {
+  for (int i = 0; i < 25; i++) {
     alpha = -max_alpha +
             static_cast<double>(rand()) /
                 (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
