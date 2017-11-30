@@ -163,18 +163,30 @@ int main(int argc, char **argv) {
       // visualize path
       for (int i = 0; i < path_RRT.size(); i++) {
         gazebo_msgs::SpawnModel model;
-        model.request.model_xml = R"(<robot name=\"simple_ball\">
-        <static>true</static><link name=\"ball\"><inertial>
-        <mass value=\"1.0\" /><origin xyz=\"0 0 0\" />
-        <inertia  ixx=\"1.0\" ixy=\"1.0\"  ixz=\"1.0\" iyy=\"1.0\"
-        iyz=\"1.0\"  izz=\"1.0\" /></inertial><visual>
-        <origin xyz=\"0 0 0\" rpy=\"0 0 0\" /><geometry>
-        <sphere radius=\"0.09\"/></geometry></visual><collision>
-        <origin xyz=\"0 0 0\" rpy=\"0 0 0\" /><geometry>
-        <sphere radius=\"0.09\"/></geometry></collision></link>
-        <gazebo reference=\"ball\"><mu1>10</mu1><mu2>10</mu2>
-        <material>Gazebo/Blue</material><turnGravityOff>true</turnGravityOff>
-        </gazebo></robot>)";
+        model.request.model_xml =
+            std::string("<robot name=\"simple_ball\">") +
+            std::string("<static>true</static>") +
+            std::string("<link name=\"ball\">") + std::string("<inertial>") +
+            std::string("<mass value=\"1.0\" />") +
+            std::string("<origin xyz=\"0 0 0\" />") +
+            std::string("<inertia  ixx=\"1.0\" ixy=\"1.0\"  ixz=\"1.0\"  "
+                        "iyy=\"1.0\"  iyz=\"1.0\"  izz=\"1.0\" />") +
+            std::string("</inertial>") + std::string("<visual>") +
+            std::string("<origin xyz=\"0 0 0\" rpy=\"0 0 0\" />") +
+            std::string("<geometry>") +
+            std::string("<sphere radius=\"0.09\"/>") +
+            std::string("</geometry>") + std::string("</visual>") +
+            std::string("<collision>") +
+            std::string("<origin xyz=\"0 0 0\" rpy=\"0 0 0\" />") +
+            std::string("<geometry>") +
+            std::string("<sphere radius=\"0.09\"/>") +
+            std::string("</geometry>") + std::string("</collision>") +
+            std::string("</link>") +
+            std::string("<gazebo reference=\"ball\">") +
+            std::string("<mu1>10</mu1>") + std::string("<mu2>10</mu2>") +
+            std::string("<material>Gazebo/Blue</material>") +
+            std::string("<turnGravityOff>true</turnGravityOff>") +
+            std::string("</gazebo>") + std::string("</robot>");
 
         model.request.model_name = std::to_string(i);
         model.request.reference_frame = "world";
@@ -213,10 +225,12 @@ int main(int argc, char **argv) {
                                                   path_RRT[look_ahead_idx].y);
       if (dist_to_target <= 0.2) {
         std::cout << "New destination" << std::endl;
+        /* Project: Ball Removal (crash)
         gazebo_msgs::DeleteModelRequest dreq;
         gazebo_msgs::DeleteModelResponse dresp;
         dreq.model_name = std::to_string(look_ahead_idx);
         deleteClient.call(dreq, dresp);
+        */
         look_ahead_idx++;
         if (look_ahead_idx == path_RRT.size()) {
           std::cout << "Circuit Complete" << std::endl;
