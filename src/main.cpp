@@ -31,9 +31,9 @@ double world_y_min;
 double world_y_max;
 
 // parameters you should adjust : K, margin, MaxStep
-int margin = 17;
-int K = 6000;
-double MaxStep = 2.5;
+int margin = 17; // 17
+int K = 20000; // 6000
+double MaxStep = 2.5; // 2.5
 
 // way points
 std::vector<point> waypoints;
@@ -223,8 +223,9 @@ int main(int argc, char **argv) {
 
       double dist_to_target = robot_pose.distance(path_RRT[look_ahead_idx].x,
                                                   path_RRT[look_ahead_idx].y);
-      if (dist_to_target <= 0.2) {
+      if (dist_to_target <= 0.4) {
         std::cout << "New destination" << std::endl;
+        printf("x, y : %.2f, %.2f \n", path_RRT[look_ahead_idx].x, path_RRT[look_ahead_idx].y);
         /* Project: Ball Removal (crash)
         gazebo_msgs::DeleteModelRequest dreq;
         gazebo_msgs::DeleteModelResponse dresp;
@@ -290,7 +291,7 @@ void generate_path_RRT() {
       path_RRT.push_back(path_tmp[k]);
     }
     if (i == waypoints.size() - 2) {
-      path_RRT.push_back(convertFromPoint(waypoints.at(i + 1), 0.0, 0.0));
+      path_RRT.push_back(convertFromPoint(waypoints.at(i-1), 0.0, 0.0));
     }
   }
 }

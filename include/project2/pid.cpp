@@ -28,6 +28,11 @@ float PID::get_control(point car_pose, traj goal_pose) {
   // Angle
   des_angle =
       atan2(goal_pose.y - car_pose.y, goal_pose.x - car_pose.x) - car_pose.th;
+  if (des_angle > PI) {
+    des_angle = -2 * PI + des_angle;
+  } else if (des_angle < -PI) {
+    des_angle = 2 * PI + des_angle; 
+  }
 
   // Updating Error
   error_diff = des_angle - error;
