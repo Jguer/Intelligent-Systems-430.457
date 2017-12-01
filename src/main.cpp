@@ -276,22 +276,29 @@ int main(int argc, char **argv) {
 }
 
 void generate_path_RRT() {
+  rrtTree tree;
   for (int i = 0; i < waypoints.size() - 1; i++) {
-    rrtTree *tree = new rrtTree(waypoints.at(i), waypoints.at(i + 1), map,
-                                map_origin_x, map_origin_y, res, margin);
+    if (i == 0) {
+      tree = rrtTree(waypoints.at(i), waypoints.at(i + 1), map,
+      map_origin_x, map_origin_y, res, margin);
+    } else {
+      tree = rrtTree(path_RRT.back(), waypoints.at(i + 1), map,
+      map_origin_x, map_origin_y, res, margin);
+    }
+    
     printf("New rrtTree generated.\n");
 
-    std::vector<traj> path_tmp = tree->generateRRT(
+    std::vector<traj> path_tmp = tree.generateRRT(
         world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
     printf("New trajectory generated.\n");
-    tree->visualizeTree(path_tmp);
+    tree.visualizeTree(path_tmp);
 
     path_RRT.push_back(convertFromPoint(waypoints.at(i), 0.0, 0.0));
     for (int k = 0; k < path_tmp.size(); k++) {
       path_RRT.push_back(path_tmp[k]);
     }
     if (i == waypoints.size() - 2) {
-      path_RRT.push_back(convertFromPoint(waypoints.at(i-1), 0.0, 0.0));
+      path_RRT.push_back(convertFromPoint(waypoints.at(i + 1), 0.0, 0.0));
     }
   }
 }
