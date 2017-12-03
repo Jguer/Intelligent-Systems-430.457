@@ -9,8 +9,8 @@
 #include <stdio.h>
 #ifndef POINT_H
 #define POINT_H
-#include <project2/control.h>
-#include <project2/traj.h>
+#include <project4/control.h>
+#include <project4/traj.h>
 #endif
 
 class rrtTree {
