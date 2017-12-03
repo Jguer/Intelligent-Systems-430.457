@@ -114,8 +114,10 @@ catkin_package(
 include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
-  )
-
+  #${EIGEN3_INCLUDE_DIRS}
+)
+include_directories(${PROJECT4_INCLUDE_DIRS})
+#include_directories(${ROOT_DIR})
 include_directories(${GAZEBO_INCLUDE_DIRS})
 link_directories(${GAZEBO_LIBRARY_DIRS})
 
@@ -188,8 +190,13 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 ## custom  ##
 #############
 
-add_executable(project2 src/main.cpp include/project2/rrtTree.cpp
-  include/project2/pid.cpp include/project2/traj.cpp)
-target_link_libraries(project2
-  ${catkin_LIBRARIES} ${GAZEBO_INCLUDE_DIRS}
-  )
+add_executable(project4 src/main.cpp include/project4/rrtTree.cpp
+  include/project4/pid.cpp include/project4/traj.cpp)
+target_link_libraries(project4
+   ${catkin_LIBRARIES} ${GAZEBO_INCLUDE_DIRS} ${RRT_LIBRARIES}
+)
+
+catkin_install_python(PROGRAMS
+	scripts/gazebo_odometry_prj4.py
+	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
