@@ -16,7 +16,7 @@ rrtTree::rrtTree() {
 
 rrtTree::~rrtTree() {
   for (int i = 1; i <= count; i++) {
-    delete ptrTable[i];
+    delete ptrTable.at(i);
   }
 }
 
@@ -275,7 +275,8 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
 }
 
 int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
-  double distance_min, dist_to_rand, R, beta, max_th, new_x, new_y, min_th, temp_th;
+  double distance_min, dist_to_rand, R, beta, max_th, new_x, new_y, min_th,
+      temp_th;
   double rel_th;
   int idx_near = -1;
   point x_near;
@@ -305,8 +306,8 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
     if (rel_th >= max_th || rel_th <= min_th) {
       /*
       std::cout << "Fell out (" << rel_th << "). Limits were: (" << max_th
-                << "," << min_th << "," << x_near.th << "," << beta << ") Point: ";
-      x_near.print();
+                << "," << min_th << "," << x_near.th << "," << beta << ") Point:
+      "; x_near.print();
       */
       continue;
     }
@@ -363,7 +364,7 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
   for (int i = 0; i < 25; i++) {
     alpha = -max_alpha +
             static_cast<double>(rand()) /
-                (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));   
+                (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
 
     d = (MaxStep / 5) +
         static_cast<double>(rand()) /
@@ -382,10 +383,8 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
     if (new_theta > PI) {
       new_theta = -2 * PI + new_theta;
     } else if (new_theta < -PI) {
-      new_theta = 2 * PI + new_theta; 
+      new_theta = 2 * PI + new_theta;
     }
-
-    
 
     dist_to_rand = distance(x_rand, new_x, new_y);
     if (dist_to_rand < og_dist) {
