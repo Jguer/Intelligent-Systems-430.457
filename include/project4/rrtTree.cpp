@@ -16,7 +16,7 @@ rrtTree::rrtTree() {
 
 rrtTree::~rrtTree() {
   for (int i = 1; i <= count; i++) {
-    delete ptrTable.at(i);
+    delete ptrTable->at(i);
   }
 }
 

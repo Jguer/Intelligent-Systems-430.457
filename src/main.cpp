@@ -4,8 +4,11 @@
 #define RUNNING 2
 #define FINISH -1
 
+#include <cmath>
+#include <unistd.h>
+
+#include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <ackermann_msgs/AckermannDriveStamped.h>
-#include <math.h>
 #include <project4/pid.h>
 #include <project4/rrtTree.h>
 #include <pwd.h>
@@ -13,9 +16,6 @@
 #include <std_msgs/String.h>
 #include <std_msgs/Time.h>
 #include <tf/transform_datatypes.h>
-#include <unistd.h>
-
-#include "geometry_msgs/PoseWithCovarianceStamped.h"
 
 // map spec
 cv::Mat map;
@@ -56,37 +56,6 @@ void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs);
 void set_waypoints();
 void generate_path_RRT();
 
-void spawn_robot(ros::ServiceClient gazebo_set) {
-  geometry_msgs::Pose model_pose;
-  geometry_msgs::Twist model_twist;
-  gazebo_msgs::ModelState modelstate;
-  gazebo_msgs::SetModelState setmodelstate;
-
-  model_pose.position.x = waypoints[0].x;
-  model_pose.position.y = waypoints[0].y;
-  model_pose.position.z = 0.3;
-  model_pose.orientation.x = 0.0;
-  model_pose.orientation.y = 0.0;
-  model_pose.orientation.z = 0.0;
-  model_pose.orientation.w = 1.0;
-
-  model_twist.linear.x = 0.0;
-  model_twist.linear.y = 0.0;
-  model_twist.linear.z = 0.0;
-  model_twist.angular.x = 0.0;
-  model_twist.angular.y = 0.0;
-  model_twist.angular.z = 0.0;
-
-  modelstate.model_name = "racecar";
-  modelstate.reference_frame = "world";
-  modelstate.pose = model_pose;
-  modelstate.twist = model_twist;
-
-  setmodelstate.request.model_state = modelstate;
-
-  gazebo_set.call(setmodelstate);
-}
-
 int main(int argc, char **argv) {
   ros::init(argc, argv, "slam_main");
   ros::NodeHandle n;
@@ -105,6 +74,7 @@ int main(int argc, char **argv) {
   bool running = true;
   PID *pid_ctrl = new PID(0.6, 0.3, 0.0);
   ros::Rate control_rate(60);
+  int look_ahead_idx;
 
   while (running) {
     switch (state) {
@@ -242,26 +212,6 @@ void generate_path_RRT() {
     if (i == waypoints.size() - 2) {
       path_RRT.push_back(convertFromPoint(waypoints.at(i + 1), 0.0, 0.0));
     }
-  }
-}
-
-void set_waypoints() {
-  point waypoint_candid[4];
-  waypoint_candid[0].x = 5.0;
-  waypoint_candid[0].y = -8.0;
-  waypoint_candid[1].x = -6.0;
-  waypoint_candid[1].y = -7.0;
-  waypoint_candid[2].x = -7.0;
-  waypoint_candid[2].y = 6.0;
-  waypoint_candid[3].x = 3.0;
-  waypoint_candid[3].y = 7.0;
-  waypoint_candid[3].th = 0.0;
-
-  int order[] = {3, 1, 2, 3};
-  int order_size = 3;
-
-  for (int i = 0; i < order_size; i++) {
-    waypoints.push_back(waypoint_candid[order[i]]);
   }
 }
 
