@@ -239,10 +239,74 @@ void set_waypoints() {
     }
   }
 
-  // TODO 2
-  // Make your own code to select waypoints.
-  // You can randomly sample some points from the map.
-  // Also, the car should follow the track in clockwise.
+  /*
+  map_y_range = map.cols;
+  map_x_range = map.rows;
+  map_origin_x = map_x_range / 2.0 - 0.5;
+  map_origin_y = map_y_range / 2.0 - 0.5;
+  world_x_min = -4.5;
+  world_x_max = 4.5;
+  world_y_min = -13.5;
+  world_y_max = 13.5;
+  res = 0.05;
+  int sector = 0;
+  */
+
+  /* 
+  quadrants (<3 whitespace :*)
+  1   |   0
+  ____|____
+      | 
+  2   |   3
+  */
+
+  double quadrants[4][2] = { {world_x_max, world_y_max},
+                             {world_x_min, world_y_max},
+                             {world_x_min, world_y_min},
+                             {world_x_max, world_y_min} };
+  std::array<int, 3> quadrantSeq;
+
+
+  // check in which quadrant starting point is => generate sequence
+  if (waypoint_candid[0].y >= 0 && waypoint_candid[0].x >= 0) {
+    quadrantSeq = {3, 2, 1};
+    printf("Quadrant: %.2f \n", 0);
+  } else if (waypoint_candid[0].y >= 0 && waypoint_candid[0].x <= 0) {
+    quadrantSeq = {0, 3, 2};
+    printf("Quadrant: %.2f \n", 1);
+  } else if (waypoint_candid[0].y <= 0 && waypoint_candid[0].x <= 0) {
+    quadrantSeq = {1, 0, 3};
+    printf("Quadrant: %.2f \n", 2);
+  } else if (waypoint_candid[0].y <= 0 && waypoint_candid[0].x >= 0) {
+    quadrantSeq = {2, 1, 0};
+    printf("Quadrant: %.2f \n", 3);
+  } else {
+    printf("Quadrant exception, no waypoint creation possible!");
+  }
+
+  // find one Waypoint in each quadrant
+  for (int i = 0; i < quadrantSeq.size(); i++) {
+    bool foundPoint = false;
+    int x_rand, y_rand, i_rand, j_rand;
+
+    while (foundPoint == false) {
+      x_rand = rand() / RAND_MAX * quadrants[i][0]; // auto type-casting????'
+      y_rand = rand() / RAND_MAX * quadrants[i][1];
+      i_rand = x_rand / res + map_origin_x;
+      j_rand = y_rand / res + map_origin_y;
+
+      if ((map_margin.at<uchar>(i_rand, j_rand)) > 125) {
+        continue;
+      } else {
+        foundPoint = true;
+        waypoint_candid[i+1].x = x_rand;
+        waypoint_candid[i+1].y = y_rand;
+        //optimization of position of point
+      }
+    }
+  }
+
+  
 
   waypoint_candid[4].x = -3.5;
   waypoint_candid[4].y = 12.0;
