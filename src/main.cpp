@@ -219,7 +219,7 @@ void generate_path_RRT() {
 
 void set_waypoints() {
     std::srand(std::time(NULL));
-    waypoints.push_back(point{robot_pose.x, robot_pose.y});
+    waypoints.push_back(point{-3.5, 12.0});
 
     cv::Mat map_margin = map.clone();
     int jSize = map.cols; // the number of columns
