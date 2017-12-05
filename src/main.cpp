@@ -238,20 +238,7 @@ void set_waypoints() {
     }
 
     /*
-    map_y_range = map.cols;
-    map_x_range = map.rows;
-    map_origin_x = map_x_range / 2.0 - 0.5;
-    map_origin_y = map_y_range / 2.0 - 0.5;
-    world_x_min = -4.5;
-    world_x_max = 4.5;
-    world_y_min = -13.5;
-    world_y_max = 13.5;
-    res = 0.05;
-    int sector = 0;
-    */
-
-    /*
-    quadrants (<3 whitespace :*)
+    quadrants
     1   |   0
     ____|____
         |
@@ -297,14 +284,21 @@ void set_waypoints() {
             /* printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand); */
 
             if ((map_margin.at<uchar>(i_rand, j_rand)) < 125) {
-                /* std::cout << "Drop the point." */
-                /*           << "Wob wob wob" << std::endl; */
+                //std::cout << "Drop the point."
+                 //          << "Wob wob wob" << std::endl;
                 continue;
             } else {
-                foundPoint = true;
-                waypoints.push_back(point{x_rand, y_rand});
-                /* printf("Waypoint found (x,y): %.2f, %.2f \n", x_rand, y_rand); */
-                // optimization of position of point
+                if((map_margin.at<uchar>(i_rand + waypoint_margin, j_rand) < 125) &&
+                   (map_margin.at<uchar>(i_rand - waypoint_margin, j_rand) < 125) &&
+                   (map_margin.at<uchar>(i_rand, j_rand + waypoint_margin) < 125) &&
+                   (map_margin.at<uchar>(i_rand, j_rand - waypoint_margin) < 125)) {
+                       continue;
+                   } else {
+                        foundPoint = true;
+                        waypoints.push_back(point{x_rand, y_rand});
+                        printf("Waypoint found (x,y): %.2f, %.2f \n", x_rand, y_rand);
+                        // optimization of position of point
+                   }
             }
         }
     }
