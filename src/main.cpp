@@ -94,8 +94,6 @@ int main(int argc, char **argv) {
 
             map_y_range = map.cols;
             map_x_range = map.rows;
-            printf("X: %d Y:%d\n", map_x_range, map_y_range);
-            exit(-1);
             map_origin_x = map_x_range / 2.0 - 0.5;
             map_origin_y = map_y_range / 2.0 - 0.5;
             world_x_min = -4.5;
