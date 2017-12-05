@@ -270,30 +270,34 @@ void set_waypoints() {
   // check in which quadrant starting point is => generate sequence
   if (waypoint_candid[0].y >= 0 && waypoint_candid[0].x >= 0) {
     quadrantSeq = {3, 2, 1};
-    printf("Quadrant: %.2f \n", 0);
+    printf("Quadrant: %d \n", 0);
   } else if (waypoint_candid[0].y >= 0 && waypoint_candid[0].x <= 0) {
     quadrantSeq = {0, 3, 2};
-    printf("Quadrant: %.2f \n", 1);
+    printf("Quadrant: %d \n", 1);
   } else if (waypoint_candid[0].y <= 0 && waypoint_candid[0].x <= 0) {
     quadrantSeq = {1, 0, 3};
-    printf("Quadrant: %.2f \n", 2);
+    printf("Quadrant: %d \n", 2);
   } else if (waypoint_candid[0].y <= 0 && waypoint_candid[0].x >= 0) {
     quadrantSeq = {2, 1, 0};
-    printf("Quadrant: %.2f \n", 3);
+    printf("Quadrant: %d \n", 3);
   } else {
     printf("Quadrant exception, no waypoint creation possible!");
   }
 
   // find one Waypoint in each quadrant
+  bool foundPoint;
+  double x_rand, y_rand;
+  int i_rand, j_rand;
+  
   for (int i = 0; i < quadrantSeq.size(); i++) {
-    bool foundPoint = false;
-    int x_rand, y_rand, i_rand, j_rand;
-
+    foundPoint = false;
     while (foundPoint == false) {
-      x_rand = rand() / RAND_MAX * quadrants[i][0]; // auto type-casting????'
+      printf("Quadrant size: (x,y): %.2f, %.2f \n", quadrants[i][0], quadrants[i][1]);
+      x_rand = rand() / RAND_MAX * quadrants[i][0];
       y_rand = rand() / RAND_MAX * quadrants[i][1];
       i_rand = x_rand / res + map_origin_x;
       j_rand = y_rand / res + map_origin_y;
+      printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
 
       if ((map_margin.at<uchar>(i_rand, j_rand)) > 125) {
         continue;
@@ -301,6 +305,8 @@ void set_waypoints() {
         foundPoint = true;
         waypoint_candid[i+1].x = x_rand;
         waypoint_candid[i+1].y = y_rand;
+        printf("Waypoint found (x,y): %.2f, %.2f \n", 
+              waypoint_candid[i+1].x, waypoint_candid[i+1].y);
         //optimization of position of point
       }
     }
