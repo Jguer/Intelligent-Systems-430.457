@@ -43,6 +43,8 @@ cv::Mat rrtTree::addMargin(cv::Mat map, int margin) {
     cv::Mat map_margin = map.clone();
     int xSize = map.cols;
     int ySize = map.rows;
+    printf("Map Size %d %d\n", xSize, ySize);
+    exit(0);
 
     for (int i = 0; i < ySize; i++) {
         for (int j = 0; j < xSize; j++) {
@@ -50,7 +52,6 @@ cv::Mat rrtTree::addMargin(cv::Mat map, int margin) {
                 for (int k = i - margin; k <= i + margin; k++) {
                     for (int l = j - margin; l <= j + margin; l++) {
                         if (k >= 0 && l >= 0 && k < ySize && l < xSize) {
-                            printf("We good: %d %d\n", k, l);
                             map_margin.at<uchar>(k, l) = 0;
                         }
                     }
@@ -331,7 +332,7 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
                round(x / res + this->map_origin_x),
                round(y / res + this->map_origin_y));
         if (map.at<uchar>(round(x / res + this->map_origin_x),
-                          round(y / res + this->map_origin_y)) != 255) {
+                          round(y / res + this->map_origin_y)) < 125) {
             printf("Value: %c\n", map.at<uchar>(round(x / res + this->map_origin_x),
                                                 round(y / res + this->map_origin_y)));
             // There was a obstruction
