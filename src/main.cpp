@@ -266,16 +266,16 @@ void set_waypoints() {
     std::array<int, 3> quadrantSeq;
 
     // check in which quadrant starting point is => generate sequence
-    if (waypoint_candid[0].y >= 0 && waypoint_candid[0].x >= 0) {
+    if (waypoints[0].y >= 0 && waypoints[0].x >= 0) {
         quadrantSeq = {3, 2, 1};
         printf("Quadrant: %d \n", 0);
-    } else if (waypoint_candid[0].y >= 0 && waypoint_candid[0].x <= 0) {
+    } else if (waypoints[0].y >= 0 && waypoints[0].x <= 0) {
         quadrantSeq = {0, 3, 2};
         printf("Quadrant: %d \n", 1);
-    } else if (waypoint_candid[0].y <= 0 && waypoint_candid[0].x <= 0) {
+    } else if (waypoints[0].y <= 0 && waypoints[0].x <= 0) {
         quadrantSeq = {1, 0, 3};
         printf("Quadrant: %d \n", 2);
-    } else if (waypoint_candid[0].y <= 0 && waypoint_candid[0].x >= 0) {
+    } else if (waypoints[0].y <= 0 && waypoints[0].x >= 0) {
         quadrantSeq = {2, 1, 0};
         printf("Quadrant: %d \n", 3);
     } else {
