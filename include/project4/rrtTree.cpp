@@ -234,6 +234,9 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         }
 
         x_near = ptrTable[x_near_id]->location;
+        if (x_near == NULL) {
+            continue;
+        }
 
         std::cout << "X_Near Point: ";
         x_near.print();
@@ -331,7 +334,7 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
                round(y / res + this->map_origin_y));
         if (map.at<uchar>(round(x / res + this->map_origin_x),
                           round(y / res + this->map_origin_y)) < 125) {
-            printf("Value: %c\n", map.at<uchar>(round(x / res + this->map_origin_x),
+            printf("Value: %d\n", map.at<uchar>(round(x / res + this->map_origin_x),
                                                 round(y / res + this->map_origin_y)));
             // There was a obstruction
             return true;
