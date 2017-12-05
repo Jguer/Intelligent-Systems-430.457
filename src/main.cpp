@@ -113,6 +113,7 @@ int main(int argc, char **argv) {
         break;
         case PATH_PLANNING: {
             ros::spinOnce();
+            control_rate.sleep();
             // Set Way Points
             set_waypoints();
             printf("Set way points\n");
