@@ -112,8 +112,6 @@ int main(int argc, char **argv) {
         }
         break;
         case PATH_PLANNING: {
-            ros::spinOnce();
-            control_rate.sleep();
             // Set Way Points
             set_waypoints();
             printf("Set way points\n");
@@ -301,6 +299,8 @@ void set_waypoints() {
             printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
 
             if ((map_margin.at<uchar>(i_rand, j_rand)) > 125) {
+                std::cout << "Drop the point."
+                          << "Wob wob wob" << std::endl;
                 continue;
             } else {
                 foundPoint = true;
