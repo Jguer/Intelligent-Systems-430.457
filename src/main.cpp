@@ -312,7 +312,6 @@ void set_waypoints() {
     }
 
     waypoints.push_back(waypoints[0]);
-    exit(-1);
     return;
 }
 
