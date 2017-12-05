@@ -43,8 +43,6 @@ cv::Mat rrtTree::addMargin(cv::Mat map, int margin) {
     cv::Mat map_margin = map.clone();
     int xSize = map.cols;
     int ySize = map.rows;
-    printf("Map Size %d %d\n", xSize, ySize);
-    exit(0);
 
     for (int i = 0; i < ySize; i++) {
         for (int j = 0; j < xSize; j++) {
