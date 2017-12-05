@@ -298,7 +298,7 @@ void set_waypoints() {
             j_rand = round(y_rand / res + map_origin_y);
             printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
 
-            if ((map_margin.at<uchar>(i_rand, j_rand)) > 125) {
+            if ((map_margin.at<uchar>(i_rand, j_rand)) < 125) {
                 std::cout << "Drop the point."
                           << "Wob wob wob" << std::endl;
                 continue;
