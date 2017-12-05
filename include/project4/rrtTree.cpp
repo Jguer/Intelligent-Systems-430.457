@@ -331,10 +331,8 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
                round(y / res + this->map_origin_y));
         if (map.at<uchar>(round(x / res + this->map_origin_x),
                           round(y / res + this->map_origin_y)) != 255) {
-            std::cout << "We deed and it is "
-                      << map.at<uchar>(round(x / res + this->map_origin_x),
-                                       round(y / res + this->map_origin_y))
-                      << std::endl;
+            printf("Value: %c\n", map.at<uchar>(round(x / res + this->map_origin_x),
+                                                round(y / res + this->map_origin_y)));
             // There was a obstruction
             return true;
         }
@@ -403,5 +401,5 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
             x_new.set(new_x, new_y, new_theta, alpha, d);
         }
     }
-  return x_new;
+    return x_new;
 }
