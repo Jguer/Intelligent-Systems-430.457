@@ -112,6 +112,7 @@ int main(int argc, char **argv) {
         }
         break;
         case PATH_PLANNING: {
+            ros::spinOnce();
             // Set Way Points
             set_waypoints();
             printf("Set way points\n");
@@ -217,7 +218,7 @@ void generate_path_RRT() {
 
 void set_waypoints() {
     std::srand(std::time(NULL));
-    waypoints.push_back(point{-3.5, 12.0});
+    waypoints.push_back(point{robot_pose.x, robot_pose.y});
 
     cv::Mat map_margin = map.clone();
     int jSize = map.cols; // the number of columns
@@ -309,7 +310,7 @@ void set_waypoints() {
         }
     }
 
-    waypoints.push_back(point{-3.5, 12.0});
+    waypoints.push_back(waypoints[0]);
     return;
 }
 
