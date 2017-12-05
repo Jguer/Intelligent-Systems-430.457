@@ -332,14 +332,17 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
     for (i = 0; i < 100; i++) {
         double x = x1.x + (x2.x - x1.x) * i / 99;
         double y = x1.y + (x2.y - x1.y) * i / 99;
-        printf("Map Stuff: %0.2f %0.2f Coords: %0.2f,%0.2f Map: %0.2f,%0.2f \n",
-               this->map_origin_x, this->map_origin_y, x, y,
-               round(x / res + this->map_origin_x),
-               round(y / res + this->map_origin_y));
+        /* printf("Map Stuff: %0.2f %0.2f Coords: %0.2f,%0.2f Map: %0.2f,%0.2f \n",
+         */
+        /*        this->map_origin_x, this->map_origin_y, x, y, */
+        /*        round(x / res + this->map_origin_x), */
+        /*        round(y / res + this->map_origin_y)); */
         if (map.at<uchar>(round(x / res + this->map_origin_x),
                           round(y / res + this->map_origin_y)) < 125) {
-            printf("Value: %d\n", map.at<uchar>(round(x / res + this->map_origin_x),
-                                                round(y / res + this->map_origin_y)));
+            /* printf("Value: %d\n", map.at<uchar>(round(x / res +
+             * this->map_origin_x), */
+            /*                                     round(y / res +
+             * this->map_origin_y))); */
             // There was a obstruction
             return true;
         }
@@ -407,6 +410,6 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
             og_dist = dist_to_rand;
             x_new.set(new_x, new_y, new_theta, alpha, d);
         }
-    }
-    return x_new;
+  }
+  return x_new;
 }
