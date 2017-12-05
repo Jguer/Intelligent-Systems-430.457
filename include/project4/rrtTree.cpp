@@ -323,7 +323,9 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
     for (i = 0; i < 100; i++) {
         double x = x1.x + (x2.x - x1.x) * i / 99;
         double y = x1.y + (x2.y - x1.y) * i / 99;
-        printf("Coords: %f,%f \n", round(x / res + this->map_origin_x),
+        printf("Map Stuff: %d %d Coords: %0.2f,%0.2f Map: %0.2f,%0.2f \n",
+               this->map_origin_x, this->map_origin_y, x, y,
+               round(x / res + this->map_origin_x),
                round(y / res + this->map_origin_y));
         if (map.at<uchar>(round(x / res + this->map_origin_x),
                           round(y / res + this->map_origin_y)) != 255) {
