@@ -233,6 +233,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         std::cout << "X_Random Point: ";
         x_rand.print();
 
+        std::cout << "Going in" << std::endl;
         x_near_id = this->nearestNeighbor(x_rand, MaxStep);
         if (x_near_id == -1) {
             continue;
@@ -327,8 +328,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 
 bool rrtTree::isCollision(point x1, point x2, double d, double R) {
     int i;
-    std::cout << "Is Collision" << std::endl;
-    printf("X1: %0.2f %0.2f, X2: %0.2f %0.2f\n", x1.x, x1.y, x2.x, x2.y);
+    /* printf("X1: %0.2f %0.2f, X2: %0.2f %0.2f\n", x1.x, x1.y, x2.x, x2.y); */
     for (i = 0; i < 100; i++) {
         double x = x1.x + (x2.x - x1.x) * i / 99;
         double y = x1.y + (x2.y - x1.y) * i / 99;
@@ -410,6 +410,6 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
             og_dist = dist_to_rand;
             x_new.set(new_x, new_y, new_theta, alpha, d);
         }
-  }
-  return x_new;
+    }
+    return x_new;
 }
