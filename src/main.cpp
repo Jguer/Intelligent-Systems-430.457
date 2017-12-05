@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
     bool running = true;
     PID *pid_ctrl = new PID(0.6, 0.3, 0.0);
     ros::Rate control_rate(60);
-    int look_ahead_idx;
+    int look_ahead_idx = 0;
 
     while (running) {
         switch (state) {
@@ -140,12 +140,6 @@ int main(int argc, char **argv) {
                 std::cout << "New destination" << std::endl;
                 printf("x, y : %.2f, %.2f \n", path_RRT[look_ahead_idx].x,
                        path_RRT[look_ahead_idx].y);
-                /* Project: Ball Removal (crash)
-                gazebo_msgs::DeleteModelRequest dreq;
-                gazebo_msgs::DeleteModelResponse dresp;
-                dreq.model_name = std::to_string(look_ahead_idx);
-                deleteClient.call(dreq, dresp);
-                */
                 look_ahead_idx++;
                 if (look_ahead_idx == path_RRT.size()) {
                     std::cout << "Circuit Complete" << std::endl;
@@ -223,9 +217,7 @@ void generate_path_RRT() {
 
 void set_waypoints() {
     std::srand(std::time(NULL));
-    point waypoint_candid[5];
-    waypoint_candid[0].x = -3.5;
-    waypoint_candid[0].y = 12.0;
+    waypoints.push_back(point{-3.5, 12.0});
 
     cv::Mat map_margin = map.clone();
     int jSize = map.cols; // the number of columns
@@ -301,7 +293,7 @@ void set_waypoints() {
             printf("Quadrant size: (x,y): %.2f, %.2f \n", quadrants[i][0],
                    quadrants[i][1]);
             x_rand = (rand() * quadrants[i][0]) / RAND_MAX;
-            y_rand = (rand() * quadrants[i][1])/ RAND_MAX;
+            y_rand = (rand() * quadrants[i][1]) / RAND_MAX;
             i_rand = x_rand / res + map_origin_x;
             j_rand = y_rand / res + map_origin_y;
             printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
@@ -310,24 +302,15 @@ void set_waypoints() {
                 continue;
             } else {
                 foundPoint = true;
-                waypoint_candid[i + 1].x = x_rand;
-                waypoint_candid[i + 1].y = y_rand;
-                printf("Waypoint found (x,y): %.2f, %.2f \n", waypoint_candid[i + 1].x,
-                       waypoint_candid[i + 1].y);
+                waypoints.push_back(point{x_rand, y_rand});
+                printf("Waypoint found (x,y): %.2f, %.2f \n", x_rand, y_rand);
                 // optimization of position of point
             }
         }
     }
 
-    waypoint_candid[4].x = -3.5;
-    waypoint_candid[4].y = 12.0;
-
-    int order[] = {0, 1, 2, 3, 4};
-    int order_size = 5;
-
-    for (int i = 0; i < order_size; i++) {
-        waypoints.push_back(waypoint_candid[order[i]]);
-    }
+    waypoints.push_back(point{-3.5, 12.0});
+    return;
 }
 
 void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs) {
