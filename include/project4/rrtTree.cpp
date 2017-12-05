@@ -228,6 +228,9 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             x_rand = this->x_goal;
         }
 
+        std::cout << "X_Random Point: ";
+        x_rand.print();
+
         x_near_id = this->nearestNeighbor(x_rand, MaxStep);
         if (x_near_id == -1 || ptrTable[x_near_id] == NULL) {
             continue;
