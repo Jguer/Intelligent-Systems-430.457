@@ -30,10 +30,10 @@ double world_y_min;
 double world_y_max;
 
 // parameters you should adjust : K, margin, MaxStep
-int margin = 5;
+int margin = 0;
 int K = 500;
 double MaxStep = 2;
-int waypoint_margin = 22;
+int waypoint_margin = 0;
 
 // Vectoring
 std::vector<point> waypoints;
