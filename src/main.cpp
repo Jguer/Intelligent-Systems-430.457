@@ -31,7 +31,7 @@ double world_y_max;
 
 // parameters you should adjust : K, margin, MaxStep
 int margin = 5;
-int K = 1000;
+int K = 4000;
 double MaxStep = 2;
 int waypoint_margin = 20;
 

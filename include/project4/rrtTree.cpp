@@ -228,10 +228,10 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             x_rand = this->x_goal;
         }
 
-        std::cout << "X_Goal Point: ";
-        this->x_goal.print();
-        std::cout << "X_Random Point: ";
-        x_rand.print();
+        /* std::cout << "X_Goal Point: "; */
+        /* this->x_goal.print(); */
+        /* std::cout << "X_Random Point: "; */
+        /* x_rand.print(); */
 
         std::cout << "Going in" << std::endl;
         x_near_id = this->nearestNeighbor(x_rand, MaxStep);
@@ -241,11 +241,11 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
         x_near = ptrTable[x_near_id]->location;
 
-        std::cout << "X_Near Point: ";
-        x_near.print();
-        x_new = newState(x_near, x_rand, MaxStep);
-        std::cout << "X_new Point: ";
-        x_new.print();
+        /* std::cout << "X_Near Point: "; */
+        /* x_near.print(); */
+        /* x_new = newState(x_near, x_rand, MaxStep); */
+        /* std::cout << "X_new Point: "; */
+        /* x_new.print(); */
 
         if (this->isCollision(x_near, x_new, MaxStep, L / tan(x_new.alpha))) {
             continue;
@@ -314,7 +314,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
                       << "," << min_th << "," << x_near.th << "," << beta << ") Point:
             "; x_near.print();
             */
-            /* continue; */
+            continue;
         }
 
         if (dist_to_rand < distance_min) {
