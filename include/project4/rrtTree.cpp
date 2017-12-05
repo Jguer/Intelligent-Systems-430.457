@@ -284,7 +284,10 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 
     distance_min = INT_MAX;
     for (int i = 0; i < this->count; i++) {
+        std::cout << "Deed Here" << std::endl;
         x_near = this->ptrTable[i]->location;
+        std::cout << "Or Here" << std::endl;
+
         dist_to_rand = distance(x_near, x_rand);
 
         R = L / tan(max_alpha);
