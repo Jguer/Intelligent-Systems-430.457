@@ -320,7 +320,8 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 
 bool rrtTree::isCollision(point x1, point x2, double d, double R) {
     int i;
-    printf("X1: %0.2f %0.2f, X2: %0.2f %0.2f", x1.x, x1.y, x2.x, x2.y);
+    std::cout << "Is Collision" << std::endl;
+    printf("X1: %0.2f %0.2f, X2: %0.2f %0.2f\n", x1.x, x1.y, x2.x, x2.y);
     for (i = 0; i < 100; i++) {
         double x = x1.x + (x2.x - x1.x) * i / 99;
         double y = x1.y + (x2.y - x1.y) * i / 99;
