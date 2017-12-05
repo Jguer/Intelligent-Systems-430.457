@@ -228,6 +228,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             x_rand = this->x_goal;
         }
 
+        std::cout << "X_Goal Point: ";
+        this->x_goal.print();
         std::cout << "X_Random Point: ";
         x_rand.print();
 
