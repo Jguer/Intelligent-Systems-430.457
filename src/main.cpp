@@ -30,8 +30,8 @@ double world_y_min;
 double world_y_max;
 
 // parameters you should adjust : K, margin, MaxStep
-int margin = 8;
-int K = 20000;
+int margin = 5;
+int K = 5000;
 double MaxStep = 2;
 int waypoint_margin = 20;
 
@@ -257,7 +257,7 @@ void set_waypoints() {
         |
     2   |   3
     */
-
+    
     double quadrants[4][2] = {{world_x_max, world_y_max},
         {world_x_min, world_y_max},
         {world_x_min, world_y_min},
@@ -290,10 +290,8 @@ void set_waypoints() {
     for (int i = 0; i < quadrantSeq.size(); i++) {
         foundPoint = false;
         while (foundPoint == false) {
-            printf("Quadrant size: (x,y): %.2f, %.2f \n", quadrants[i][0],
-                   quadrants[i][1]);
-            x_rand = (rand() * quadrants[i][0]) / RAND_MAX;
-            y_rand = (rand() * quadrants[i][1]) / RAND_MAX;
+            x_rand = (rand() * quadrants[quadrantSeq[i]][0]) / RAND_MAX;
+            y_rand = (rand() * quadrants[quadrantSeq[i]][1]) / RAND_MAX;
             i_rand = round(x_rand / res + map_origin_x);
             j_rand = round(y_rand / res + map_origin_y);
             /* printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand); */
@@ -310,7 +308,7 @@ void set_waypoints() {
             }
         }
     }
-
+    
     waypoints.push_back(waypoints[0]);
     return;
 }
