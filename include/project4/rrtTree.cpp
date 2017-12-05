@@ -233,7 +233,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         /* std::cout << "X_Random Point: "; */
         /* x_rand.print(); */
 
-        std::cout << "Going in" << std::endl;
+        /* std::cout << "Going in" << std::endl; */
         x_near_id = this->nearestNeighbor(x_rand, MaxStep);
         if (x_near_id == -1) {
             continue;
@@ -323,7 +323,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
         }
     }
 
-    std::cout << "Look, I returned something " << idx_near << std::endl;
+    /* std::cout << "Look, I returned something " << idx_near << std::endl; */
     return idx_near;
 }
 
