@@ -296,8 +296,8 @@ void set_waypoints() {
                    quadrants[i][1]);
             x_rand = (rand() * quadrants[i][0]) / RAND_MAX;
             y_rand = (rand() * quadrants[i][1]) / RAND_MAX;
-            i_rand = x_rand / res + map_origin_x;
-            j_rand = y_rand / res + map_origin_y;
+            i_rand = round(x_rand / res + map_origin_x);
+            j_rand = round(y_rand / res + map_origin_y);
             printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
 
             if ((map_margin.at<uchar>(i_rand, j_rand)) > 125) {
