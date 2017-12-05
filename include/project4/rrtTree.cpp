@@ -50,6 +50,7 @@ cv::Mat rrtTree::addMargin(cv::Mat map, int margin) {
                 for (int k = i - margin; k <= i + margin; k++) {
                     for (int l = j - margin; l <= j + margin; l++) {
                         if (k >= 0 && l >= 0 && k < ySize && l < xSize) {
+                            printf("We good: %d %d\n", k, l);
                             map_margin.at<uchar>(k, l) = 0;
                         }
                     }
