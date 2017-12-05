@@ -300,8 +300,8 @@ void set_waypoints() {
         while (foundPoint == false) {
             printf("Quadrant size: (x,y): %.2f, %.2f \n", quadrants[i][0],
                    quadrants[i][1]);
-            x_rand = rand() / (RAND_MAX * quadrants[i][0]);
-            y_rand = rand() / (RAND_MAX * quadrants[i][1]);
+            x_rand = (rand() * quadrants[i][0]) / RAND_MAX;
+            y_rand = (rand() * quadrants[i][1])/ RAND_MAX;
             i_rand = x_rand / res + map_origin_x;
             j_rand = y_rand / res + map_origin_y;
             printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
