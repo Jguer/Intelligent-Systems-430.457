@@ -314,7 +314,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
                       << "," << min_th << "," << x_near.th << "," << beta << ") Point:
             "; x_near.print();
             */
-            continue;
+            /* continue; */
         }
 
         if (dist_to_rand < distance_min) {
@@ -322,6 +322,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
             idx_near = i;
         }
     }
+
     std::cout << "Look, I returned something " << idx_near << std::endl;
     return idx_near;
 }
