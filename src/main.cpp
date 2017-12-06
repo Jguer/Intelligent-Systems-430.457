@@ -190,14 +190,10 @@ int main(int argc, char **argv) {
 void generate_path_RRT() {
     rrtTree tree;
     for (int i = 0; i < waypoints.size() - 1; i++) {
-        if (i == 0) {
-            tree = rrtTree(waypoints.at(i), waypoints.at(i + 1), map, map_origin_x,
-                           map_origin_y, res, margin);
-        } else {
-            tree = rrtTree(path_RRT.back(), waypoints.at(i + 1), map, map_origin_x,
-                           map_origin_y, res, margin);
-        }
-
+        std::cout << "Generating between" << waypoints.at(i).print() << " and "
+                  << waypoints.at(i + 1);
+        tree = rrtTree(waypoints.at(i), waypoints.at(i + 1), map, map_origin_x,
+                       map_origin_y, res, margin);
         printf("New rrtTree generated.\n");
 
         std::vector<traj> path_tmp = tree.generateRRT(
