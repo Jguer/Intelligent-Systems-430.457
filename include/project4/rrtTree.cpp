@@ -36,7 +36,7 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
     this->map_min_x = res * (-map_origin_x);
     this->map_max_x = res * ((2 * map_origin_x + 0.5) - map_origin_x);
     this->map_min_y = res * (-map_origin_y);
-    this->map_max_y res *((2 * map_origin_y + 0.5) - map_origin_y);
+    this->map_max_y = res * ((2 * map_origin_y + 0.5) - map_origin_y);
     this->res = res;
 
     count = 1;
