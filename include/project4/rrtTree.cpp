@@ -210,10 +210,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     x_near = x_init;
     x_new = convertFromPoint(x_init, 0, 0);
 
-    /* if (this->count == 1) { */
-    /*     return path; */
-    /* } */
-
     // building vector x_init to x_goal
     // checking if distance of x_near is close enough to reach in last step
     for (int k = 0; k < K; k++) {
@@ -253,6 +249,10 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         /* std::cout << "Added Vertex "; */
         /* x_new.print(); */
         this->addVertex(x_new, x_rand, x_near_id, x_new.alpha, x_new.d);
+    }
+
+    if (this->count == 1) {
+        return path;
     }
 
     x_near_id = this->nearestNeighbor(x_goal, MaxStep);
