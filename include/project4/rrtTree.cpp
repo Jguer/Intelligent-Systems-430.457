@@ -222,7 +222,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         /* std::cout << "X_Random Point: "; */
         /* x_rand.print(); */
 
-        /* std::cout << "Finding nearest neighbor" << std::endl; */
         x_near_id = this->nearestNeighbor(x_rand, MaxStep);
         if (x_near_id == -1) {
             continue;
@@ -309,11 +308,6 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
         rel_th = atan2((x_rand.y - x_near.y), (x_rand.x - x_near.x));
 
         if (rel_th >= max_th || rel_th <= min_th) {
-            /*
-            std::cout << "Fell out (" << rel_th << "). Limits were: (" << max_th
-                      << "," << min_th << "," << x_near.th << "," << beta << ") Point:
-            "; x_near.print();
-            */
             continue;
         }
 
@@ -323,28 +317,16 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
         }
     }
 
-    /* std::cout << "Look, I returned something " << idx_near << std::endl; */
     return idx_near;
 }
 
 bool rrtTree::isCollision(point x1, point x2, double d, double R) {
     int i;
-    /* printf("X1: %0.2f %0.2f, X2: %0.2f %0.2f\n", x1.x, x1.y, x2.x, x2.y); */
     for (i = 0; i < 100; i++) {
         double x = x1.x + (x2.x - x1.x) * i / 99;
         double y = x1.y + (x2.y - x1.y) * i / 99;
-        /* printf("Map Stuff: %0.2f %0.2f Coords: %0.2f,%0.2f Map: %0.2f,%0.2f \n",
-         */
-        /*        this->map_origin_x, this->map_origin_y, x, y, */
-        /*        round(x / res + this->map_origin_x), */
-        /*        round(y / res + this->map_origin_y)); */
         if (map.at<uchar>(round(x / res + this->map_origin_x),
                           round(y / res + this->map_origin_y)) < 125) {
-            /* printf("Value: %d\n", map.at<uchar>(round(x / res +
-             * this->map_origin_x), */
-            /*                                     round(y / res +
-             * this->map_origin_y))); */
-            // There was a obstruction
             return true;
         }
     }
@@ -372,11 +354,6 @@ int rrtTree::nearestNeighbor(point x_rand) {
     return idx_near;
 }
 int rrtTree::size() {
-    /* int size = 0; */
-    /* for (int i = 0; ptrTable[i] != NULL; i++) { */
-    /*     size++; */
-    /* } */
-    /* return size; */
     return this->count;
 }
 
