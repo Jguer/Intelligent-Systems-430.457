@@ -404,8 +404,10 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
         new_x = x_c + R * sin(x_near.th + beta);
         new_y = y_c - R * cos(x_near.th + beta);
         if (new_x < this->map_min_x || new_x > this->map_max_x) {
+            std::cout << "Generated out of bounds" << std::endl;
             continue;
         } else if (new_y < this->map_min_y || new_y > this->map_max_y) {
+            std::cout << "Generated out of bounds" << std::endl;
             continue;
         }
 
