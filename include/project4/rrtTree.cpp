@@ -8,12 +8,6 @@
 double max_alpha = 0.15;
 double L = 0.325;
 
-rrtTree::rrtTree() {
-    count = 0;
-    root = NULL;
-    ptrTable[0] = NULL;
-}
-
 rrtTree::~rrtTree() {
     for (int i = 1; i <= count; i++) {
         delete ptrTable[i];
@@ -29,7 +23,7 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
     this->x_init = x_init;
     this->x_goal = x_goal;
     this->map_original = map;
-    this->map = addMargin(map, margin);
+    this->map = addMargin(this->map_original, margin);
     this->map_origin_x = map_origin_x;
     this->map_origin_y = map_origin_y;
     this->res = res;
