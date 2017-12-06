@@ -334,7 +334,6 @@ void generate_path_RRT() {
         printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
         printf("New trajectory generated. Size of Path %zu\n", path_tmp.size());
         tree.visualizeTree(path_tmp);
-        sleep(3600);
 
         for (auto tmp : path_tmp) {
             path_RRT.push_back(tmp);
