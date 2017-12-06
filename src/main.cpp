@@ -219,7 +219,7 @@ void set_waypoints() {
     std::srand(std::time(NULL));
     waypoints.push_back(point{-3.5, 12.0});
 
-    map_margin = addMargin(map, waypoint_margin);
+    cv::Mat map_margin = addMargin(map, waypoint_margin);
 
     /*
     quadrants
