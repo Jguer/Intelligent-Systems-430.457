@@ -31,7 +31,7 @@ double world_y_max;
 
 // parameters you should adjust : K, margin, MaxStep
 int margin = 8;
-int K = 6500;
+int K = 4500;
 double MaxStep = 2.0;
 int waypoint_margin = 24;
 
@@ -269,7 +269,6 @@ void set_waypoints() {
     int i_rand, j_rand;
 
     for (int i = 0; i < quadrantSeq.size(); i++) {
-        i++;
         foundPoint = false;
         while (foundPoint == false) {
             i_rand = (rand() % static_cast<int>(map_origin_x) +
