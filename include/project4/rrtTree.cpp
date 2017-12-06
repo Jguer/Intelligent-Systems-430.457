@@ -254,7 +254,9 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
                            double y_min) {
     point x_rand;
 
+    assert(x_max > x_min);
     x_rand.x = rand() / (double)RAND_MAX * (x_max - x_min) + x_min;
+    assert(y_max > y_min);
     x_rand.y = rand() / (double)RAND_MAX * (y_max - y_min) + y_min;
     x_rand.th = atan2(x_rand.y, x_rand.x);
 
