@@ -217,12 +217,12 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             x_rand = this->x_goal;
         }
 
-        /* std::cout << "X_Goal Point: "; */
-        /* this->x_goal.print(); */
-        /* std::cout << "X_Random Point: "; */
-        /* x_rand.print(); */
+        std::cout << "X_Goal Point: ";
+        this->x_goal.print();
+        std::cout << "X_Random Point: ";
+        x_rand.print();
 
-        /* std::cout << "Going in" << std::endl; */
+        std::cout << "Finding nearest neighbor" << std::endl;
         x_near_id = this->nearestNeighbor(x_rand, MaxStep);
         if (x_near_id == -1) {
             continue;
