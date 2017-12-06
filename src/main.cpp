@@ -345,4 +345,8 @@ void generate_path_RRT() {
             tmp.print();
         }
     }
+
+    for (auto tmp : path_RRT) {
+        path_RRT.push_back(tmp);
+    }
 }
