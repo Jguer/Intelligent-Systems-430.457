@@ -300,7 +300,7 @@ void generate_path_RRT() {
                                          world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
         printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
         printf("New trajectory generated. Size of Path %zu\n", path_tmp.size());
-        /* tree.visualizeTree(path_tmp); */
+        tree.visualizeTree(path_tmp);
 
         for (auto tmp : path_tmp) {
             path_RRT.push_back(tmp);
