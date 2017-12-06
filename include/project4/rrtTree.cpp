@@ -39,28 +39,6 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
     root->rand = x_init;
 }
 
-cv::Mat addMargin(cv::Mat map, int margin) {
-    cv::Mat map_margin = map.clone();
-    int xSize = map.cols;
-    int ySize = map.rows;
-
-    for (int i = 0; i < ySize; i++) {
-        for (int j = 0; j < xSize; j++) {
-            if (map.at<uchar>(i, j) < 125) {
-                for (int k = i - margin; k <= i + margin; k++) {
-                    for (int l = j - margin; l <= j + margin; l++) {
-                        if (k >= 0 && l >= 0 && k < ySize && l < xSize) {
-                            map_margin.at<uchar>(k, l) = 0;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    return map_margin;
-}
-
 void rrtTree::visualizeTree() {
     int thickness = 1;
     int lineType = 8;
@@ -193,6 +171,10 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
 
 void rrtTree::addVertex(point x_new, point x_rand, int idx_near, double alpha,
                         double d) {
+    if (this->count == TABLE_SIZE) {
+        std::cout << "Table is full. Bump TABLE_SIZE" << std::endl;
+        return;
+    }
     node *new_node = new node;
     new_node->idx = this->count;
     new_node->idx_parent = idx_near;
@@ -420,4 +402,26 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
         }
     }
     return x_new;
+}
+
+cv::Mat addMargin(cv::Mat map, int margin) {
+    cv::Mat map_margin = map.clone();
+    int xSize = map.cols;
+    int ySize = map.rows;
+
+    for (int i = 0; i < ySize; i++) {
+        for (int j = 0; j < xSize; j++) {
+            if (map.at<uchar>(i, j) < 125) {
+                for (int k = i - margin; k <= i + margin; k++) {
+                    for (int l = j - margin; l <= j + margin; l++) {
+                        if (k >= 0 && l >= 0 && k < ySize && l < xSize) {
+                            map_margin.at<uchar>(k, l) = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return map_margin;
 }

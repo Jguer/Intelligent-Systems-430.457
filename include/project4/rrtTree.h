@@ -12,6 +12,8 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <project4/traj.h>
 
+#define TABLE_SIZE 20000
+
 class rrtTree {
 private:
     struct node {
@@ -29,7 +31,7 @@ private:
     cv::Mat map_original;
     double map_origin_x, map_origin_y;
     double res;
-    node *ptrTable[20000];
+    node *ptrTable[TABLE_SIZE];
 
     void addVertex(point x_new, point x_rand, int idx_near, double alpha,
                    double d);
