@@ -5,7 +5,7 @@
 #include <unistd.h>
 #define PI 3.14159265358979323846
 
-double max_alpha = 0.20;
+double max_alpha = 0.18;
 double L = 0.325;
 
 rrtTree::rrtTree() {
