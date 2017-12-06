@@ -233,8 +233,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             continue;
         }
 
-        /* std::cout << "Added Vertex "; */
-        /* x_new.print(); */
+        std::cout << "Added Vertex ";
+        x_new.print();
         this->addVertex(x_new, x_rand, x_near_id, x_new.alpha, x_new.d);
     }
 
