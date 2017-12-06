@@ -246,8 +246,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             continue;
         }
 
-        std::cout << "Added Vertex ";
-        x_new.print();
+        /* std::cout << "Added Vertex "; */
+        /* x_new.print(); */
         this->addVertex(x_new, x_rand, x_near_id, x_new.alpha, x_new.d);
     }
 
@@ -369,7 +369,7 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
     x_new.set(9000, 9000, 9001, 0, 0);
 
     std::default_random_engine generator;
-    std::normal_distribution<double> alpha_dist(0, max_alpha);
+    std::normal_distribution<double> alpha_dist(0, max_alpha * 0.67);
     for (int i = 0; i < 50; i++) {
         /* alpha = -max_alpha + */
         /*         static_cast<double>(rand()) / */
