@@ -279,9 +279,18 @@ void setcmdvel(double vel, double deg) {
 void generate_path_RRT() {
     rrtTree tree;
     for (int i = 0; i < waypoints.size() - 1; i++) {
-        std::cout << "Generating between" << std::endl;
-        waypoints.at(i).print();
-        waypoints.at(i + 1).print();
+        if (i == 0) {
+            std::cout << "Generating between" << std::endl;
+            waypoints.at(i).print();
+            waypoints.at(i + 1).print();
+
+            tree = rrtTree(waypoints.at(i), waypoints.at(i + 1), map, map_origin_x,
+                           map_origin_y, res, margin);
+        } else {
+            tree = rrtTree(path_RRT.back(), waypoints.at(i + 1), map, map_origin_x,
+                           map_origin_y, res, margin);
+        }
+
         tree = rrtTree(waypoints.at(i), waypoints.at(i + 1), map, map_origin_x,
                        map_origin_y, res, margin);
 
