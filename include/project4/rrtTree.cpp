@@ -366,7 +366,7 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
     og_dist = INT_MAX;
     traj x_new;
 
-    for (int i = 0; i < 25; i++) {
+    for (int i = 0; i < 50; i++) {
         alpha = -max_alpha +
                 static_cast<double>(rand()) /
                 (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
