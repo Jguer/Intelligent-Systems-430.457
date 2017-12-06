@@ -163,8 +163,6 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
         }
     }
     cv::namedWindow("Mapping");
-    cv::Rect imgROI(static_cast<int>(Res * 200), static_cast<int>(Res * 200),
-                    static_cast<int>(Res * 400), static_cast<int>(Res * 400));
     cv::imshow("Mapping", imgResult(imgROI));
     cv::waitKey(1);
 }
@@ -351,11 +349,12 @@ int rrtTree::nearestNeighbor(point x_rand) {
     return idx_near;
 }
 int rrtTree::size() {
-    int size = 0;
-    for (int i = 0; ptrTable[i] != NULL; i++) {
-        size++;
-    }
-    return size;
+    /* int size = 0; */
+    /* for (int i = 0; ptrTable[i] != NULL; i++) { */
+    /*     size++; */
+    /* } */
+    /* return size; */
+    return this->count;
 }
 
 // Returns:
