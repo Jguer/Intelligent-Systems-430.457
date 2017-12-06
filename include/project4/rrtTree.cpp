@@ -368,8 +368,8 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
     traj x_new;
     x_new.set(9000, 9000, 9001, 0, 0);
 
-    std::default_random_engine generator(time(0));
-    std::normal_distribution<double> alpha_dist(0, max_alpha * 0.67);
+    std::default_random_engine generator(time(NULL));
+    std::normal_distribution<double> alpha_dist(0, max_alpha);
     for (int i = 0; i < 50; i++) {
         /* alpha = -max_alpha + */
         /*         static_cast<double>(rand()) / */
