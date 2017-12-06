@@ -30,9 +30,9 @@ double world_y_min;
 double world_y_max;
 
 // parameters you should adjust : K, margin, MaxStep
-int margin = 8;
-int K = 4500;
-double MaxStep = 2.0;
+int margin = 5;
+int K = 3500;
+double MaxStep = 1.5;
 int waypoint_margin = 24;
 
 // Vectoring
