@@ -230,15 +230,15 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
         x_near = ptrTable[x_near_id]->location;
 
-        /* std::cout << "X_Near Point: "; */
-        /* x_near.print(); */
+        std::cout << "X_Near Point: ";
+        x_near.print();
         x_new = newState(x_near, x_rand, MaxStep);
         if (x_new.th > 9000) {
             delete this->ptrTable[x_near_id];
             continue;
         }
-        /* std::cout << "X_new Point: "; */
-        /* x_new.print(); */
+        std::cout << "X_new Point: ";
+        x_new.print();
 
         if (this->isCollision(x_near, x_new, MaxStep, L / tan(x_new.alpha))) {
             continue;
