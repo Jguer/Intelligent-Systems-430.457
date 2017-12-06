@@ -212,6 +212,10 @@ void generate_path_RRT() {
         if (i == waypoints.size() - 2) {
             path_RRT.push_back(convertFromPoint(waypoints.at(i + 1), 0.0, 0.0));
         }
+
+        for (auto tmp : path_RRT) {
+            tmp.print();
+        }
     }
 }
 
