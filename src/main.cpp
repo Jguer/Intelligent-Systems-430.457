@@ -219,23 +219,7 @@ void set_waypoints() {
     std::srand(std::time(NULL));
     waypoints.push_back(point{-3.5, 12.0});
 
-    cv::Mat map_margin = map.clone();
-    int jSize = map.cols; // the number of columns
-    int iSize = map.rows; // the number of rows
-
-    for (int i = 0; i < iSize; i++) {
-        for (int j = 0; j < jSize; j++) {
-            if (map.at<uchar>(i, j) < 125) {
-                for (int k = i - waypoint_margin; k <= i + waypoint_margin; k++) {
-                    for (int l = j - waypoint_margin; l <= j + waypoint_margin; l++) {
-                        if (k >= 0 && l >= 0 && k < iSize && l < jSize) {
-                            map_margin.at<uchar>(k, l) = 0;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    map_margin = addMargin(map, waypoint_margin);
 
     /*
     quadrants
@@ -244,7 +228,7 @@ void set_waypoints() {
         |
     2   |   3
     */
-    
+
     double quadrants[4][2] = {{world_x_max, world_y_max},
         {world_x_min, world_y_max},
         {world_x_min, world_y_min},
@@ -284,25 +268,25 @@ void set_waypoints() {
             /* printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand); */
 
             if ((map_margin.at<uchar>(i_rand, j_rand)) < 125) {
-                //std::cout << "Drop the point."
-                 //          << "Wob wob wob" << std::endl;
+                // std::cout << "Drop the point."
+                //          << "Wob wob wob" << std::endl;
                 continue;
             } else {
-                if((map_margin.at<uchar>(i_rand + waypoint_margin, j_rand) < 125) &&
-                   (map_margin.at<uchar>(i_rand - waypoint_margin, j_rand) < 125) &&
-                   (map_margin.at<uchar>(i_rand, j_rand + waypoint_margin) < 125) &&
-                   (map_margin.at<uchar>(i_rand, j_rand - waypoint_margin) < 125)) {
-                       continue;
-                   } else {
-                        foundPoint = true;
-                        waypoints.push_back(point{x_rand, y_rand});
-                        printf("Waypoint found (x,y): %.2f, %.2f \n", x_rand, y_rand);
-                        // optimization of position of point
-                   }
+                if ((map_margin.at<uchar>(i_rand + waypoint_margin, j_rand) < 125) &&
+                        (map_margin.at<uchar>(i_rand - waypoint_margin, j_rand) < 125) &&
+                        (map_margin.at<uchar>(i_rand, j_rand + waypoint_margin) < 125) &&
+                        (map_margin.at<uchar>(i_rand, j_rand - waypoint_margin) < 125)) {
+                    continue;
+                } else {
+                    foundPoint = true;
+                    waypoints.push_back(point{x_rand, y_rand});
+                    printf("Waypoint found (x,y): %.2f, %.2f \n", x_rand, y_rand);
+                    // optimization of position of point
+                }
             }
         }
     }
-    
+
     waypoints.push_back(waypoints[0]);
     return;
 }

@@ -39,7 +39,7 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
     root->rand = x_init;
 }
 
-cv::Mat rrtTree::addMargin(cv::Mat map, int margin) {
+cv::Mat addMargin(cv::Mat map, int margin) {
     cv::Mat map_margin = map.clone();
     int xSize = map.cols;
     int ySize = map.rows;
