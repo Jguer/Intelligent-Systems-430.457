@@ -33,7 +33,7 @@ double world_y_max;
 int margin = 8;
 int K = 500;
 double MaxStep = 2.0;
-int waypoint_margin = 22;
+int waypoint_margin = 32;
 
 // Vectoring
 std::vector<point> waypoints;
@@ -277,7 +277,7 @@ void set_waypoints() {
                       quadrants[quadrantSeq[i]][1]); // y
             // printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
 
-            if ((map_margin.at<uchar>(i_rand, j_rand)) < 125) {
+            if ((map_margin.at<uchar>(i_rand, j_rand)) < 200) {
                 // std::cout << "Drop the point."
                 //          << "Wob wob wob" << std::endl;
                 continue;
