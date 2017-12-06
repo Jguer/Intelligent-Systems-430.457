@@ -31,8 +31,8 @@ double world_y_max;
 
 // parameters you should adjust : K, margin, MaxStep
 int margin = 5;
-int K = 5000;
-double MaxStep = 3.0;
+int K = 6000;
+double MaxStep = 1.0;
 int waypoint_margin = 20;
 
 // Vectoring
@@ -200,7 +200,7 @@ void generate_path_RRT() {
         std::vector<traj> path_tmp = tree.generateRRT(
                                          world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
         printf("New trajectory generated.\n");
-        /* tree.visualizeTree(path_tmp); */
+        tree.visualizeTree(path_tmp);
 
         path_RRT.push_back(convertFromPoint(waypoints.at(i), 0.0, 0.0));
         for (auto tmp : path_tmp) {
