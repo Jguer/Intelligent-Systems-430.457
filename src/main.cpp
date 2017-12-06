@@ -286,7 +286,8 @@ void generate_path_RRT() {
             tree = rrtTree(waypoints.at(i), waypoints.at(i + 1), map, map_origin_x,
                            map_origin_y, res, margin);
         } else {
-            waypoints.at(path_RRT.back()).print();
+            std::cout << "Generating between" << std::endl;
+            path_RRT.back().print();
             waypoints.at(i + 1).print();
             tree = rrtTree(path_RRT.back(), waypoints.at(i + 1), map, map_origin_x,
                            map_origin_y, res, margin);
