@@ -31,7 +31,7 @@ double world_y_max;
 
 // parameters you should adjust : K, margin, MaxStep
 int margin = 5;
-int K = 4901;
+int K = 2000;
 double MaxStep = 2.0;
 int waypoint_margin = 24;
 
@@ -66,9 +66,7 @@ int main(int argc, char **argv) {
             "/vesc/high_level/ackermann_cmd_mux/input/nav_0", 1);
 
     ros::Subscriber gazebo_pose_sub =
-        n.subscribe("/gazebo/model_states", 100, callback_state);
-    /* ros::Subscriber gazebo_pose_sub = */
-    /*     n.subscribe("/amcl_pose", 100, callback_state); */
+        n.subscribe("/amcl_pose", 100, callback_state);
     std::cout << "Initialized Topics" << std::endl;
 
     // FSM
