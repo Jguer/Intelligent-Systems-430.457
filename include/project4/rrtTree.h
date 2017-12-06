@@ -45,6 +45,7 @@ public:
             double map_origin_y, double res, int margin);
     ~rrtTree();
 
+    int size();
     void visualizeTree();
     void visualizeTree(std::vector<traj> path);
     std::vector<traj> generateRRT(double x_max, double x_min, double y_max,

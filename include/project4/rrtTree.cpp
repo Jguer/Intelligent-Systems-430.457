@@ -368,6 +368,13 @@ int rrtTree::nearestNeighbor(point x_rand) {
     }
     return idx_near;
 }
+int rrtTree::size() {
+    int size = 0;
+    for (int i = 0; ptrTable[i] != NULL; i++) {
+        size++;
+    }
+    return size;
+}
 
 // Returns:
 // true - valid
