@@ -115,8 +115,8 @@ int main(int argc, char **argv) {
             ros::spinOnce();
             ros::Rate(0.33).sleep();
 
-            printf("Car Pose : %.2f,%.2f,%.2f\n", robot_pose.x, robot_pose.y,
-                   robot_pose.th);
+            /* printf("Car Pose : %.2f,%.2f,%.2f\n", robot_pose.x, robot_pose.y, */
+            /*        robot_pose.th); */
             // Set Way Points
             set_waypoints();
             printf("Set way points\n");

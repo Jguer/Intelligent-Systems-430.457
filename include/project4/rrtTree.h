@@ -12,7 +12,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <project4/traj.h>
 
-#define TABLE_SIZE 20000
+#define TABLE_SIZE 5000
 
 class rrtTree {
 private:
