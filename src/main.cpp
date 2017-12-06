@@ -249,24 +249,24 @@ void set_waypoints() {
         |
     2   |   3
     */
-    // row == j == y
     // col == i == x
-    int quad0_i_max = static_cast<int>(round(map_origin_y));
-    int quad0_j_max = static_cast<int>(round(map_origin_x));
+    // row == j == y
+    int quad0_i_max = static_cast<int>(round(map_origin_x));
+    int quad0_j_max = static_cast<int>(round(map_origin_y));
 
-    int quad1_i_max = static_cast<int>(round(map_origin_y));
-    int quad1_j_max = static_cast<int>(round(0));
+    int quad1_i_max = static_cast<int>(round(0));
+    int quad1_j_max = static_cast<int>(round(map_origin_y));
 
     int quad2_i_max = static_cast<int>(round(0));
     int quad2_j_max = static_cast<int>(round(0));
 
-    int quad3_i_max = static_cast<int>(round(0));
-    int quad3_j_max = static_cast<int>(round(map_origin_x));
+    int quad3_i_max = static_cast<int>(round(map_origin_x));
+    int quad3_j_max = static_cast<int>(round(0));
 
-    int quadrants[4][2] = {{quad0_j_max, quad0_i_max},
-        {quad1_j_max, quad1_i_max},
-        {quad2_j_max, quad2_i_max},
-        {quad3_j_max, quad3_i_max}
+    int quadrants[4][2] = {{quad0_i_max, quad0_j_max},
+        {quad1_i_max, quad1_j_max},
+        {quad2_i_max, quad2_j_max},
+        {quad3_i_max, quad3_j_max}
     };
     std::array<int, 3> quadrantSeq;
 
@@ -295,9 +295,9 @@ void set_waypoints() {
         foundPoint = false;
         while (foundPoint == false) {
             i_rand = (rand() % static_cast<int>(map_origin_x) +
-                      quadrants[quadrantSeq[i]][1]); // x
+                      quadrants[quadrantSeq[i]][0]); // x
             j_rand = (rand() % static_cast<int>(map_origin_y) +
-                      quadrants[quadrantSeq[i]][0]); // y
+                      quadrants[quadrantSeq[i]][1]); // y
             // printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
 
             if ((map_margin.at<uchar>(i_rand, j_rand)) < 125) {
