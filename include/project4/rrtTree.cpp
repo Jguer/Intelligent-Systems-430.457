@@ -1,6 +1,7 @@
 #include "rrtTree.h"
 #include <algorithm>
 #include <cstdlib>
+#include <random>
 #include <ros/ros.h>
 #include <unistd.h>
 #define PI 3.14159265358979323846
@@ -367,10 +368,13 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
     traj x_new;
     x_new.set(9000, 9000, 9001, 0, 0);
 
+    std::default_random_engine generator;
+    std::normal_distribution<double> alpha_dist(0, sqrt(max_alpha));
     for (int i = 0; i < 50; i++) {
-        alpha = -max_alpha +
-                static_cast<double>(rand()) /
-                (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha))));
+        /* alpha = -max_alpha + */
+        /*         static_cast<double>(rand()) / */
+        /*         (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha)))); */
+        alpha = alpha_dist(generator);
 
         d = (MaxStep / (MaxStep * 5)) +
             static_cast<double>(rand()) /
