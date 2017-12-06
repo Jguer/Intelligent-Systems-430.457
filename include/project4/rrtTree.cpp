@@ -5,7 +5,7 @@
 #include <unistd.h>
 #define PI 3.14159265358979323846
 
-double max_alpha = 0.15;
+double max_alpha = 0.20;
 double L = 0.325;
 
 rrtTree::rrtTree() {
@@ -300,7 +300,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
                       << "," << min_th << "," << x_near.th << "," << beta << ") Point:
             "; x_near.print();
             */
-            /* continue; */
+            continue;
         }
 
         if (dist_to_rand < distance_min) {
