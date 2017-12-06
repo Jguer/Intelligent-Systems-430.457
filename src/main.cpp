@@ -32,7 +32,7 @@ double world_y_max;
 // parameters you should adjust : K, margin, MaxStep
 int margin = 5;
 int K = 5000;
-double MaxStep = 2;
+double MaxStep = 3.0;
 int waypoint_margin = 20;
 
 // Vectoring
@@ -206,8 +206,8 @@ void generate_path_RRT() {
         /* tree.visualizeTree(path_tmp); */
 
         path_RRT.push_back(convertFromPoint(waypoints.at(i), 0.0, 0.0));
-        for (int k = 0; k < path_tmp.size(); k++) {
-            path_RRT.push_back(path_tmp[k]);
+        for (auto tmp : path_tmp) {
+            path_RRT.push_back(tmp);
         }
         if (i == waypoints.size() - 2) {
             path_RRT.push_back(convertFromPoint(waypoints.at(i + 1), 0.0, 0.0));
