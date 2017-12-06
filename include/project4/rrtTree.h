@@ -30,6 +30,8 @@ private:
     cv::Mat map;
     cv::Mat map_original;
     double map_origin_x, map_origin_y;
+    double map_min_x, map_min_y;
+    double map_max_x, map_max_y;
     double res;
     node *ptrTable[TABLE_SIZE];
 

@@ -32,6 +32,11 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
     this->map = addMargin(this->map_original, margin);
     this->map_origin_x = map_origin_x;
     this->map_origin_y = map_origin_y;
+
+    this->map_min_x = res * (-map_origin_x);
+    this->map_max_x = res * ((2 * map_origin_x + 0.5) - map_origin_x);
+    this->map_min_y = res * (-map_origin_y);
+    this->map_max_y res *((2 * map_origin_y + 0.5) - map_origin_y);
     this->res = res;
 
     count = 1;
@@ -228,6 +233,10 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         /* std::cout << "X_Near Point: "; */
         /* x_near.print(); */
         x_new = newState(x_near, x_rand, MaxStep);
+        if (x_new.th > 9000) {
+            delete this->ptrTable[x_near_id];
+            continue;
+        }
         /* std::cout << "X_new Point: "; */
         /* x_new.print(); */
 
@@ -273,6 +282,9 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 
     distance_min = INT_MAX;
     for (int i = 0; i < this->count; i++) {
+        if (this->ptrTable[i] != NULL) {
+            continue;
+        }
         x_near = this->ptrTable[i]->location;
 
         dist_to_rand = distance(x_near, x_rand);
@@ -371,6 +383,7 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
            dist_to_rand;
     og_dist = INT_MAX;
     traj x_new;
+    x_new.set(9000, 9000, 9001, 0, 0);
 
     for (int i = 0; i < 50; i++) {
         alpha = -max_alpha +
@@ -390,6 +403,11 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
 
         new_x = x_c + R * sin(x_near.th + beta);
         new_y = y_c - R * cos(x_near.th + beta);
+        if (new_x < this->map_min_x || new_x > this->map_max_x) {
+            continue;
+        } else if (new_y < this->map_min_y || new_y > this->map_max_y) {
+            continue;
+        }
 
         new_theta = x_near.th + beta;
         if (new_theta > PI) {
