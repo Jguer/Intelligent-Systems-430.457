@@ -330,8 +330,13 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
     for (i = 0; i < 100; i++) {
         double x = x1.x + (x2.x - x1.x) * i / 99;
         double y = x1.y + (x2.y - x1.y) * i / 99;
-        if (map.at<uchar>(round(x / res + this->map_origin_x),
-                          round(y / res + this->map_origin_y)) < 125) {
+        int x_i = round(x / res + this->map_origin_x);
+        int y_j = round(y / res + this->map_origin_y);
+        if (0 > x_i || x_i > round(this->map_origin_x * 2)) {
+            return true;
+        } else if (0 > y_i || y_i > round(this->map_origin_y * 2)) {
+            return true;
+        } else if (map.at<uchar>(x_i, y_j) < 125) {
             return true;
         }
     }
