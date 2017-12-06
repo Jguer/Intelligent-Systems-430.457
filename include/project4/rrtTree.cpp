@@ -294,7 +294,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
                       << "," << min_th << "," << x_near.th << "," << beta << ") Point:
             "; x_near.print();
             */
-            /* continue; */
+            continue;
         }
 
         if (dist_to_rand < distance_min) {
