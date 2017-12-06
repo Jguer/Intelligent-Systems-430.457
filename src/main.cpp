@@ -201,18 +201,11 @@ void generate_path_RRT() {
 
         std::vector<traj> path_tmp = tree.generateRRT(
                                          world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
-        printf("New trajectory generated.\n");
-        tree.visualizeTree(path_tmp);
+        printf("New trajectory generated. Size of Path %zu\n", path_tmp.size());
+        /* tree.visualizeTree(path_tmp); */
 
-        path_RRT.push_back(convertFromPoint(waypoints.at(i), 0.0, 0.0));
         for (auto tmp : path_tmp) {
             path_RRT.push_back(tmp);
-        }
-        if (i == waypoints.size() - 2) {
-            path_RRT.push_back(convertFromPoint(waypoints.at(i + 1), 0.0, 0.0));
-        }
-
-        for (auto tmp : path_RRT) {
             tmp.print();
         }
     }

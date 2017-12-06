@@ -199,6 +199,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     // initialization of x_near and x_new at start
     x_near = x_init;
     x_new = convertFromPoint(x_init, 0, 0);
+    path.push_back(convertFromPoint(this->x_goal, 0.0, 0.0));
 
     // building vector x_init to x_goal
     // checking if distance of x_near is close enough to reach in last step
@@ -243,6 +244,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                                         ptrTable[i]->d));
     }
 
+    path.push_back(convertFromPoint(this->x_init, 0.0, 0.0));
     std::reverse(path.begin(), path.end());
 
     return path;
