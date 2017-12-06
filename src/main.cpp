@@ -112,6 +112,11 @@ int main(int argc, char **argv) {
         }
         break;
         case PATH_PLANNING: {
+            ros::spinOnce();
+            ros::Rate(0.33).sleep();
+
+            printf("Car Pose : %.2f,%.2f,%.2f\n", robot_pose.x, robot_pose.y,
+                   robot_pose.th);
             // Set Way Points
             set_waypoints();
             printf("Set way points\n");
@@ -119,9 +124,6 @@ int main(int argc, char **argv) {
             // RRT
             generate_path_RRT();
             printf("Generate RRT\n");
-
-            ros::spinOnce();
-            ros::Rate(0.33).sleep();
 
             printf("Initialize ROBOT\n");
             state = RUNNING;
