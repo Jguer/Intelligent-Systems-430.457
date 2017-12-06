@@ -323,7 +323,6 @@ void generate_path_RRT() {
             waypoints.at(i + 1).print();
             tree = rrtTree(waypoints.at(i), waypoints.at(i + 1), map, map_origin_x,
                            map_origin_y, res, margin);
-            std::cout << "Fug yo tree" << std::endl;
         } else {
             std::cout << "Generating between" << std::endl;
             path_RRT.back().print();
@@ -331,9 +330,6 @@ void generate_path_RRT() {
             tree = rrtTree(path_RRT.back(), waypoints.at(i + 1), map, map_origin_x,
                            map_origin_y, res, margin);
         }
-
-        tree = rrtTree(waypoints.at(i), waypoints.at(i + 1), map, map_origin_x,
-                       map_origin_y, res, margin);
 
         std::vector<traj> path_tmp = tree.generateRRT(
                                          world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
