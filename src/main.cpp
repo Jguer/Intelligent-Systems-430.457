@@ -66,7 +66,9 @@ int main(int argc, char **argv) {
             "/vesc/high_level/ackermann_cmd_mux/input/nav_0", 1);
 
     ros::Subscriber gazebo_pose_sub =
-        n.subscribe("/amcl_pose", 100, callback_state);
+        n.subscribe("/gazebo/model_states", 100, callback_state);
+    /* ros::Subscriber gazebo_pose_sub = */
+    /*     n.subscribe("/amcl_pose", 100, callback_state); */
     std::cout << "Initialized Topics" << std::endl;
 
     // FSM
