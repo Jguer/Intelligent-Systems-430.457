@@ -34,7 +34,7 @@ class OdometryNode:
         self.v = 0.0
 
         # Set the update rate
-        rospy.Timer(rospy.Duration(.05), self.timer_callback)  # 20hz
+        rospy.Timer(rospy.Duration(.0083), self.timer_callback)  # 120hz
 
         self.tf_pub = tf2_ros.TransformBroadcaster()
 
@@ -55,7 +55,7 @@ class OdometryNode:
         self.x += delta_x
         self.y += delta_y
         self.yaw += self.current_angular_velocity * dt
-        self.v = data.drive.speed * 0.5 #adjustable
+        self.v = data.drive.speed * 0.6 #adjustable
 
         self.last_cmd_stamp = self.current_cmd_stamp
 
