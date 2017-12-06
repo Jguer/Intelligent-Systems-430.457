@@ -304,7 +304,7 @@ void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs) {
     robot_pose.x = msgs->pose.pose.position.x;
     robot_pose.y = msgs->pose.pose.position.y;
     robot_pose.th = tf::getYaw(msgs->pose.pose.orientation);
-    // printf("x,y : %f,%f \n",robot_pose.x,robot_pose.y);
+    printf("x,y : %f,%f \n", robot_pose.x, robot_pose.y);
 }
 
 void setcmdvel(double vel, double deg) {
