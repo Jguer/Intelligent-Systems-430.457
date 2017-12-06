@@ -239,11 +239,21 @@ void set_waypoints()
         |
     2   |   3
     */
+    // row == i == y
+    // col == j == x
+    int quad0_j_max = <static_cast>(int)round(world_x_max / res + map_origin_x);
+    int quad0_i_max = <static_cast>(int)round(world_y_max / res + map_origin_y);
+    int quad1_j_max = <static_cast>(int)round(world_x_min / res + map_origin_x);
+    int quad1_i_max = <static_cast>(int)round(world_y_max / res + map_origin_y);
+    int quad2_j_max = <static_cast>(int)round(world_x_min / res + map_origin_x);
+    int quad2_i_max = <static_cast>(int)round(world_y_min / res + map_origin_y);
+    int quad3_j_max = <static_cast>(int)round(world_x_max / res + map_origin_x);
+    int quad3_i_max = <static_cast>(int)round(world_y_min / res + map_origin_y);
 
-    double quadrants[4][2] = {{world_x_max, world_y_max},
-    {world_x_min, world_y_max},
-    {world_x_min, world_y_min},
-    {world_x_max, world_y_min}
+    int quadrants[4][2] = {{quad0_j_max, quad0_i_max},
+    {quad1_j_max, quad1_i_max},
+    {quad2_j_max, quad2_i_max},
+    {quad3_j_max, quad3_i_max}
     };
     std::array<int, 3> quadrantSeq;
 
