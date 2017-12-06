@@ -218,7 +218,7 @@ void generate_path_RRT() {
 
 void set_waypoints() {
     std::srand(std::time(NULL));
-    waypoints.push_back(point{-3.5, 12.0});
+    waypoints.push_back(point{-3.5, 12.0, 0.0});
 
     cv::Mat map_margin = addMargin(map, waypoint_margin);
 
