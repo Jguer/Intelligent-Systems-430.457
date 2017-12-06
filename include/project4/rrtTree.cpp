@@ -8,6 +8,12 @@
 double max_alpha = 0.15;
 double L = 0.325;
 
+rrtTree::rrtTree() {
+    count = 0;
+    root = NULL;
+    ptrTable[0] = NULL;
+}
+
 rrtTree::~rrtTree() {
     for (int i = 1; i <= count; i++) {
         delete ptrTable[i];
