@@ -1,17 +1,16 @@
-#ifndef POINT_H
-#define POINT_H
+// Copyright 2017 Dario Wirtz Lucie Bechtet Joao Guerreiro
+#ifndef INCLUDE_PROJECT4_RRTTREE_H_
+#define INCLUDE_PROJECT4_RRTTREE_H_
 #include <climits>
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <project4/control.h>
 #include <project4/traj.h>
-#include <stdio.h>
-#endif
 
 class rrtTree {
 private:
@@ -53,3 +52,4 @@ public:
 };
 
 cv::Mat addMargin(cv::Mat map, int margin);
+#endif
