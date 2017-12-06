@@ -333,6 +333,11 @@ void generate_path_RRT() {
                                          world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
         printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
         printf("New trajectory generated. Size of Path %zu\n", path_tmp.size());
+        if (path_tmp.size() == 0) {
+            path_RRT.clear();
+            generate_path_RRT();
+            return;
+        }
         tree.visualizeTree(path_tmp);
 
         for (auto tmp : path_tmp) {
