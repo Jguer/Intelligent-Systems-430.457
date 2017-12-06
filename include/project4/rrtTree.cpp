@@ -22,6 +22,10 @@ rrtTree::~rrtTree() {
 
 rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
                  double map_origin_y, double res, int margin) {
+    if (x_init == x_goal) {
+        std::cout << "x_init is the same as x_goal" << std::endl;
+        exit(1);
+    }
     this->x_init = x_init;
     this->x_goal = x_goal;
     this->map_original = map;
@@ -217,7 +221,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         /* std::cout << "Going in" << std::endl; */
         x_near_id = this->nearestNeighbor(x_rand, MaxStep);
         if (x_near_id == -1) {
-            x_near_id = 0;
             continue;
         }
 
@@ -225,7 +228,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
         /* std::cout << "X_Near Point: "; */
         /* x_near.print(); */
-        /* x_new = newState(x_near, x_rand, MaxStep); */
+        x_new = newState(x_near, x_rand, MaxStep);
         /* std::cout << "X_new Point: "; */
         /* x_new.print(); */
 
