@@ -5,13 +5,13 @@
 #define FINISH -1
 
 #include <cmath>
+#include <pwd.h>
 #include <unistd.h>
 
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <ackermann_msgs/AckermannDriveStamped.h>
 #include <project4/pid.h>
 #include <project4/rrtTree.h>
-#include <pwd.h>
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 #include <std_msgs/Time.h>
@@ -51,7 +51,7 @@ double max_turn = 60.0 * M_PI / 180.0;
 int state;
 
 // function definition
-void setcmdvel(double v, double w);
+void setcmdvel(double vel, double deg);
 void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs);
 void set_waypoints();
 void generate_path_RRT();
@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
     // FSM
     state = INIT;
     bool running = true;
-    PID *pid_ctrl = new PID(0.6, 0.3, 0.0);
+    PID *pid_ctrl = new PID(0.6, 0.3, 0.1);
     ros::Rate control_rate(60);
     int look_ahead_idx = 0;
 
@@ -112,11 +112,6 @@ int main(int argc, char **argv) {
         }
         break;
         case PATH_PLANNING: {
-            ros::spinOnce();
-            ros::Rate(0.33).sleep();
-
-            /* printf("Car Pose : %.2f,%.2f,%.2f\n", robot_pose.x, robot_pose.y, */
-            /*        robot_pose.th); */
             // Set Way Points
             set_waypoints();
             printf("Set way points\n");
@@ -125,6 +120,8 @@ int main(int argc, char **argv) {
             generate_path_RRT();
             printf("Generate RRT\n");
 
+            ros::spinOnce();
+            ros::Rate(0.33).sleep();
             printf("Initialize ROBOT\n");
             state = RUNNING;
         }
@@ -187,29 +184,6 @@ int main(int argc, char **argv) {
         }
     }
     return 0;
-}
-
-void generate_path_RRT() {
-    rrtTree tree;
-    for (int i = 0; i < waypoints.size() - 1; i++) {
-        std::cout << "Generating between" << std::endl;
-        waypoints.at(i).print();
-        waypoints.at(i + 1).print();
-        tree = rrtTree(waypoints.at(i), waypoints.at(i + 1), map, map_origin_x,
-                       map_origin_y, res, margin);
-        printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
-        tree.visualizeTree();
-
-        std::vector<traj> path_tmp = tree.generateRRT(
-                                         world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
-        printf("New trajectory generated. Size of Path %zu\n", path_tmp.size());
-        /* tree.visualizeTree(path_tmp); */
-
-        for (auto tmp : path_tmp) {
-            path_RRT.push_back(tmp);
-            tmp.print();
-        }
-    }
 }
 
 void set_waypoints() {
@@ -295,7 +269,30 @@ void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs) {
     // printf("x,y : %f,%f \n",robot_pose.x,robot_pose.y);
 }
 
-void setcmdvel(double v, double w) {
-    cmd.drive.speed = v;
-    cmd.drive.steering_angle = w;
+void setcmdvel(double vel, double deg) {
+    cmd.drive.speed = vel;
+    cmd.drive.steering_angle = deg;
+}
+
+void generate_path_RRT() {
+    rrtTree tree;
+    for (int i = 0; i < waypoints.size() - 1; i++) {
+        std::cout << "Generating between" << std::endl;
+        waypoints.at(i).print();
+        waypoints.at(i + 1).print();
+        tree = rrtTree(waypoints.at(i), waypoints.at(i + 1), map, map_origin_x,
+                       map_origin_y, res, margin);
+        printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
+        tree.visualizeTree();
+
+        std::vector<traj> path_tmp = tree.generateRRT(
+                                         world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
+        printf("New trajectory generated. Size of Path %zu\n", path_tmp.size());
+        /* tree.visualizeTree(path_tmp); */
+
+        for (auto tmp : path_tmp) {
+            path_RRT.push_back(tmp);
+            tmp.print();
+        }
+    }
 }
