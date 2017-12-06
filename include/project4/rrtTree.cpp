@@ -163,7 +163,7 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
         }
     }
     cv::namedWindow("Mapping");
-    cv::imshow("Mapping", imgResult(imgROI));
+    cv::imshow("Mapping", imgResult);
     cv::waitKey(1);
 }
 
