@@ -30,10 +30,10 @@ double world_y_min;
 double world_y_max;
 
 // parameters you should adjust : K, margin, MaxStep
-int margin = 3;
-int K = 9000;
-double MaxStep = 1.0;
-int waypoint_margin = 10;
+int margin = 4;
+int K = 4000;
+double MaxStep = 2.0;
+int waypoint_margin = 15;
 
 // Vectoring
 std::vector<point> waypoints;
@@ -198,6 +198,7 @@ void generate_path_RRT() {
         tree = rrtTree(waypoints.at(i), waypoints.at(i + 1), map, map_origin_x,
                        map_origin_y, res, margin);
         printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
+        tree.visualizeTree();
 
         std::vector<traj> path_tmp = tree.generateRRT(
                                          world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
