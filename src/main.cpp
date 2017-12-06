@@ -294,8 +294,10 @@ void set_waypoints() {
     for (int i = 0; i < quadrantSeq.size(); i++) {
         foundPoint = false;
         while (foundPoint == false) {
-            i_rand = (rand() % map_origin_x + quadrants[quadrantSeq[i]][1]); // x
-            j_rand = (rand() % map_origin_y + quadrants[quadrantSeq[i]][0]); // y
+            i_rand = (rand() % static_cast<int>(map_origin_x) +
+                      quadrants[quadrantSeq[i]][1]); // x
+            j_rand = (rand() % static_cast<int>(map_origin_y) +
+                      quadrants[quadrantSeq[i]][0]); // y
             // printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
 
             if ((map_margin.at<uchar>(i_rand, j_rand)) < 125) {
@@ -306,7 +308,8 @@ void set_waypoints() {
                 foundPoint = true;
                 waypoint_candid[i + 1].x = res * (i_rand - map_origin_x);
                 waypoint_candid[i + 1].y = res * (j_rand - map_origin_y);
-                printf("Waypoint found (x,y): %.2f, %.2f \n", x_rand, y_rand);
+                printf("Waypoint found (x,y): %.2f, %.2f \n", waypoint_candid[i + 1].x,
+                       waypoint_candid[i + 1].y);
                 // optimization of position of point
             }
         }
