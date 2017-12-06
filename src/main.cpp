@@ -269,6 +269,7 @@ void set_waypoints() {
     int i_rand, j_rand;
 
     for (int i = 0; i < quadrantSeq.size(); i++) {
+        i++;
         foundPoint = false;
         while (foundPoint == false) {
             i_rand = (rand() % static_cast<int>(map_origin_x) +
@@ -300,27 +301,6 @@ void set_waypoints() {
     for (int i = 0; i < order_size; i++) {
         waypoints.push_back(waypoint_candid[order[i]]);
     }
-    //*/
-    /*
-    point waypoint_candid[5];
-    waypoint_candid[0].x = -3.5;
-    waypoint_candid[0].y = 12.0;
-    waypoint_candid[1].x = 2.0;
-    waypoint_candid[1].y = 12.0;
-    waypoint_candid[2].x = 3.5;
-    waypoint_candid[2].y = -10.5;
-    waypoint_candid[3].x = -2.0;
-    waypoint_candid[3].y = -12.0;
-    waypoint_candid[4].x = -3.5;
-    waypoint_candid[4].y = 10.0;
-
-    int order[] = {0,1,2,3,4};
-    int order_size = 5;
-
-    for(int i = 0; i < order_size; i++){
-        waypoints.push_back(waypoint_candid[order[i]]);
-    }
-    */
 }
 
 void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs) {
