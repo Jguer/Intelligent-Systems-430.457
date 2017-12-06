@@ -33,7 +33,7 @@ double world_y_max;
 int margin = 8;
 int K = 500;
 double MaxStep = 2.0;
-int waypoint_margin = 32;
+int waypoint_margin = 24;
 
 // Vectoring
 std::vector<point> waypoints;
