@@ -51,7 +51,6 @@ void rrtTree::visualizeTree() {
     int thickness = 1;
     int lineType = 8;
     double Res = 2;
-    double radius = 6;
     cv::Point x1, x2;
 
     cv::Mat map_c;
@@ -380,9 +379,7 @@ int rrtTree::size() {
 // true - valid
 // false - invalid
 traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
-    double og_dist, d, x_c, y_c, alpha, R, beta, new_x, new_y, new_theta,
-           dist_to_rand;
-    og_dist = INT_MAX;
+    double og_dist = INT_MAX;
     traj x_new;
     x_new.set(9000, 9000, 9001, 0, 0);
 
@@ -390,39 +387,31 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
     std::uniform_real_distribution<double> d_dist(MaxStep / (MaxStep * 5),
             MaxStep);
     for (int i = 0; i < 50; i++) {
-        /* alpha = -max_alpha + */
-        /*         static_cast<double>(rand()) / */
-        /*         (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha)))); */
-        /* alpha = alpha_dist(generator); */
-        /* d = (MaxStep / (MaxStep * 5)) + */
-        /*     static_cast<double>(rand()) / */
-        /*     (static_cast<double>(RAND_MAX / */
-        /*                          (MaxStep - (MaxStep / (MaxStep * 5))))); */
-        alpha = alpha_dist(generator);
-        d = d_dist(generator);
+        double alpha = alpha_dist(generator);
+        double d = d_dist(generator);
 
-        R = L / tan(alpha);
-        x_c = x_near.x - R * sin(x_near.th);
-        y_c = x_near.y + R * cos(x_near.th);
+        double R = L / tan(alpha);
+        double x_c = x_near.x - R * sin(x_near.th);
+        double y_c = x_near.y + R * cos(x_near.th);
 
-        beta = d / R;
+        double beta = d / R;
 
-        new_x = x_c + R * sin(x_near.th + beta);
-        new_y = y_c - R * cos(x_near.th + beta);
+        double new_x = x_c + R * sin(x_near.th + beta);
+        double new_y = y_c - R * cos(x_near.th + beta);
         if (new_x < this->map_min_x || new_x > this->map_max_x) {
             continue;
         } else if (new_y < this->map_min_y || new_y > this->map_max_y) {
             continue;
         }
 
-        new_theta = x_near.th + beta;
+        double new_theta = x_near.th + beta;
         if (new_theta > PI) {
             new_theta = -2 * PI + new_theta;
         } else if (new_theta < -PI) {
             new_theta = 2 * PI + new_theta;
         }
 
-        dist_to_rand = distance(x_rand, new_x, new_y);
+        double dist_to_rand = distance(x_rand, new_x, new_y);
         if (dist_to_rand < og_dist) {
             /* printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y,
              * new_theta);
