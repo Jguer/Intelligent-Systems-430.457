@@ -188,9 +188,7 @@ int main(int argc, char **argv) {
 
 void set_waypoints() {
     std::srand(std::time(NULL));
-    point waypoint_candid[5];
-    waypoint_candid[0].x = -3.5;
-    waypoint_candid[0].y = 12.0;
+    waypoints.push_back(point{-3.5, 12.0, 0.0});
 
     cv::Mat map_margin = map.clone();
     int jSize = map.cols; // the number of columns
@@ -237,16 +235,16 @@ void set_waypoints() {
     std::array<int, 3> quadrantSeq;
 
     // check in which quadrant starting point is => generate sequence
-    if (waypoint_candid[0].y >= 0 && waypoint_candid[0].x >= 0) {
+    if (waypoints[0].y >= 0 && waypoints[0].x >= 0) {
         quadrantSeq = {3, 2, 1};
         printf("Quadrant: %d \n", 0);
-    } else if (waypoint_candid[0].y >= 0 && waypoint_candid[0].x <= 0) {
+    } else if (waypoints[0].y >= 0 && waypoints[0].x <= 0) {
         quadrantSeq = {0, 3, 2};
         printf("Quadrant: %d \n", 1);
-    } else if (waypoint_candid[0].y <= 0 && waypoint_candid[0].x <= 0) {
+    } else if (waypoints[0].y <= 0 && waypoints[0].x <= 0) {
         quadrantSeq = {1, 0, 3};
         printf("Quadrant: %d \n", 2);
-    } else if (waypoint_candid[0].y <= 0 && waypoint_candid[0].x >= 0) {
+    } else if (waypoints[0].y <= 0 && waypoints[0].x >= 0) {
         quadrantSeq = {2, 1, 0};
         printf("Quadrant: %d \n", 3);
     } else {
@@ -272,23 +270,15 @@ void set_waypoints() {
                 continue;
             } else {
                 foundPoint = true;
-                waypoint_candid[i + 1].x = res * (i_rand - map_origin_x);
-                waypoint_candid[i + 1].y = res * (j_rand - map_origin_y);
-                printf("Waypoint found (x,y): %.2f, %.2f \n", waypoint_candid[i + 1].x,
-                       waypoint_candid[i + 1].y);
+                waypoints.push_back(point{res * (i_rand - map_origin_x),
+                                          res * (j_rand - map_origin_y), 0.0});
+                printf("Waypoint found (x,y): %.2f, %.2f \n",
+                       res * (i_rand - map_origin_x), res * (j_rand - map_origin_y));
                 // optimization of position of point
             }
         }
     }
-    waypoint_candid[4].x = waypoint_candid[0].x;
-    waypoint_candid[4].y = waypoint_candid[0].y;
-
-    int order[] = {0, 1, 2, 3, 4};
-    int order_size = 5;
-
-    for (int i = 0; i < order_size; i++) {
-        waypoints.push_back(waypoint_candid[order[i]]);
-    }
+    waypoints.push_back(point{-3.5, 12.0, 0.0});
 }
 
 void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs) {
