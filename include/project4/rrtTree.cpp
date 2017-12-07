@@ -62,6 +62,10 @@ void rrtTree::visualizeTree() {
     cv::resize(map_c, imgResult, cv::Size(), Res, Res);
 
     for (int i = 1; i < this->count; i++) {
+        if (this->ptrTable[i] == NULL) {
+            continue;
+        }
+
         int idx_parent = this->ptrTable[i]->idx_parent;
         for (int j = 0; j < 10; j++) {
             double alpha = this->ptrTable[i]->alpha;
@@ -119,6 +123,9 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
                radius, cv::Scalar(0, 0, 255), CV_FILLED);
 
     for (int i = 1; i < this->count; i++) {
+        if (this->ptrTable[i] == NULL) {
+            continue;
+        }
         int idx_parent = this->ptrTable[i]->idx_parent;
         for (int j = 0; j < 10; j++) {
             double alpha = this->ptrTable[i]->alpha;
