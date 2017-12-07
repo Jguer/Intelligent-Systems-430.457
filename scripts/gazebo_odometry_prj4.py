@@ -47,15 +47,15 @@ class OdometryNode:
             self.last_cmd_stamp = self.current_cmd_stamp
 
         dt = self.current_cmd_stamp.to_sec() - self.last_cmd_stamp.to_sec()
-        delta_x = data.drive.speed * math.cos(self.yaw) * dt * 0.5 #adjustable 
-        delta_y = data.drive.speed * math.sin(self.yaw) * dt * 0.5 #adjustable
+        delta_x = data.drive.speed * math.cos(self.yaw) * dt * 0.49 #adjustable 
+        delta_y = data.drive.speed * math.sin(self.yaw) * dt * 0.49 #adjustable
 
-        self.current_angular_velocity = data.drive.speed * math.tan(data.drive.steering_angle) / 1.1 #adjustable
+        self.current_angular_velocity = data.drive.speed * math.tan(data.drive.steering_angle) / 1.2 #adjustable
 
         self.x += delta_x
         self.y += delta_y
         self.yaw += self.current_angular_velocity * dt
-        self.v = data.drive.speed * 0.6 #adjustable
+        self.v = data.drive.speed * 0.48 #adjustable
 
         self.last_cmd_stamp = self.current_cmd_stamp
 
