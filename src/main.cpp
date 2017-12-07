@@ -346,7 +346,9 @@ void generate_path_RRT() {
         }
     }
 
-    for (auto tmp : path_RRT) {
-        path_RRT.push_back(tmp);
+    size_t size = path_RRT.size();
+    path_RRT.reserve(size * 2);
+    for (size_t i = 0; i < size; i++) {
+        path_RRT.push_back(path_RRT[i]);
     }
 }
