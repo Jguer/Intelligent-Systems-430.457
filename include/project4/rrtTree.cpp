@@ -4,8 +4,6 @@
 double max_alpha = 0.15;
 double L = 0.325;
 
-std::random_device rrtTree::seed_generator;
-
 rrtTree::rrtTree() {
     count = 0;
     root = NULL;
@@ -47,7 +45,7 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
 
     // Initialize engine
     this->generator.seed(time(0));
-    this->alpha_dist = distribution(0, max_alpha);
+    this->alpha_dist(0, max_alpha);
 }
 
 void rrtTree::visualizeTree() {
