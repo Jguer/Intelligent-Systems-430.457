@@ -387,17 +387,19 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
     x_new.set(9000, 9000, 9001, 0, 0);
 
     std::normal_distribution<double> alpha_dist(0, max_alpha);
+    std::uniform_real_distribution<double> d_dist(MaxStep / (MaxStep * 5),
+            MaxStep);
     for (int i = 0; i < 50; i++) {
         /* alpha = -max_alpha + */
         /*         static_cast<double>(rand()) / */
         /*         (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha)))); */
         /* alpha = alpha_dist(generator); */
+        /* d = (MaxStep / (MaxStep * 5)) + */
+        /*     static_cast<double>(rand()) / */
+        /*     (static_cast<double>(RAND_MAX / */
+        /*                          (MaxStep - (MaxStep / (MaxStep * 5))))); */
         alpha = alpha_dist(generator);
-
-        d = (MaxStep / (MaxStep * 5)) +
-            static_cast<double>(rand()) /
-            (static_cast<double>(RAND_MAX /
-                                 (MaxStep - (MaxStep / (MaxStep * 5)))));
+        d = d_dist(generator);
 
         R = L / tan(alpha);
         x_c = x_near.x - R * sin(x_near.th);
