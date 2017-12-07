@@ -45,10 +45,9 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
     root->location = x_init;
     root->rand = x_init;
 
-    // Initialize engines
-    this->seed = seed_generator();
-    this->alpha_dist rrtTree::distribution(0, max_alpha);
-    this->mersenne_generator(this->seed);
+    // Initialize engine
+    this->generator.seed(time(0));
+    this->alpha_dist = distribution(0, max_alpha);
 }
 
 void rrtTree::visualizeTree() {
@@ -394,7 +393,7 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
         /*         static_cast<double>(rand()) / */
         /*         (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha)))); */
         /* alpha = alpha_dist(generator); */
-        alpha = alpha_dist(mersenne_generator);
+        alpha = alpha_dist(generator);
 
         d = (MaxStep / (MaxStep * 5)) +
             static_cast<double>(rand()) /

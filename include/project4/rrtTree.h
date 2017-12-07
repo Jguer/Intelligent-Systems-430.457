@@ -29,10 +29,8 @@ private:
         double d;
     } * root;
 
-    static std::random_device seed_generator;
-    static unsigned seed;
-    static std::mt19937 mersenne_generator;
-    static std::normal_distribution<double> alpha_dist;
+    std::default_random_engine generator;
+    std::normal_distribution<double> alpha_dist;
     int count;
     point x_init, x_goal;
     cv::Mat map;
