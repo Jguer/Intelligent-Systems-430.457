@@ -204,19 +204,16 @@ void rrtTree::addVertex(point x_new, point x_rand, int idx_near, double alpha,
 std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                                        double y_min, int K, double MaxStep) {
     std::vector<traj> path;
-    point x_rand;
-    point x_near;
     int x_near_id;
-    traj x_new;
-
     // INIT
     // initialization of x_near and x_new at start
-    x_near = x_init;
-    x_new = convertFromPoint(x_init, 0, 0);
+    point x_near = x_init;
+    traj x_new = convertFromPoint(x_init, 0, 0);
 
     // building vector x_init to x_goal
     // checking if distance of x_near is close enough to reach in last step
     for (int k = 0; k < K; k++) {
+        point x_rand;
         if (k % 10 == 0) {
             x_rand = this->x_goal;
         } else {
