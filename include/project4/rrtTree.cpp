@@ -1,13 +1,10 @@
 #include "rrtTree.h"
-#include <algorithm>
-#include <cstdlib>
-#include <random>
-#include <ros/ros.h>
-#include <unistd.h>
 #define PI 3.14159265358979323846
 
 double max_alpha = 0.15;
 double L = 0.325;
+
+std::random_device rrtTree::seed_generator;
 
 rrtTree::rrtTree() {
     count = 0;
@@ -47,6 +44,11 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
     root->idx_parent = 0;
     root->location = x_init;
     root->rand = x_init;
+
+    // Initialize engines
+    this->seed = seed_generator();
+    this->alpha_dist rrtTree::distribution(0, max_alpha);
+    this->mersenne_generator(this->seed);
 }
 
 void rrtTree::visualizeTree() {
@@ -220,9 +222,10 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     // building vector x_init to x_goal
     // checking if distance of x_near is close enough to reach in last step
     for (int k = 0; k < K; k++) {
-        x_rand = this->randomState(x_max, x_min, y_max, y_min);
         if (k % 10 == 0) {
             x_rand = this->x_goal;
+        } else {
+            x_rand = this->randomState(x_max, x_min, y_max, y_min);
         }
 
         /* std::cout << "X_Goal Point: "; */
@@ -384,13 +387,14 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
     traj x_new;
     x_new.set(9000, 9000, 9001, 0, 0);
 
-    std::default_random_engine generator(time(NULL));
-    std::normal_distribution<double> alpha_dist(0, max_alpha);
+    /* std::default_random_engine generator(time(NULL)); */
+    /* std::normal_distribution<double> alpha_dist(0, max_alpha); */
     for (int i = 0; i < 50; i++) {
         /* alpha = -max_alpha + */
         /*         static_cast<double>(rand()) / */
         /*         (static_cast<double>(RAND_MAX / (max_alpha - (-max_alpha)))); */
-        alpha = alpha_dist(generator);
+        /* alpha = alpha_dist(generator); */
+        alpha = alpha_dist(mersenne_generator);
 
         d = (MaxStep / (MaxStep * 5)) +
             static_cast<double>(rand()) /

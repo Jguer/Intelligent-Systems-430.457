@@ -1,6 +1,7 @@
 // Copyright 2017 Dario Wirtz Lucie Bechtet Joao Guerreiro
 #ifndef INCLUDE_PROJECT4_RRTTREE_H_
 #define INCLUDE_PROJECT4_RRTTREE_H_
+#include <algorithm>
 #include <climits>
 #include <cmath>
 #include <cstdio>
@@ -11,6 +12,9 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <project4/traj.h>
+#include <random>
+#include <ros/ros.h>
+#include <unistd.h>
 
 #define TABLE_SIZE 10000
 
@@ -25,6 +29,10 @@ private:
         double d;
     } * root;
 
+    static std::random_device seed_generator;
+    static unsigned seed;
+    static std::mt19937 mersenne_generator;
+    static std::normal_distribution<double> alpha_dist;
     int count;
     point x_init, x_goal;
     cv::Mat map;
