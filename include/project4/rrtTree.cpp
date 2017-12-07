@@ -44,7 +44,7 @@ rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
     root->rand = x_init;
 
     // Initialize engine
-    this->generator.seed(this->rd());
+    this->generator.seed(time(NULL));
 }
 
 void rrtTree::visualizeTree() {
