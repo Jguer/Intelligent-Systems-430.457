@@ -230,9 +230,9 @@ void set_waypoints() {
             static_cast<int>(round(map_origin_x)),
             static_cast<int>(round(map_origin_y))
         },
-        {0, round(map_origin_y)},
+        {0, static_cast<int>(round(map_origin_y))},
         {0, 0},
-        {round(map_origin_x), round(0)}
+        {static_cast<int>(round(map_origin_x)), 0}
     };
     std::array<int, 3> quadrantSeq;
 
