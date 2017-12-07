@@ -275,11 +275,14 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 point rrtTree::randomState(double x_max, double x_min, double y_max,
                            double y_min) {
     point x_rand;
+    assert(x_max > x_min && y_max > y_min);
+    /* x_rand.x = rand() / (double)RAND_MAX * (x_max - x_min) + x_min; */
+    /* x_rand.y = rand() / (double)RAND_MAX * (y_max - y_min) + y_min; */
 
-    assert(x_max > x_min);
-    x_rand.x = rand() / (double)RAND_MAX * (x_max - x_min) + x_min;
-    assert(y_max > y_min);
-    x_rand.y = rand() / (double)RAND_MAX * (y_max - y_min) + y_min;
+    std::uniform_real_distribution<double> x_dist(x_min, x_max);
+    std::uniform_real_distribution<double> y_dist(y_min, y_max);
+    x_rand.x = x_dist(generator);
+    x_rand.y = y_dist(generator);
     x_rand.th = atan2(x_rand.y, x_rand.x);
 
     return x_rand;
