@@ -275,8 +275,6 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
                            double y_min) {
     point x_rand;
     assert(x_max > x_min && y_max > y_min);
-    /* x_rand.x = rand() / (double)RAND_MAX * (x_max - x_min) + x_min; */
-    /* x_rand.y = rand() / (double)RAND_MAX * (y_max - y_min) + y_min; */
 
     std::uniform_real_distribution<double> x_dist(x_min, x_max);
     std::uniform_real_distribution<double> y_dist(y_min, y_max);
@@ -288,32 +286,29 @@ point rrtTree::randomState(double x_max, double x_min, double y_max,
 }
 
 int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
-    double distance_min, dist_to_rand, R, beta, max_th, new_x, new_y, min_th,
-           temp_th;
     double rel_th;
     int idx_near = -1;
-    point x_near;
 
     distance_min = INT_MAX;
     for (int i = 0; i < this->count; i++) {
         if (this->ptrTable[i] == NULL) {
             continue;
         }
-        x_near = this->ptrTable[i]->location;
+        point x_near = this->ptrTable[i]->location;
 
-        dist_to_rand = distance(x_near, x_rand);
+        double dist_to_rand = distance(x_near, x_rand);
 
-        R = L / tan(max_alpha);
-        beta = MaxStep / R;
-        max_th = x_near.th + beta;
-        min_th = x_near.th - beta;
+        double R = L / tan(max_alpha);
+        double beta = MaxStep / R;
+        double max_th = x_near.th + beta;
+        double min_th = x_near.th - beta;
 
         if (max_th > PI) {
-            temp_th = max_th;
+            double temp_th = max_th;
             max_th = min_th;
             min_th = -2 * PI + temp_th;
         } else if (min_th < -PI) {
-            temp_th = min_th;
+            double temp_th = min_th;
             min_th = max_th;
             max_th = 2 * PI + temp_th;
         }
@@ -334,8 +329,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 }
 
 bool rrtTree::isCollision(point x1, point x2, double d, double R) {
-    int i;
-    for (i = 0; i < 100; i++) {
+    for (int i = 0; i < 100; i++) {
         double x = x1.x + (x2.x - x1.x) * i / 99;
         double y = x1.y + (x2.y - x1.y) * i / 99;
         int x_i = round(x / res + this->map_origin_x);
