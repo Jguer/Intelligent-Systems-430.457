@@ -289,7 +289,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
     double rel_th;
     int idx_near = -1;
 
-    distance_min = INT_MAX;
+    double distance_min = INT_MAX;
     for (int i = 0; i < this->count; i++) {
         if (this->ptrTable[i] == NULL) {
             continue;
