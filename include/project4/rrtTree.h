@@ -29,6 +29,7 @@ private:
         double d;
     } * root;
 
+    std::random_device rd;
     std::default_random_engine generator;
     std::normal_distribution<double> alpha_dist;
     int count;
