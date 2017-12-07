@@ -187,7 +187,6 @@ int main(int argc, char **argv) {
 }
 
 void set_waypoints() {
-    ///*
     std::srand(std::time(NULL));
     point waypoint_candid[5];
     waypoint_candid[0].x = -3.5;
@@ -226,22 +225,14 @@ void set_waypoints() {
     */
     // col == i == x
     // row == j == y
-    int quad0_i_max = static_cast<int>(round(map_origin_x));
-    int quad0_j_max = static_cast<int>(round(map_origin_y));
 
-    int quad1_i_max = static_cast<int>(round(0));
-    int quad1_j_max = static_cast<int>(round(map_origin_y));
-
-    int quad2_i_max = static_cast<int>(round(0));
-    int quad2_j_max = static_cast<int>(round(0));
-
-    int quad3_i_max = static_cast<int>(round(map_origin_x));
-    int quad3_j_max = static_cast<int>(round(0));
-
-    int quadrants[4][2] = {{quad0_i_max, quad0_j_max},
-        {quad1_i_max, quad1_j_max},
-        {quad2_i_max, quad2_j_max},
-        {quad3_i_max, quad3_j_max}
+    int quadrants[4][2] = {{
+            static_cast<int>(round(map_origin_x)),
+            static_cast<int>(round(map_origin_y))
+        },
+        {0, round(map_origin_y)},
+        {0, 0},
+        {round(map_origin_x), round(0)}
     };
     std::array<int, 3> quadrantSeq;
 

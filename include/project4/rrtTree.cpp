@@ -205,6 +205,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                                        double y_min, int K, double MaxStep) {
     std::vector<traj> path;
     int x_near_id;
+
     // INIT
     // initialization of x_near and x_new at start
     point x_near = x_init;
@@ -362,6 +363,7 @@ int rrtTree::nearestNeighbor(point x_rand) {
     }
     return idx_near;
 }
+
 int rrtTree::size() {
     return this->count;
 }
