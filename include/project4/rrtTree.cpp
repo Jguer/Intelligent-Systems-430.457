@@ -214,11 +214,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     // building vector x_init to x_goal
     // checking if distance of x_near is close enough to reach in last step
     for (int k = 0; k < K; k++) {
-        if (ptrTable[this->count] != NULL) {
-            if (ptrTable[this->count]->location.distance(x_goal) < 0.3) {
-                break;
-            }
-        }
         point x_rand;
         if (k % 10 == 0) {
             x_rand = this->x_goal;
@@ -257,6 +252,9 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         /* std::cout << "Added Vertex "; */
         /* x_new.print(); */
         this->addVertex(x_new, x_rand, x_near_id, x_new.alpha, x_new.d);
+        if (x_new.distance(x_goal) < 0.3) {
+            break;
+        }
     }
 
     if (this->count == 1) {
