@@ -16,14 +16,12 @@ rrtTree::~rrtTree() {
     }
 }
 
-rrtTree::rrtTree(point x_init, point x_goal, cv::Mat map, double map_origin_x,
+rrtTree::rrtTree(std::vector<point> waypoints, cv::Mat map, double map_origin_x,
                  double map_origin_y, double res, int margin) {
-    if (x_init == x_goal) {
-        std::cout << "x_init is the same as x_goal" << std::endl;
-        exit(1);
-    }
-    this->x_init = x_init;
-    this->x_goal = x_goal;
+    this->waypoints = waypoints;
+    this->freeze_id = 0;
+    this->x_init = waypoints.at(0);
+    this->x_goal = waypoints.at(1);
     this->map_original = map;
     this->map = addMargin(this->map_original, margin);
     this->map_origin_x = map_origin_x;
@@ -203,70 +201,82 @@ void rrtTree::addVertex(point x_new, point x_rand, int idx_near, double alpha,
 
 std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                                        double y_min, int K, double MaxStep) {
-    std::vector<traj> path;
-    int x_near_id;
-
     // INIT
     // initialization of x_near and x_new at start
-    point x_near = x_init;
-    traj x_new = convertFromPoint(x_init, 0, 0);
-
+    std::vector<traj> path;
+    int x_near_id;
+    point x_near;
+    traj x_new;
     // building vector x_init to x_goal
     // checking if distance of x_near is close enough to reach in last step
-    for (int k = 0; k < K; k++) {
-        point x_rand;
-        if (k % 10 == 0) {
-            x_rand = this->x_goal;
-        } else {
-            x_rand = this->randomState(x_max, x_min, y_max, y_min);
+    for (int w = 1; w < waypoints.size() - 1; w++) {
+        std::cout << "Generating between" << std::endl;
+        this->x_goal = waypoints.at(w);
+
+        for (int k = 0; k < K; k++) {
+            point x_rand;
+            if (k % 10 == 0) {
+                x_rand = this->x_goal;
+            } else {
+                x_rand = this->randomState(x_max, x_min, y_max, y_min);
+            }
+
+            /* std::cout << "X_Goal Point: "; */
+            /* this->x_goal.print(); */
+            /* std::cout << "X_Random Point: "; */
+            /* x_rand.print(); */
+
+            x_near_id = this->nearestNeighbor(x_rand, MaxStep);
+            if (x_near_id == -1) {
+                continue;
+            }
+
+            x_near = ptrTable[x_near_id]->location;
+
+            /* std::cout << "X_Near Point: "; */
+            /* x_near.print(); */
+            x_new = newState(x_near, x_rand, MaxStep);
+            if (x_new.th > 9000) {
+                std::cout << "Popin' x_near";
+                this->ptrTable[x_near_id]->location.print();
+                delete this->ptrTable[x_near_id];
+                continue;
+            }
+            /* std::cout << "X_new Point: "; */
+            /* x_new.print(); */
+
+            if (this->isCollision(x_near, x_new, MaxStep)) {
+                continue;
+            }
+
+            /* std::cout << "Added Vertex "; */
+            /* x_new.print(); */
+            this->addVertex(x_new, x_rand, x_near_id, x_new.alpha, x_new.d);
+            if (x_new.distance(x_goal) < 0.3) {
+                break;
+            }
         }
 
-        /* std::cout << "X_Goal Point: "; */
-        /* this->x_goal.print(); */
-        /* std::cout << "X_Random Point: "; */
-        /* x_rand.print(); */
-
-        x_near_id = this->nearestNeighbor(x_rand, MaxStep);
-        if (x_near_id == -1) {
-            continue;
+        if (this->count == 1) {
+            return path;
         }
 
-        x_near = ptrTable[x_near_id]->location;
-
-        /* std::cout << "X_Near Point: "; */
-        /* x_near.print(); */
-        x_new = newState(x_near, x_rand, MaxStep);
-        if (x_new.th > 9000) {
-            std::cout << "Popin' x_near";
-            this->ptrTable[x_near_id]->location.print();
-            delete this->ptrTable[x_near_id];
-            continue;
+        x_near_id = this->nearestNeighbor(x_goal, MaxStep);
+        for (int i = x_near_id; i != 0; i = ptrTable[i]->idx_parent) {
+            if (ptrTable[i] == NULL) {
+                std::cout << "Parent of important node is deleted" << std::endl;
+                path.clear();
+                return path;
+            }
+            path.push_back(convertFromPoint(ptrTable[i]->location, ptrTable[i]->alpha,
+                                            ptrTable[i]->d));
+            if (this->x_init == ptrTable[i]->location) {
+                break;
+            }
         }
-        /* std::cout << "X_new Point: "; */
-        /* x_new.print(); */
-
-        if (this->isCollision(x_near, x_new, MaxStep)) {
-            continue;
-        }
-
-        /* std::cout << "Added Vertex "; */
-        /* x_new.print(); */
-        this->addVertex(x_new, x_rand, x_near_id, x_new.alpha, x_new.d);
-        if (x_new.distance(x_goal) < 0.3) {
-            break;
-        }
+        this->freeze_id = x_near_id;
+        this->x_init = x_near_id;
     }
-
-    if (this->count == 1) {
-        return path;
-    }
-
-    x_near_id = this->nearestNeighbor(x_goal, MaxStep);
-    for (int i = x_near_id; i != 0; i = ptrTable[i]->idx_parent) {
-        path.push_back(convertFromPoint(ptrTable[i]->location, ptrTable[i]->alpha,
-                                        ptrTable[i]->d));
-    }
-
     std::reverse(path.begin(), path.end());
 
     return path;
@@ -291,7 +301,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
     int idx_near = -1;
 
     double distance_min = INT_MAX;
-    for (int i = 0; i < this->count; i++) {
+    for (int i = this->freeze_id; i < this->count; i++) {
         if (this->ptrTable[i] == NULL) {
             continue;
         }
@@ -364,7 +374,7 @@ int rrtTree::nearestNeighbor(point x_rand) {
     int idx_near;
 
     distance_min = INT_MAX;
-    for (int i = 0; i < this->count; i++) {
+    for (int i = this->freeze_id; i < this->count; i++) {
         if (this->ptrTable[i] == NULL) {
             continue;
         }

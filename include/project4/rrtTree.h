@@ -31,14 +31,14 @@ private:
 
     std::default_random_engine generator;
     std::normal_distribution<double> alpha_dist;
+    std::vector<point> waypoints;
     int count;
+    int freeze_id;
     point x_init, x_goal;
     cv::Mat map;
     cv::Mat map_original;
-    double map_origin_x, map_origin_y;
-    double map_min_x, map_min_y;
-    double map_max_x, map_max_y;
-    double res;
+    double map_origin_x, map_origin_y, map_min_x, map_min_y, map_max_x, map_max_y,
+           res;
     node *ptrTable[TABLE_SIZE];
 
     void addVertex(point x_new, point x_rand, int idx_near, double alpha,

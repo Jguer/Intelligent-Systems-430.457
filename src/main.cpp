@@ -281,38 +281,24 @@ void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs) {
 
 void generate_path_RRT() {
     rrtTree tree;
-    for (int i = 0; i < waypoints.size() - 1; i++) {
-        if (i == 0) {
-            std::cout << "Generating between" << std::endl;
-            waypoints.at(i).print();
-            waypoints.at(i + 1).print();
-            tree = rrtTree(waypoints.at(i), waypoints.at(i + 1), map, map_origin_x,
-                           map_origin_y, res, margin);
-        } else {
-            std::cout << "Generating between" << std::endl;
-            path_RRT.back().print();
-            waypoints.at(i + 1).print();
-            tree = rrtTree(path_RRT.back(), waypoints.at(i + 1), map, map_origin_x,
-                           map_origin_y, res, margin);
-        }
-        std::cout << "Generating Path" << std::endl;
-        std::vector<traj> path_tmp = tree.generateRRT(
-                                         world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
-        printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
-        printf("New trajectory generated. Size of Path %zu\n", path_tmp.size());
-        if (path_tmp.size() < 2) {
-            path_RRT.clear();
-            MaxStep = (MaxStep < 0.4) ? 1.0 : MaxStep - 0.1;
-            generate_path_RRT();
-            return;
-        }
-        tree.visualizeTree(path_tmp);
 
-        for (auto tmp : path_tmp) {
-            path_RRT.push_back(tmp);
-            tmp.print();
-        }
+    if (waypoints.size() < 2) {
+        std::cout << "Paths require more than 1 point" << std::endl;
+        exit(3);
     }
+    tree = rrtTree(waypoints, map, map_origin_x, map_origin_y, res, margin);
+    std::cout << "Generating Path" << std::endl;
+    std::vector<traj> path_RRT = tree.generateRRT(
+                                     world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
+    printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
+    printf("New trajectory generated. Size of Path %zu\n", path_tmp.size());
+    if (path_RRT.size() < 2) {
+        path_RRT.clear();
+        MaxStep = (MaxStep < 0.4) ? 1.0 : MaxStep - 0.1;
+        generate_path_RRT();
+        return;
+    }
+    tree.visualizeTree(path_RRT);
 
     size_t size = path_RRT.size();
     path_RRT.reserve(size * 2);

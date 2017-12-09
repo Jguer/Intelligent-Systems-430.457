@@ -1,4 +1,6 @@
-#pragma once
+// Copyright 2017 Dario Wirtz Lucie Bechtet Joao Guerreiro
+#ifndef INCLUDE_TRAJ_H_
+#define INCLUDE_TRAJ_H_
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -25,3 +27,4 @@ struct traj : point {
 double distance(point p1, point p2);
 double distance(point p1, double x, double y);
 traj convertFromPoint(point location, double alpha, double d);
+#endif
