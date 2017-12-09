@@ -263,7 +263,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         }
 
         x_near_id = this->nearestNeighbor(x_goal, MaxStep);
-        for (int i = x_near_id; i != 0; i = ptrTable[i]->idx_parent) {
+        for (int i = x_near_id; i > -1; i = ptrTable[i]->idx_parent) {
             if (ptrTable[i] == NULL) {
                 std::cout << "Parent of important node is deleted" << std::endl;
                 path.clear();
