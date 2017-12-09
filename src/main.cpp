@@ -42,8 +42,8 @@ std::vector<traj> path_RRT;
 // Robot Parameters
 point robot_pose;
 ackermann_msgs::AckermannDriveStamped cmd;
-double speed;
-double angle;
+double speed = 0.0;
+double angle = 0.0;
 double max_speed = 2.00;
 double max_turn = 60.0 * M_PI / 180.0;
 
@@ -55,6 +55,8 @@ void setcmdvel(double vel, double deg);
 void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs);
 void set_waypoints();
 void generate_path_RRT();
+void set_drive_param(ros::Publisher cmd_vel_pub, PID *pid_ctrl,
+                     int look_ahead_idx);
 
 int main(int argc, char **argv) {
     ros::init(argc, argv, "slam_main");
@@ -146,20 +148,7 @@ int main(int argc, char **argv) {
                 }
             }
 
-            speed =
-                2.0 - 1.2 / (1.0 + (robot_pose.distance(path_RRT[look_ahead_idx].x,
-                                    path_RRT[look_ahead_idx].y)));
-            angle = pid_ctrl->get_control(robot_pose, path_RRT[look_ahead_idx]);
-
-            // Validate Speed
-            speed = (speed > max_speed) ? max_speed : speed;
-            speed = (speed < -max_speed) ? -max_speed : speed;
-            // Validate Angle
-            angle = (angle > max_turn) ? max_turn : angle;
-            angle = (angle < -max_turn) ? -max_turn : angle;
-
-            setcmdvel(speed, angle);
-            cmd_vel_pub.publish(cmd);
+            set_drive_param(cmd_vel_pub, pid_ctrl, look_ahead_idx);
 
             /* printf("Debug Parameters\n"); */
             /* printf("Speed, Angle : %.2f, %.2f \n", speed, angle); */
@@ -172,7 +161,8 @@ int main(int argc, char **argv) {
         }
         break;
         case FINISH: {
-            setcmdvel(0, 0);
+            cmd.drive.speed = 0.0;
+            cmd.drive.steering_angle = 0.0;
             cmd_vel_pub.publish(cmd);
             running = false;
             ros::spinOnce();
@@ -184,6 +174,24 @@ int main(int argc, char **argv) {
         }
     }
     return 0;
+}
+
+void set_drive_param(ros::Publisher cmd_vel_pub, PID *pid_ctrl,
+                     int look_ahead_idx) {
+    speed = 2.0 - 1.2 / (1.0 + (robot_pose.distance(path_RRT[look_ahead_idx].x,
+                                path_RRT[look_ahead_idx].y)));
+    angle = pid_ctrl->get_control(robot_pose, path_RRT[look_ahead_idx]);
+
+    // Validate Speed
+    speed = (speed > max_speed) ? max_speed : speed;
+    speed = (speed < -max_speed) ? -max_speed : speed;
+    // Validate Angle
+    angle = (angle > max_turn) ? max_turn : angle;
+    angle = (angle < -max_turn) ? -max_turn : angle;
+
+    cmd.drive.speed = speed;
+    cmd.drive.steering_angle = angle;
+    cmd_vel_pub.publish(cmd);
 }
 
 void set_waypoints() {
@@ -208,7 +216,6 @@ void set_waypoints() {
         }
     }
 
-    // TODO 2
     // Make your own code to select waypoints.
     // You can randomly sample some points from the map.
     // Also, the car should follow the track in clockwise.
@@ -286,11 +293,6 @@ void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs) {
     robot_pose.y = msgs->pose.pose.position.y;
     robot_pose.th = tf::getYaw(msgs->pose.pose.orientation);
     printf("x,y : %f,%f \n", robot_pose.x, robot_pose.y);
-}
-
-void setcmdvel(double vel, double deg) {
-    cmd.drive.speed = vel;
-    cmd.drive.steering_angle = deg;
 }
 
 void generate_path_RRT() {
