@@ -109,7 +109,7 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
         imgResult,
         cv::Point(static_cast<int>(Res * (path[0].y / res + map_origin_y)),
                   static_cast<int>(Res * (path[0].x / res + map_origin_x))),
-        radius, cv::Scalar(0, 0, 255), CV_FILLED);
+        radius, cv::Scalar(0, 255, 0), CV_FILLED);
     cv::circle(imgResult,
                cv::Point(static_cast<int>(Res * (path[path.size() - 1].y / res +
                                           map_origin_y)),
@@ -210,9 +210,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     // building vector x_init to x_goal
     // checking if distance of x_near is close enough to reach in last step
     for (int w = 1; w < waypoints.size(); w++) {
-        std::cout << "Generating between" << std::endl;
         this->x_goal = waypoints.at(w);
-
         for (int k = 0; k < K; k++) {
             point x_rand;
             if (k % 10 == 0) {
