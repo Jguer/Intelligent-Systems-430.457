@@ -198,23 +198,7 @@ void set_waypoints() {
     std::srand(std::time(NULL));
     waypoints.push_back(point{-3.5, 12.0, 0.0});
 
-    cv::Mat map_margin = map.clone();
-    int jSize = map.cols; // the number of columns
-    int iSize = map.rows; // the number of rows
-
-    for (int i = 0; i < iSize; i++) {
-        for (int j = 0; j < jSize; j++) {
-            if (map.at<uchar>(i, j) < 125) {
-                for (int k = i - waypoint_margin; k <= i + waypoint_margin; k++) {
-                    for (int l = j - waypoint_margin; l <= j + waypoint_margin; l++) {
-                        if (k >= 0 && l >= 0 && k < iSize && l < jSize) {
-                            map_margin.at<uchar>(k, l) = 0;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    cv::Mat map_margin = addMargin(map, waypoint_margin);
 
     // Make your own code to select waypoints.
     // You can randomly sample some points from the map.
