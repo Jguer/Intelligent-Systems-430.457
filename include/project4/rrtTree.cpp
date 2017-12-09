@@ -277,6 +277,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         this->freeze_id = x_near_id;
         this->x_init = x_near_id;
     }
+
+    this->x_init = waypoints.at(0);
     std::reverse(path.begin(), path.end());
 
     return path;
