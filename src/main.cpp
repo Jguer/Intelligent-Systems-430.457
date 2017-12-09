@@ -288,10 +288,10 @@ void generate_path_RRT() {
     }
     tree = rrtTree(waypoints, map, map_origin_x, map_origin_y, res, margin);
     std::cout << "Generating Path" << std::endl;
-    std::vector<traj> path_RRT = tree.generateRRT(
-                                     world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
+    path_RRT = tree.generateRRT(world_x_max, world_x_min, world_y_max,
+                                world_y_min, K, MaxStep);
     printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
-    printf("New trajectory generated. Size of Path %zu\n", path_tmp.size());
+    printf("New trajectory generated. Size of Path %zu\n", path_RRT.size());
     if (path_RRT.size() < 2) {
         path_RRT.clear();
         MaxStep = (MaxStep < 0.4) ? 1.0 : MaxStep - 0.1;

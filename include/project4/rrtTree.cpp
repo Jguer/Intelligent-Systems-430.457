@@ -258,6 +258,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         }
 
         if (this->count == 1) {
+            path.clear();
             return path;
         }
 
@@ -275,7 +276,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             }
         }
         this->freeze_id = x_near_id;
-        this->x_init = x_near_id;
+        this->x_init = ptrTable[x_near_id]->location;
     }
 
     this->x_init = waypoints.at(0);
