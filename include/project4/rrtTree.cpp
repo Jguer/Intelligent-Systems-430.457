@@ -329,12 +329,24 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
     return idx_near;
 }
 
-bool rrtTree::isCollision(point x1, point x2, double d, double R) {
-    for (int i = 0; i < 100; i++) {
-        double x = x1.x + (x2.x - x1.x) * i / 99;
-        double y = x1.y + (x2.y - x1.y) * i / 99;
-        int x_i = round(x / res + this->map_origin_x);
-        int y_j = round(y / res + this->map_origin_y);
+bool rrtTree::isCollision(point x_near, traj x_new) {
+    double R = L / tan(x_new->alpha);
+    double x_c = x_near.x - R * sin(x_near.th);
+    double y_c = x_near.y + R * cos(x_near.th);
+
+    for (double i = 0; i > x_new->d; i += this->res) {
+        double beta = i / R;
+
+        double new_x = x_c + R * sin(x_near.th + beta);
+        double new_y = y_c - R * cos(x_near.th + beta);
+        if (new_x < this->map_min_x || new_x > this->map_max_x) {
+            continue;
+        } else if (new_y < this->map_min_y || new_y > this->map_max_y) {
+            continue;
+        }
+
+        int x_i = round(new_x / res + this->map_origin_x);
+        int y_j = round(new_y / res + this->map_origin_y);
         if (0 > x_i || x_i > round(this->map_origin_x * 2 + 0.5)) {
             return true;
         } else if (0 > y_j || y_j > round(this->map_origin_y * 2 + 0.5)) {
@@ -345,6 +357,19 @@ bool rrtTree::isCollision(point x1, point x2, double d, double R) {
     }
 
     return false;
+    /* for (int i = 0; i < 100; i++) { */
+    /*     double x = x1.x + (x2.x - x1.x) * i / 99; */
+    /*     double y = x1.y + (x2.y - x1.y) * i / 99; */
+    /*     int x_i = round(x / res + this->map_origin_x); */
+    /*     int y_j = round(y / res + this->map_origin_y); */
+    /*     if (0 > x_i || x_i > round(this->map_origin_x * 2 + 0.5)) { */
+    /*         return true; */
+    /*     } else if (0 > y_j || y_j > round(this->map_origin_y * 2 + 0.5)) { */
+    /*         return true; */
+    /*     } else if (map.at<uchar>(x_i, y_j) < 125) { */
+    /*         return true; */
+    /*     } */
+    /* } */
 }
 
 int rrtTree::nearestNeighbor(point x_rand) {
