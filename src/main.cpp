@@ -300,8 +300,9 @@ void generate_path_RRT() {
                                          world_x_max, world_x_min, world_y_max, world_y_min, K, MaxStep);
         printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
         printf("New trajectory generated. Size of Path %zu\n", path_tmp.size());
-        if (path_tmp.size() == 0) {
+        if (path_tmp.size() < 2) {
             path_RRT.clear();
+            MaxStep = (MaxStep < 0.4) ? 1.0 : MaxStep - 0.1;
             generate_path_RRT();
             return;
         }
