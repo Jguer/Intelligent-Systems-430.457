@@ -209,7 +209,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     traj x_new;
     // building vector x_init to x_goal
     // checking if distance of x_near is close enough to reach in last step
-    for (int w = 1; w < waypoints.size() - 1; w++) {
+    for (int w = 1; w < waypoints.size(); w++) {
         std::cout << "Generating between" << std::endl;
         this->x_goal = waypoints.at(w);
 

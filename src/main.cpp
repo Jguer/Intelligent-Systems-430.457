@@ -281,7 +281,6 @@ void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs) {
 
 void generate_path_RRT() {
     rrtTree tree;
-
     if (waypoints.size() < 2) {
         std::cout << "Paths require more than 1 point" << std::endl;
         exit(3);
