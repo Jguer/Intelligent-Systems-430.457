@@ -334,15 +334,15 @@ bool rrtTree::isCollision(point x_near, traj x_new) {
     double x_c = x_near.x - R * sin(x_near.th);
     double y_c = x_near.y + R * cos(x_near.th);
 
-    for (double i = 0; i > x_new.d; i += this->res) {
+    for (double i = 0; i < x_new.d; i += this->res) {
         double beta = i / R;
 
         double new_x = x_c + R * sin(x_near.th + beta);
         double new_y = y_c - R * cos(x_near.th + beta);
         if (new_x < this->map_min_x || new_x > this->map_max_x) {
-            continue;
+            return true;
         } else if (new_y < this->map_min_y || new_y > this->map_max_y) {
-            continue;
+            return true;
         }
 
         int x_i = round(new_x / res + this->map_origin_x);
