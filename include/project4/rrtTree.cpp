@@ -330,11 +330,11 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 }
 
 bool rrtTree::isCollision(point x_near, traj x_new) {
-    double R = L / tan(x_new->alpha);
+    double R = L / tan(x_new.alpha);
     double x_c = x_near.x - R * sin(x_near.th);
     double y_c = x_near.y + R * cos(x_near.th);
 
-    for (double i = 0; i > x_new->d; i += this->res) {
+    for (double i = 0; i > x_new.d; i += this->res) {
         double beta = i / R;
 
         double new_x = x_c + R * sin(x_near.th + beta);
