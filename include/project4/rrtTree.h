@@ -45,7 +45,7 @@ private:
                    double d);
     int nearestNeighbor(point x_rand, double MaxStep);
     int nearestNeighbor(point x_rand);
-    bool isCollision(point x1, point x2, double d, double R);
+    bool rrtTree::isCollision(point x_near, traj x_new);
     point randomState(double x_max, double x_min, double y_max, double y_min);
     traj newState(point x_near, point x_rand, double MaxStep);
 
