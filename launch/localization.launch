@@ -3,17 +3,17 @@
 <launch>
 
 
-  <node pkg="rviz" type="rviz" name="rviz" output="screen" args="-d $(find project4)/src/rviz_single.rviz" />
+  <node pkg="rviz" type="rviz" name="rviz" output="screen" args="-d $(find final_project)/src/rviz_single.rviz" />
 
   <!-- known map server -->
-  <arg name="map"            default="$(find project4)/src/mymap.yaml" />
+  <arg name="map"            default="$(find final_project)/src/final.yaml" />
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map)" output="screen" />
 
   <!-- amcl -->
   <arg name="use_map_topic"  default="false"/>
   <arg name="scan_topic"     default="scan"/>
   <arg name="initial_pose_x" default="-3.5"/>
-  <arg name="initial_pose_y" default="12.0"/>
+  <arg name="initial_pose_y" default="8.5"/>
   <arg name="initial_pose_a" default="0.0"/>
 
 
@@ -23,11 +23,11 @@
     <param name="odom_alpha5"               value="0.005"/>
     <!-- Publish scans from best pose at a max of 4 Hz -->
     <param name="gui_publish_rate"          value="4.0"/>
-    <param name="laser_max_beams"           value="60"/>
-    <param name="laser_max_range"           value="13.0"/>
-    <param name="min_particles"             value="500"/>
-    <param name="max_particles"             value="5000"/>
-    <param name="kld_err"                   value="0.01"/>
+    <param name="laser_max_beams"           value="100"/> <!-- 60 -->
+    <!--param name="laser_max_range"           value="12.0"/-->
+    <param name="min_particles"             value="100"/> <!-- 500 -->
+    <param name="max_particles"             value="500"/> <!-- 2000 -->
+    <param name="kld_err"                   value="0.05"/>
     <param name="kld_z"                     value="0.99"/>
     <!-- translation std dev, m -->
       <param name="odom_alpha1" value="0.01"/> <!--0.000051-->
@@ -42,9 +42,9 @@
     <param name="laser_lambda_short"        value="0.1"/>
     <param name="laser_model_type"          value="likelihood_field"/>
     <!-- <param name="laser_model_type" value="beam"/> -->
-    <param name="laser_likelihood_max_dist" value="2.0"/> <!-- 2 -->
-    <param name="update_min_d"              value="-0.05"/> <!-- 0.25-->
-    <param name="update_min_a"              value="-0.04"/>  <!-- 0.2 -->
+    <param name="laser_likelihood_max_dist" value="1.0"/> <!-- 2 -->
+    <param name="update_min_d"              value="0.025"/> <!-- 0.25-->
+    <param name="update_min_a"              value="0.15"/>  <!-- 0.2 -->
     <param name="odom_frame_id"             value="odom"/>
     <param name="base_frame_id"             value="base_link"/>
     <param name="resample_interval"         value="1"/>

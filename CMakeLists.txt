@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(project4)
+project(final_project)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -190,7 +190,7 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 ## custom  ##
 #############
 
-add_executable(project4 src/main.cpp include/project4/rrtTree.cpp
+add_executable(final_project src/main.cpp include/project4/rrtTree.cpp
   include/project4/pid.cpp include/project4/traj.cpp)
 target_link_libraries(project4
    ${catkin_LIBRARIES} ${GAZEBO_INCLUDE_DIRS} ${RRT_LIBRARIES}

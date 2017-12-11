@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
             char *user = getpwuid(getuid())->pw_name;
             cv::Mat map_org =
                 cv::imread((std::string("/home/") + std::string(user) +
-                            std::string("/catkin_ws/src/project4/src/slam_map.pgm"))
+                            std::string("/catkin_ws/src/final_project/src/final.pgm"))
                            .c_str(),
                            CV_LOAD_IMAGE_GRAYSCALE);
 
@@ -98,16 +98,16 @@ int main(int argc, char **argv) {
             map_x_range = map.rows;
             map_origin_x = map_x_range / 2.0 - 0.5;
             map_origin_y = map_y_range / 2.0 - 0.5;
-            world_x_min = -4.5;
-            world_x_max = 4.5;
-            world_y_min = -13.5;
-            world_y_max = 13.5;
+            world_x_min = -4.7;
+            world_x_max = 4.7;
+            world_y_min = -10.2;
+            world_y_max = 10.2;
             res = 0.05;
-            std::cout << "Loaded Map\n" << std::endl;
+            std::cout << "Loaded Map" << std::endl;
 
             if (!map.data) {
                 // Check for invalid input
-                printf("Could not open or find the image\n");
+                std::cout << "Could not open or find the image" << std::endl;
                 return -1;
             }
             state = PATH_PLANNING;
@@ -196,13 +196,21 @@ void set_drive_param(ros::Publisher cmd_vel_pub, PID *pid_ctrl,
 
 void set_waypoints() {
     std::srand(std::time(NULL));
-    waypoints.push_back(point{-3.5, 12.0, 0.0});
+    waypoints.push_back(point{-3.5, 8.5, 0.0});
 
     cv::Mat map_margin = addMargin(map, waypoint_margin);
 
-    // Make your own code to select waypoints.
-    // You can randomly sample some points from the map.
-    // Also, the car should follow the track in clockwise.
+    // Set your own waypoints.
+    // The car should turn around the outer track once, and come back to the
+    // starting point. This is an example.
+    /* waypoint_candid[1].x = 2.2; */
+    /* waypoint_candid[1].y = 8.5; */
+    /* waypoint_candid[2].x = 2.5; */
+    /* waypoint_candid[2].y = -8.5; */
+    /* waypoint_candid[3].x = -2.5; */
+    /* waypoint_candid[3].y = -8.0; */
+    /* waypoint_candid[4].x = -3.5; */
+    /* waypoint_candid[4].y = 8.5; */
 
     /*
     quadrants
@@ -269,7 +277,12 @@ void set_waypoints() {
             }
         }
     }
-    waypoints.push_back(point{-3.5, 12.0, 0.0});
+    waypoints.push_back(point{-3.5, 8.5, 0.0});
+
+    // Waypoints for arbitrary goal points.
+    // TA will change this part before scoring.
+    waypoints.push_back(point{1.5, 1.5, 0.0});
+    waypoints.push_back(point{-2.0, -9.0, 0.0});
 }
 
 void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs) {
