@@ -204,7 +204,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     // INIT
     // initialization of x_near and x_new at start
     std::vector<traj> path;
-    int x_near_id;
+    int x_near_id, x_final_id = 0;
     point x_near;
     traj x_new;
     // building vector x_init to x_goal
@@ -251,6 +251,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             /* x_new.print(); */
             this->addVertex(x_new, x_rand, x_near_id, x_new.alpha, x_new.d);
             if (x_new.distance(x_goal) < 0.3) {
+                x_final_id = this->count - 1;
                 break;
             }
         }
@@ -258,13 +259,13 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         if (this->count == 1) {
             path.clear();
             return path;
+        } else if (x_final_id == 0) {
+            x_final_id = this->nearestNeighbor(x_goal, MaxStep);
         }
-
-        x_near_id = this->nearestNeighbor(x_goal, MaxStep);
-        path.push_back(convertFromPoint(ptrTable[x_near_id]->location,
-                                        ptrTable[x_near_id]->alpha,
-                                        ptrTable[x_near_id]->d));
-        for (int i = x_near_id; i != 0; i = ptrTable[i]->idx_parent) {
+        path.push_back(convertFromPoint(ptrTable[x_final_id]->location,
+                                        ptrTable[x_final_id]->alpha,
+                                        ptrTable[x_final_id]->d));
+        for (int i = x_final_id; i != 0; i = ptrTable[i]->idx_parent) {
             if (ptrTable[i] == NULL) {
                 std::cout << "Parent of important node is deleted" << std::endl;
                 path.clear();
