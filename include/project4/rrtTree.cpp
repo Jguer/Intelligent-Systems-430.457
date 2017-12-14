@@ -284,7 +284,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         this->x_init = ptrTable[x_final_id]->location;
     }
 
-    this->x_init = waypoints.at(0);
+    this->x_init = ptrTable[0]->location;
     std::reverse(path.begin(), path.end());
 
     return path;
