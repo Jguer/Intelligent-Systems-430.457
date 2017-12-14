@@ -90,7 +90,7 @@ void rrtTree::visualizeTree() {
     }
     cv::namedWindow("Mapping");
     cv::imshow("Mapping", imgResult);
-    cv::waitKey(1);
+    cv::waitKey(0);
 }
 
 void rrtTree::visualizeTree(std::vector<traj> path) {
@@ -176,7 +176,7 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
     }
     cv::namedWindow("Mapping");
     cv::imshow("Mapping", imgResult);
-    cv::waitKey(1);
+    cv::waitKey(0);
 }
 
 void rrtTree::addVertex(point x_new, point x_rand, int idx_near, double alpha,
