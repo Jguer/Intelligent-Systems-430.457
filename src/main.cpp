@@ -34,7 +34,7 @@ int margin = 6;
 int K = 3800;
 double MaxStep = 1.7;
 int waypoint_margin = 24;
-double waypoint_scale = 3.8;
+double waypoint_scale = 2.0;
 
 // Vectoring
 std::vector<point> waypoints;
@@ -258,16 +258,17 @@ void set_waypoints() {
                 waypoints.push_back(point{res * (i_rand - map_origin_x),
                                           res * (j_rand - map_origin_y), 0.0});
                 printf("Waypoint found (x,y): %.2f, %.2f \n",
-                       res * (i_rand - map_origin_x), res * (j_rand - map_origin_y));
+                       res * (i_rand - map_origin_x), res * (j_rand -
+    map_origin_y));
                 // optimization of position of point
             }
         }
     }
     */
     double quadrants[4][2] = {{world_x_max, world_y_max},
-    {world_x_min, world_y_max},
-    {world_x_min, world_y_min},
-    {world_x_max, world_y_min}
+        {world_x_min, world_y_max},
+        {world_x_min, world_y_min},
+        {world_x_max, world_y_min}
     };
     std::array<int, 3> quadrantSeq;
 
@@ -296,13 +297,17 @@ void set_waypoints() {
     for (int i = 0; i < quadrantSeq.size(); i++) {
         foundPoint = false;
         while (foundPoint == false) {
-            x_rand = quadrants[quadrantSeq[i]][0] - (double)(rand() 
-                    * (quadrants[quadrantSeq[i]][0] / waypoint_scale) / RAND_MAX);
-            y_rand = quadrants[quadrantSeq[i]][1] - (double)(rand() 
-                    * (quadrants[quadrantSeq[i]][1] / waypoint_scale) / RAND_MAX);
+            x_rand =
+                quadrants[quadrantSeq[i]][0] -
+                (double)(rand() * (quadrants[quadrantSeq[i]][0] / waypoint_scale) /
+                         RAND_MAX);
+            y_rand =
+                quadrants[quadrantSeq[i]][1] -
+                (double)(rand() * (quadrants[quadrantSeq[i]][1] / waypoint_scale) /
+                         RAND_MAX);
             i_rand = round(x_rand / res + map_origin_x);
             j_rand = round(y_rand / res + map_origin_y);
-            //printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
+            // printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
 
             if ((map_margin.at<uchar>(i_rand, j_rand)) < 200) {
                 // std::cout << "Drop the point."
