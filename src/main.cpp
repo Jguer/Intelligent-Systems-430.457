@@ -34,7 +34,7 @@ int margin = 6;
 int K = 3800;
 double MaxStep = 1.7;
 int waypoint_margin = 24;
-double waypoint_scale = 2.0;
+double waypoint_scale = 3.0;
 
 // Vectoring
 std::vector<point> waypoints;
