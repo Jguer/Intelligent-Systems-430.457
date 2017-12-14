@@ -81,8 +81,6 @@ int main(int argc, char **argv) {
     while (running) {
         switch (state) {
         case INIT: {
-            srand(time(NULL));
-
             // Load Map
             char *user = getpwuid(getuid())->pw_name;
             cv::Mat map_org =

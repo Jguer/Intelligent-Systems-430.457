@@ -234,7 +234,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             /* std::cout << "X_Near Point: "; */
             /* x_near.print(); */
             x_new = newState(x_near, x_rand, MaxStep);
-            if (x_new.th > 9000 || x_new == NULL) {
+            if (x_new.th > 9000) {
                 std::cout << "Popin' x_near: ";
                 this->ptrTable[x_near_id]->location.print();
                 delete this->ptrTable[x_near_id];
