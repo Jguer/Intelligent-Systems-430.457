@@ -306,7 +306,7 @@ void generate_path_RRT() {
     printf("New trajectory generated. Size of Path %zu\n", path_RRT.size());
     if (path_RRT.size() < 2) {
         path_RRT.clear();
-        MaxStep = (MaxStep < 0.4) ? 1.0 : MaxStep - 0.1;
+        MaxStep = (MaxStep < 0.4) ? 2.0 : MaxStep - 0.1;
         generate_path_RRT();
         return;
     }

@@ -225,7 +225,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             /* x_rand.print(); */
 
             x_near_id = this->nearestNeighbor(x_rand, MaxStep);
-            if (x_near_id == -1) {
+            if (x_near_id == -1 || ptrTable[x_near_id] == NULL) {
                 continue;
             }
 
@@ -234,7 +234,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             /* std::cout << "X_Near Point: "; */
             /* x_near.print(); */
             x_new = newState(x_near, x_rand, MaxStep);
-            if (x_new.th > 9000) {
+            if (x_new.th > 9000 || x_new == NULL) {
                 std::cout << "Popin' x_near: ";
                 this->ptrTable[x_near_id]->location.print();
                 delete this->ptrTable[x_near_id];
@@ -265,6 +265,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         path.push_back(convertFromPoint(ptrTable[x_final_id]->location,
                                         ptrTable[x_final_id]->alpha,
                                         ptrTable[x_final_id]->d));
+
         for (int i = x_final_id; i != 0; i = ptrTable[i]->idx_parent) {
             if (ptrTable[i] == NULL) {
                 std::cout << "Parent of important node is deleted" << std::endl;
@@ -275,12 +276,12 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                 convertFromPoint(ptrTable[ptrTable[i]->idx_parent]->location,
                                  ptrTable[ptrTable[i]->idx_parent]->alpha,
                                  ptrTable[ptrTable[i]->idx_parent]->d));
-            if (this->x_init == ptrTable[i]->location) {
+            if (ptrTable[i]->location == this->x_init) {
                 break;
             }
         }
         this->freeze_id = x_near_id;
-        this->x_init = ptrTable[x_near_id]->location;
+        this->x_init = ptrTable[x_final_id]->location;
     }
 
     this->x_init = waypoints.at(0);
