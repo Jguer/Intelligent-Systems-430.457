@@ -180,7 +180,7 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
         cv::circle(imgResult,
                    cv::Point(static_cast<int>(Res * (gs.y / res + map_origin_y)),
                              static_cast<int>(Res * (gs.x / res + map_origin_x))),
-                   3, cv::Scalar(0, 88, 139), CV_FILLED);
+                   5, cv::Scalar(0, 88, 139), CV_FILLED);
     }
     cv::namedWindow("Mapping");
     cv::imshow("Mapping", imgResult);
