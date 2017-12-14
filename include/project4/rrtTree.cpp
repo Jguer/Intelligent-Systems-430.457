@@ -105,13 +105,6 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
     cv::cvtColor(this->map, map_c, CV_GRAY2BGR);
     cv::resize(map_c, imgResult, cv::Size(), Res, Res);
 
-    for (auto gs : this->waypoints) {
-        cv::circle(imgResult,
-                   cv::Point(static_cast<int>(Res * (gs.y / res + map_origin_y)),
-                             static_cast<int>(Res * (gs.x / res + map_origin_x))),
-                   3, cv::Scalar(64, 125, 125), CV_FILLED);
-    }
-
     cv::circle(
         imgResult,
         cv::Point(static_cast<int>(Res * (path[0].y / res + map_origin_y)),
@@ -181,6 +174,13 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
                            static_cast<int>(Res * (p2_x / res + map_origin_x)));
             cv::line(imgResult, x1, x2, cv::Scalar(255, 0, 0), thickness, lineType);
         }
+    }
+
+    for (auto gs : this->waypoints) {
+        cv::circle(imgResult,
+                   cv::Point(static_cast<int>(Res * (gs.y / res + map_origin_y)),
+                             static_cast<int>(Res * (gs.x / res + map_origin_x))),
+                   3, cv::Scalar(0, 88, 139), CV_FILLED);
     }
     cv::namedWindow("Mapping");
     cv::imshow("Mapping", imgResult);
