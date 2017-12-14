@@ -105,11 +105,19 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
     cv::cvtColor(this->map, map_c, CV_GRAY2BGR);
     cv::resize(map_c, imgResult, cv::Size(), Res, Res);
 
+    for (auto gs : this->waypoints) {
+        cv::circle(imgResult,
+                   cv::Point(static_cast<int>(Res * (gs.y / res + map_origin_y)),
+                             static_cast<int>(Res * (gs.x / res + map_origin_x))),
+                   3, cv::Scalar(64, 125, 125), CV_FILLED);
+    }
+
     cv::circle(
         imgResult,
         cv::Point(static_cast<int>(Res * (path[0].y / res + map_origin_y)),
                   static_cast<int>(Res * (path[0].x / res + map_origin_x))),
         radius, cv::Scalar(0, 255, 0), CV_FILLED);
+
     cv::circle(imgResult,
                cv::Point(static_cast<int>(Res * (path[path.size() - 1].y / res +
                                           map_origin_y)),
