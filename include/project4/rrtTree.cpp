@@ -270,6 +270,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         } else if (x_final_id == 0) {
             x_final_id = this->nearestNeighbor(x_goal, MaxStep);
         }
+
         path.push_back(convertFromPoint(ptrTable[x_final_id]->location,
                                         ptrTable[x_final_id]->alpha,
                                         ptrTable[x_final_id]->d));
@@ -288,8 +289,16 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                 break;
             }
         }
+
         this->freeze_id = x_final_id;
         this->x_init = ptrTable[x_final_id]->location;
+        printf("Freeze_id: %d Count: %d\n", x_final_id, this->count);
+        if (x_final_id != this->count - 1) {
+            for (int i = x_final_id + 1; i < this->count; i++) {
+                delete ptrTable[i];
+            }
+            this->count = x_final_id + 1;
+        }
         printf("Freeze_id: %d Count: %d\n", x_final_id, this->count);
     }
 
