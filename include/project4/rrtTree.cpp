@@ -14,6 +14,7 @@ rrtTree::~rrtTree() {
     for (int i = 0; i < this->count; i++) {
         if (ptrTable[i] != NULL) {
             delete ptrTable[i];
+            ptrTable[i] = NULL;
         }
     }
 }
@@ -255,6 +256,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                 std::cout << "Popin' x_near: ";
                 this->ptrTable[x_near_id]->location.print();
                 delete this->ptrTable[x_near_id];
+                ptrTable[x_near_id] = NULL;
                 continue;
             }
             /* std::cout << "X_new Point: "; */
@@ -313,6 +315,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             for (int i = x_final_id + 1; i < this->count; i++) {
                 if (ptrTable[i] != NULL) {
                     delete ptrTable[i];
+                    ptrTable[i] = NULL;
                 }
             }
             this->count = x_final_id + 1;
