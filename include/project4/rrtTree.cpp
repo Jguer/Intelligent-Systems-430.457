@@ -12,6 +12,9 @@ rrtTree::rrtTree() {
 
 rrtTree::~rrtTree() {
     for (int i = 1; i <= count; i++) {
+        if (this->ptrTable[i] == NULL) {
+            continue;
+        }
         delete ptrTable[i];
     }
 }
