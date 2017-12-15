@@ -279,7 +279,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                                         ptrTable[x_final_id]->alpha,
                                         ptrTable[x_final_id]->d));
 
-        for (int i = ptrTable[x_final_id]->idx_parent; i != this->freeze_id;
+        for (int i = ptrTable[x_final_id]->idx_parent; i != 0;
                 i = ptrTable[i]->idx_parent) {
             if (ptrTable[i] == NULL) {
                 std::cout << "Parent of important node is deleted" << std::endl;
@@ -290,25 +290,24 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                                             ptrTable[i]->d));
         }
 
-        cleanTable(ptrTable[x_final_id]->location);
+        cleanTable(x_final_id);
     }
 
-    this->x_init = ptrTable[0]->location;
+    this->x_init = waypoints.at(0);
     std::reverse(path.begin(), path.end());
 
     return path;
 }
 
-void rrtTree::cleanTable(traj new_init) {
-    this->x_init = new_init;
-
+void rrtTree::cleanTable(int new_init) {
+    this->x_init = ptrTable[new_init]->location;
     delete this->root;
     this->root = new node;
     root->idx = 0;
     root->idx_parent = 0;
-    root->location = new_init;
-    root->alpha = new_init.alpha;
-    root->d = new_init.d;
+    root->location = ptrTable[new_init]->location;
+    root->alpha = ptrTable[new_init]->alpha;
+    root->d = ptrTable[new_init]->d;
     root->rand = x_init;
 
     for (int j = 1; j < this->count; j++) {
@@ -317,11 +316,8 @@ void rrtTree::cleanTable(traj new_init) {
         }
     }
 
-    ptrTable.fill(NULL);
-
     this->count = 1;
     ptrTable[0] = root;
-    this->addVertex(new_init, x_rand, x_near_id, x_new.alpha, x_new.d);
 }
 
 point rrtTree::randomState(double x_max, double x_min, double y_max,
