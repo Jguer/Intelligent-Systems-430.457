@@ -263,18 +263,19 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             /* std::cout << "Added Vertex "; */
             /* x_new.print(); */
             this->addVertex(x_new, x_rand, x_near_id, x_new.alpha, x_new.d);
-            if (x_new.distance(x_goal) < 0.3) {
+            if (x_new.distance(x_goal) < 0.4) {
                 x_final_id = this->count - 1;
                 break;
             }
         }
 
-        if (this->count == 1) {
+        if (this->count == 1 || x_final_id == 0) {
             path.clear();
             return path;
-        } else if (x_final_id == 0) {
-            x_final_id = this->nearestNeighbor(x_goal);
         }
+        /*else if (x_final_id == 0) { */
+        /*     x_final_id = this->nearestNeighbor(x_goal); */
+        /* } */
         path.push_back(convertFromPoint(ptrTable[x_final_id]->location,
                                         ptrTable[x_final_id]->alpha,
                                         ptrTable[x_final_id]->d));
