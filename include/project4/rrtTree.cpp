@@ -212,6 +212,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     // INIT
     // initialization of x_near and x_new at start
     std::vector<traj> path;
+    int x_old_id = 0;
     point x_near;
     traj x_new;
     // building vector x_init to x_goal
@@ -265,6 +266,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         }
 
         if (this->count == 1) {
+            std::cout << "Low quality tree" << std::endl;
             path.clear();
             return path;
         }
@@ -273,6 +275,12 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             x_final_id = this->nearestNeighbor(x_goal);
         }
 
+        if (x_final_id == x_old_id) {
+            std::cout << "Got stuck" << std::endl;
+            path.clear();
+            return path;
+        }
+        x_old_id = x_final_id;
         path.push_back(convertFromPoint(ptrTable[x_final_id]->location,
                                         ptrTable[x_final_id]->alpha,
                                         ptrTable[x_final_id]->d));
