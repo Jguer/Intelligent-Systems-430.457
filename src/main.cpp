@@ -33,7 +33,7 @@ double world_y_max;
 int margin = 6;
 int K = 3800;
 double MaxStep = 1.7;
-int waypoint_margin = 24;
+int waypoint_margin = 20;
 double waypoint_scale = 3.00;
 
 // Vectoring

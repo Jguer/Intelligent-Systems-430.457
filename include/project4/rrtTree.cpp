@@ -288,7 +288,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                 break;
             }
         }
-        this->freeze_id = x_near_id;
+        this->freeze_id = x_final_id;
         this->x_init = ptrTable[x_final_id]->location;
     }
 
@@ -445,7 +445,7 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
             new_theta = 2 * PI + new_theta;
         }
 
-        double dist_to_rand = distance(x_rand, new_x, new_y);
+        double dist_to_rand = x_rand.distance(new_x, new_y);
         if (dist_to_rand < og_dist) {
             /* printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y,
              * new_theta);
