@@ -260,7 +260,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         this->x_goal = waypoints.at(w);
         for (int k = 0; k < K; k++) {
             point x_rand;
-            if (k % 20 == 0) {
+            if (k % 5 == 0) {
                 x_rand = this->x_goal;
             } else {
                 x_rand = this->randomState(x_max, x_min, y_max, y_min);
@@ -311,7 +311,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         } else if (x_final_id == 0) {
             x_final_id = this->nearestNeighbor(x_goal);
             if (x_final_id == 0 ||
-                    ptrTable[x_final_id]->location.distance(x_goal) > 7.0) {
+                    ptrTable[x_final_id]->location.distance(x_goal) > 10.0) {
                 path.clear();
                 return path;
             }
