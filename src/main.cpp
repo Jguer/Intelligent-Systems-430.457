@@ -336,6 +336,6 @@ void generate_path_RRT() {
     if (path_RRT.size() != 0) {
         /* path_RRT.clear(); */
         /* MaxStep = (MaxStep < 0.4) ? 2.0 : MaxStep - 0.1; */
-        tree.visualizeTree(path_RRT);
+        /* tree.visualizeTree(path_RRT); */
     }
 }
