@@ -311,7 +311,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         } else if (x_final_id == 0) {
             x_final_id = this->nearestNeighbor(x_goal);
             if (x_final_id == 0 ||
-                    ptrTable[x_final_id]->location.distance(x_goal) > 5.0) {
+                    ptrTable[x_final_id]->location.distance(x_goal) > 7.0) {
                 path.clear();
                 return path;
             }
@@ -502,38 +502,38 @@ traj rrtTree::newState(point x_near, point x_rand, double MaxStep) {
             new_theta = -2 * PI + new_theta;
         } else if (new_theta < -PI) {
             new_theta = 2 * PI + new_theta;
-    }
+        }
 
-    double dist_to_rand = x_rand.distance(new_x, new_y);
-    if (dist_to_rand < og_dist) {
-      /* printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y,
-       * new_theta);
-       */
-      og_dist = dist_to_rand;
-      x_new.set(new_x, new_y, new_theta, alpha, d);
+        double dist_to_rand = x_rand.distance(new_x, new_y);
+        if (dist_to_rand < og_dist) {
+            /* printf("Point candidate %.2f, %.2f, %.2f\n", new_x, new_y,
+             * new_theta);
+             */
+            og_dist = dist_to_rand;
+            x_new.set(new_x, new_y, new_theta, alpha, d);
+        }
     }
-  }
-  return x_new;
+    return x_new;
 }
 
 cv::Mat addMargin(cv::Mat map, int margin) {
-  cv::Mat map_margin = map.clone();
-  int xSize = map.cols;
-  int ySize = map.rows;
+    cv::Mat map_margin = map.clone();
+    int xSize = map.cols;
+    int ySize = map.rows;
 
-  for (int i = 0; i < ySize; i++) {
-    for (int j = 0; j < xSize; j++) {
-      if (map.at<uchar>(i, j) < 125) {
-        for (int k = i - margin; k <= i + margin; k++) {
-          for (int l = j - margin; l <= j + margin; l++) {
-            if (k >= 0 && l >= 0 && k < ySize && l < xSize) {
-              map_margin.at<uchar>(k, l) = 0;
+    for (int i = 0; i < ySize; i++) {
+        for (int j = 0; j < xSize; j++) {
+            if (map.at<uchar>(i, j) < 125) {
+                for (int k = i - margin; k <= i + margin; k++) {
+                    for (int l = j - margin; l <= j + margin; l++) {
+                        if (k >= 0 && l >= 0 && k < ySize && l < xSize) {
+                            map_margin.at<uchar>(k, l) = 0;
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
-  }
 
-  return map_margin;
+    return map_margin;
 }

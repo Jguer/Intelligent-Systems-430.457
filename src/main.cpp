@@ -30,9 +30,9 @@ double world_y_min;
 double world_y_max;
 
 // parameters you should adjust : K, margin, MaxStep
-int margin = 6;
-int K = 6800;
-double MaxStep = 1.7;
+int margin = 5;
+int K = 5000;
+double MaxStep = 2.5;
 int waypoint_margin = 10;
 double waypoint_scale = 5.00;
 double center_scale = 4.5;
@@ -122,6 +122,7 @@ int main(int argc, char **argv) {
             do {
                 std::cout << "Generating new path" << std::endl;
                 generate_path_RRT();
+                MaxStep = (MaxStep == 0.5) ? 2.5 : MaxStep - 0.1;
             } while (path_RRT.size() == 0);
 
             std::cout << "Initializing Robot" << std::endl;
@@ -334,8 +335,6 @@ void generate_path_RRT() {
     printf("New trajectory generated. Size of Path %zu\n", path_RRT.size());
 
     if (path_RRT.size() != 0) {
-        /* path_RRT.clear(); */
-        /* MaxStep = (MaxStep < 0.4) ? 2.0 : MaxStep - 0.1; */
         /* tree.visualizeTree(path_RRT); */
     }
 }
