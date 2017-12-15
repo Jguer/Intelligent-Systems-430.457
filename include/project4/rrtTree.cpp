@@ -22,7 +22,6 @@ rrtTree::~rrtTree() {
 rrtTree::rrtTree(std::vector<point> waypoints, cv::Mat map, double map_origin_x,
                  double map_origin_y, double res, int margin) {
     this->waypoints = waypoints;
-    this->freeze_id = 0;
     this->x_init = waypoints.at(0);
     this->x_goal = waypoints.at(1);
     this->map_original = map;
@@ -224,7 +223,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         this->x_goal = waypoints.at(w);
         for (int k = 0; k < K; k++) {
             point x_rand;
-            if (k % 10 == 0) {
+            if (k % 20 == 0) {
                 x_rand = this->x_goal;
             } else {
                 x_rand = this->randomState(x_max, x_min, y_max, y_min);
@@ -339,7 +338,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
     int idx_near = -1;
 
     double distance_min = INT_MAX;
-    for (int i = this->freeze_id; i < this->count; i++) {
+    for (int i = 0; i < this->count; i++) {
         if (this->ptrTable[i] == NULL) {
             continue;
         }
@@ -412,7 +411,7 @@ int rrtTree::nearestNeighbor(point x_rand) {
     int idx_near;
 
     distance_min = INT_MAX;
-    for (int i = this->freeze_id; i < this->count; i++) {
+    for (int i = 0; i < this->count; i++) {
         if (this->ptrTable[i] == NULL) {
             continue;
         }

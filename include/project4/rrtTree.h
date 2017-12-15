@@ -33,7 +33,6 @@ private:
     std::normal_distribution<double> alpha_dist;
     std::vector<point> waypoints;
     int count;
-    int freeze_id;
     point x_init, x_goal;
     cv::Mat map;
     cv::Mat map_original;
