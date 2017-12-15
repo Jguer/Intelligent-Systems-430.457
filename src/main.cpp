@@ -349,15 +349,10 @@ void generate_path_RRT() {
     printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
     printf("New trajectory generated. Size of Path %zu\n", path_RRT.size());
     if (path_RRT.size() == 0) {
-        MaxStep = (MaxStep < 0.4) ? 2.0 : MaxStep - 0.1;
+        MaxStep = (MaxStep < 0.4) ? 2.5 : MaxStep - 0.1;
         generate_path_RRT();
         return;
     }
+    printf("Able to generate tree with MaxStep: %f\n", MaxStep);
     tree.visualizeTree(path_RRT);
-
-    size_t size = path_RRT.size();
-    path_RRT.reserve(size * 2);
-    for (size_t i = 0; i < size; i++) {
-        path_RRT.push_back(path_RRT[i]);
-    }
 }
