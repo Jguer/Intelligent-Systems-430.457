@@ -274,12 +274,8 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         } else if (x_final_id == 0) {
             x_final_id = this->nearestNeighbor(x_goal);
         }
-        path.push_back(convertFromPoint(ptrTable[x_final_id]->location,
-                                        ptrTable[x_final_id]->alpha,
-                                        ptrTable[x_final_id]->d));
 
-        for (int i = ptrTable[x_final_id]->idx_parent; i != 0;
-                i = ptrTable[i]->idx_parent) {
+        for (int i = x_final_id; i != 0; i = ptrTable[i]->idx_parent) {
             if (ptrTable[i] == NULL) {
                 std::cout << "Parent of important node is deleted" << std::endl;
                 path.clear();
