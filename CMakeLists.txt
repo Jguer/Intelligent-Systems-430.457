@@ -119,6 +119,8 @@ include_directories(
 include_directories(${PROJECT4_INCLUDE_DIRS})
 #include_directories(${ROOT_DIR})
 include_directories(${GAZEBO_INCLUDE_DIRS})
+include_directories(/usr/include/opencv2/)
+
 link_directories(${GAZEBO_LIBRARY_DIRS})
 
 ## Declare a cpp library
