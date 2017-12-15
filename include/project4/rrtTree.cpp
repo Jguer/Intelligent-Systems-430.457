@@ -91,7 +91,7 @@ void rrtTree::visualizeTree() {
             cv::line(imgResult, x1, x2, cv::Scalar(255, 0, 0), thickness, lineType);
         }
     }
-    cv::namedWindow("Mapping", AUTOSIZE);
+    cv::namedWindow("Mapping");
     cv::imshow("Mapping", imgResult);
     cv::waitKey(0);
 }
