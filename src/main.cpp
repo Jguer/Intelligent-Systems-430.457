@@ -33,8 +33,9 @@ double world_y_max;
 int margin = 6;
 int K = 3800;
 double MaxStep = 1.7;
-int waypoint_margin = 20;
+int waypoint_margin = 10;
 double waypoint_scale = 3.00;
+double center_scale = 5.0;
 
 // Vectoring
 std::vector<point> waypoints;
@@ -210,66 +211,12 @@ void set_waypoints() {
     // col == i == x
     // row == j == y
 
-    /*int quadrants[4][2] = {
-        {static_cast<int>(round(map_origin_x)),
-        static_cast<int>(round(map_origin_y))},
-        {0, static_cast<int>(round(map_origin_y))},
-        {0, 0},
-        {static_cast<int>(round(map_origin_x)), 0}
-    };
-    std::array<int, 3> quadrantSeq;
-
-    // check in which quadrant starting point is => generate sequence
-    if (waypoints[0].y >= 0 && waypoints[0].x >= 0) {
-        quadrantSeq = {3, 2, 1};
-        printf("Quadrant: %d \n", 0);
-    } else if (waypoints[0].y >= 0 && waypoints[0].x <= 0) {
-        quadrantSeq = {0, 3, 2};
-        printf("Quadrant: %d \n", 1);
-    } else if (waypoints[0].y <= 0 && waypoints[0].x <= 0) {
-        quadrantSeq = {1, 0, 3};
-        printf("Quadrant: %d \n", 2);
-    } else if (waypoints[0].y <= 0 && waypoints[0].x >= 0) {
-        quadrantSeq = {2, 1, 0};
-        printf("Quadrant: %d \n", 3);
-    } else {
-        printf("Quadrant exception, no waypoint creation possible!");
-    }
-
-    // find one Waypoint in each quadrant
-    bool foundPoint;
-    int i_rand, j_rand;
-
-    for (int i = 0; i < quadrantSeq.size(); i++) {
-        foundPoint = false;
-        while (foundPoint == false) {
-            i_rand = (rand() % static_cast<int>(map_origin_x) +
-                      quadrants[quadrantSeq[i]][0]); // x
-            j_rand = (rand() % static_cast<int>(map_origin_y) +
-                      quadrants[quadrantSeq[i]][1]); // y
-            // printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
-
-            if ((map_margin.at<uchar>(i_rand, j_rand)) < 200) {
-                // std::cout << "Drop the point."
-                //          << "Wob wob wob" << std::endl;
-                continue;
-            } else {
-                foundPoint = true;
-                waypoints.push_back(point{res * (i_rand - map_origin_x),
-                                          res * (j_rand - map_origin_y), 0.0});
-                printf("Waypoint found (x,y): %.2f, %.2f \n",
-                       res * (i_rand - map_origin_x), res * (j_rand -
-    map_origin_y));
-                // optimization of position of point
-            }
-        }
-    }
-    */
     double quadrants[4][2] = {{world_x_max, world_y_max},
         {world_x_min, world_y_max},
         {world_x_min, world_y_min},
         {world_x_max, world_y_min}
     };
+    
     std::array<int, 3> quadrantSeq;
 
     // check in which quadrant starting point is => generate sequence
@@ -290,13 +237,15 @@ void set_waypoints() {
     }
 
     // find one Waypoint in each quadrant
-    bool foundPoint;
+    bool foundPointQ;
+    bool foundPointC;
     double x_rand, y_rand;
     int i_rand, j_rand;
 
     for (int i = 0; i < quadrantSeq.size(); i++) {
-        foundPoint = false;
-        while (foundPoint == false) {
+        foundPointQ = false;
+        foundPointC = false;
+        while (foundPointQ == false) {
             x_rand =
                 quadrants[quadrantSeq[i]][0] -
                 (double)(rand() * (quadrants[quadrantSeq[i]][0] / waypoint_scale) /
@@ -314,8 +263,37 @@ void set_waypoints() {
                 //          << "Wob wob wob" << std::endl;
                 continue;
             } else {
-                foundPoint = true;
-                printf("Waypoint found (x,y): %.2f, %.2f \n", x_rand, y_rand);
+                foundPointQ = true;
+                printf("Waypoint Quarter found (x,y): %.2f, %.2f \n", x_rand, y_rand);
+                waypoints.push_back(point{x_rand, y_rand, 0.0});
+            }
+        }
+        while (foundPointC == false) {
+            if (quadrantSeq[i] == 0 || quadrantSeq[i] == 2) {
+                //printf("Sektor: %d, %d \n", 0, 2);
+                x_rand = quadrants[quadrantSeq[i]][0] - ((double) rand() / RAND_MAX)
+                * (1.0 / center_scale * quadrants[quadrantSeq[i]][0]);
+                y_rand = (1.0 / center_scale) * quadrants[quadrantSeq[i]][1] - 
+                ((double) rand() / RAND_MAX) * (2.0 / center_scale * quadrants[quadrantSeq[i]][1]); 
+            } else {
+                //printf("Sektor: %d, %d \n", 1, 3);
+                x_rand = (1.0 / center_scale) * quadrants[quadrantSeq[i]][0] 
+                - ((double) rand() / RAND_MAX) * (2.0 / center_scale * quadrants[quadrantSeq[i]][0]);
+                y_rand = quadrants[quadrantSeq[i]][1] - ((double) rand() / RAND_MAX) 
+                * (1.0 / center_scale * quadrants[quadrantSeq[i]][1]);  
+            }
+            
+            i_rand = round(x_rand / res + map_origin_x);
+            j_rand = round(y_rand / res + map_origin_y);
+            //printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
+
+            if ((map_margin.at<uchar>(i_rand, j_rand)) < 200) {
+                // std::cout << "Drop the point."
+                //          << "Wob wob wob" << std::endl;
+                continue;
+            } else {
+                foundPointC = true;
+                printf("Waypoint Center found (x,y): %.2f, %.2f \n", x_rand, y_rand);
                 waypoints.push_back(point{x_rand, y_rand, 0.0});
             }
         }
