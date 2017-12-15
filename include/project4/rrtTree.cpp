@@ -273,6 +273,11 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             return path;
         } else if (x_final_id == 0) {
             x_final_id = this->nearestNeighbor(x_goal);
+            if (x_final_id == 0 ||
+                    ptrTable[x_final_id]->location.distance(x_goal) > 5.0) {
+                path.clear();
+                return path;
+            }
         }
 
         for (int i = x_final_id; i != 0; i = ptrTable[i]->idx_parent) {
