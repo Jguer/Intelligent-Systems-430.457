@@ -62,6 +62,9 @@ void rrtTree::visualizeTree() {
         }
 
         int idx_parent = this->ptrTable[i]->idx_parent;
+        if (this->ptrTable[idx_parent] == NULL) {
+            continue;
+        }
         for (int j = 0; j < 10; j++) {
             double alpha = this->ptrTable[i]->alpha;
             double d = this->ptrTable[i]->d;
@@ -123,6 +126,9 @@ void rrtTree::visualizeTree(std::vector<traj> path) {
             continue;
         }
         int idx_parent = this->ptrTable[i]->idx_parent;
+        if (this->ptrTable[idx_parent] == NULL) {
+            continue;
+        }
         for (int j = 0; j < 10; j++) {
             double alpha = this->ptrTable[i]->alpha;
             double d = this->ptrTable[i]->d;
