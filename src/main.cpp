@@ -119,10 +119,10 @@ int main(int argc, char **argv) {
             set_waypoints();
 
             // RRT
+            std::cout << "Generating new path" << std::endl;
             do {
-                std::cout << "Generating new path" << std::endl;
                 generate_path_RRT();
-                MaxStep = (MaxStep == 0.5) ? 2.5 : MaxStep - 0.1;
+                MaxStep = (MaxStep < 0.5) ? 2.5 : MaxStep - 0.1;
             } while (path_RRT.size() == 0);
 
             std::cout << "Initializing Robot" << std::endl;

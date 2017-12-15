@@ -1,7 +1,7 @@
 #include "rrtTree.h"
 #define PI 3.14159265358979323846
 
-double max_alpha = 0.15;
+double max_alpha = 0.16;
 double L = 0.325;
 
 rrtTree::rrtTree() {
@@ -42,9 +42,6 @@ rrtTree::rrtTree(std::vector<point> waypoints, cv::Mat map, double map_origin_x,
     root->idx_parent = 0;
     root->location = x_init;
     root->rand = x_init;
-
-    // Initialize engine
-    this->generator.seed(time(NULL));
 }
 
 /* void rrtTree::visualizeTree() { */
@@ -255,6 +252,9 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     traj x_new;
     // building vector x_init to x_goal
     // checking if distance of x_near is close enough to reach in last step
+    // Initialize engine
+    this->generator.seed(time(NULL));
+
     for (int w = 1; w < waypoints.size(); w++) {
         int x_final_id = 0;
         this->x_goal = waypoints.at(w);
