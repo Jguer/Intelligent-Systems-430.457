@@ -48,6 +48,7 @@ private:
     bool isCollision(point x_near, traj x_new, double MaxStep);
     point randomState(double x_max, double x_min, double y_max, double y_min);
     traj newState(point x_near, point x_rand, double MaxStep);
+    void cleanTable(traj new_init);
 
 public:
     rrtTree();

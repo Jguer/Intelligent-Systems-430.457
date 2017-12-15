@@ -11,7 +11,7 @@ rrtTree::rrtTree() {
 }
 
 rrtTree::~rrtTree() {
-    for (int i = 0; i < count; i++) {
+    for (int i = 1; i < count; i++) {
         if (this->ptrTable[i] == NULL) {
             continue;
         }
@@ -290,23 +290,38 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                                             ptrTable[i]->d));
         }
 
-        if (x_final_id != this->count - 1) {
-            for (int j = x_final_id + 1; j < this->count; j++) {
-                if (ptrTable[j] != NULL) {
-                    delete this->ptrTable[j];
-                }
-            }
-            this->count = x_final_id + 1;
-        }
-
-        this->freeze_id = x_final_id;
-        this->x_init = ptrTable[x_final_id]->location;
+        cleanTable(ptrTable[x_final_id]->location);
     }
 
     this->x_init = ptrTable[0]->location;
     std::reverse(path.begin(), path.end());
 
     return path;
+}
+
+void rrtTree::cleanTable(traj new_init) {
+    this->x_init = new_init;
+
+    delete this->root;
+    this->root = new node;
+    root->idx = 0;
+    root->idx_parent = 0;
+    root->location = new_init;
+    root->alpha = new_init.alpha;
+    root->d = new_init.d;
+    root->rand = x_init;
+
+    for (int j = 1; j < this->count; j++) {
+        if (ptrTable[j] != NULL) {
+            delete this->ptrTable[j];
+        }
+    }
+
+    ptrTable.fill(NULL);
+
+    this->count = 1;
+    ptrTable[0] = root;
+    this->addVertex(new_init, x_rand, x_near_id, x_new.alpha, x_new.d);
 }
 
 point rrtTree::randomState(double x_max, double x_min, double y_max,
