@@ -82,6 +82,7 @@ int main(int argc, char **argv) {
     while (running) {
         switch (state) {
         case INIT: {
+            std::srand(std::time(NULL));
             // Load Map
             char *user = getpwuid(getuid())->pw_name;
             cv::Mat map_org =
@@ -194,7 +195,6 @@ void set_drive_param(ros::Publisher cmd_vel_pub, PID *pid_ctrl,
 }
 
 void set_waypoints() {
-    std::srand(std::time(NULL));
     waypoints.push_back(point{-3.5, 8.5, 0.0});
 
     cv::Mat map_margin = addMargin(map, waypoint_margin);
@@ -341,8 +341,10 @@ void generate_path_RRT() {
         std::cout << "Paths require more than 1 point" << std::endl;
         exit(3);
     }
-    rrtTree tree =
-        rrtTree(waypoints, map, map_origin_x, map_origin_y, res, margin);
+
+    rrtTree *tree =
+        new rrtTree(waypoints, map, map_origin_x, map_origin_y, res, margin);
+
     std::cout << "Generating Path" << std::endl;
     path_RRT = tree.generateRRT(world_x_max, world_x_min, world_y_max,
                                 world_y_min, K, MaxStep);
@@ -350,6 +352,7 @@ void generate_path_RRT() {
     printf("New trajectory generated. Size of Path %zu\n", path_RRT.size());
     if (path_RRT.size() == 0) {
         /* MaxStep = (MaxStep < 0.4) ? 2.5 : MaxStep - 0.1; */
+        delete tree;
         generate_path_RRT();
         return;
     }
