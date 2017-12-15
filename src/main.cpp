@@ -115,16 +115,18 @@ int main(int argc, char **argv) {
         break;
         case PATH_PLANNING: {
             // Set Way Points
+            printf("Setting way points\n");
             set_waypoints();
-            printf("Set way points\n");
 
             // RRT
-            generate_path_RRT();
-            printf("Generate RRT\n");
+            printf("Generating RRT\n");
+            while (path_RRT.size() == 0) {
+                generate_path_RRT();
+            }
 
+            printf("Initializing ROBOT\n");
             ros::spinOnce();
             ros::Rate(0.33).sleep();
-            printf("Initialize ROBOT\n");
             state = RUNNING;
         }
         break;
@@ -342,20 +344,16 @@ void generate_path_RRT() {
         exit(3);
     }
 
-    rrtTree *tree =
-        new rrtTree(waypoints, map, map_origin_x, map_origin_y, res, margin);
+    rrtTree tree =
+        rrtTree(waypoints, map, map_origin_x, map_origin_y, res, margin);
 
     std::cout << "Generating Path" << std::endl;
-    path_RRT = tree->generateRRT(world_x_max, world_x_min, world_y_max,
-                                 world_y_min, K, MaxStep);
-    printf("New rrtTree generated. Size of Tree: %d\n", tree->size());
+    path_RRT = tree.generateRRT(world_x_max, world_x_min, world_y_max,
+                                world_y_min, K, MaxStep);
+    printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
     printf("New trajectory generated. Size of Path %zu\n", path_RRT.size());
-    if (path_RRT.size() == 0) {
+    if (path_RRT.size() != 0) {
         /* MaxStep = (MaxStep < 0.4) ? 2.5 : MaxStep - 0.1; */
-        delete tree;
-        generate_path_RRT();
-        return;
+        tree->visualizeTree(path_RRT);
     }
-    printf("Able to generate tree with MaxStep: %f\n", MaxStep);
-    tree->visualizeTree(path_RRT);
 }
