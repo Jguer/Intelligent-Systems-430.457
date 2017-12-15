@@ -293,16 +293,15 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                                         ptrTable[x_final_id]->alpha,
                                         ptrTable[x_final_id]->d));
 
-        for (int i = x_final_id; i != this->x_init; i = ptrTable[i]->idx_parent) {
+        for (int i = ptrTable[x_final_id]->idx_parent; i != this->freeze_id;
+                i = ptrTable[i]->idx_parent) {
             if (ptrTable[i] == NULL) {
                 std::cout << "Parent of important node is deleted" << std::endl;
                 path.clear();
                 return path;
             }
-            path.push_back(
-                convertFromPoint(ptrTable[ptrTable[i]->idx_parent]->location,
-                                 ptrTable[ptrTable[i]->idx_parent]->alpha,
-                                 ptrTable[ptrTable[i]->idx_parent]->d));
+            path.push_back(convertFromPoint(ptrTable[i]->location, ptrTable[i]->alpha,
+                                            ptrTable[i]->d));
         }
 
         this->freeze_id = x_final_id;
