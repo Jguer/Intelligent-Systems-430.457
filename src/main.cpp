@@ -30,10 +30,10 @@ double world_y_min;
 double world_y_max;
 
 // parameters you should adjust : K, margin, MaxStep
-int margin = 5;
-int K = 5000;
+int margin = 6;
+int K = 6000;
 double MaxStep = 2.5;
-int waypoint_margin = 10;
+int waypoint_margin = 11;
 double waypoint_scale = 5.00;
 double center_scale = 4.5;
 
@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
     // FSM
     state = INIT;
     bool running = true;
-    PID *pid_ctrl = new PID(0.6, 0.3, 0.1);
+    PID *pid_ctrl = new PID(0.9, 0.8, 0.4);
     ros::Rate control_rate(60);
     int look_ahead_idx = 0;
 
@@ -295,8 +295,6 @@ void set_waypoints() {
             // printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
 
             if ((map_margin.at<uchar>(i_rand, j_rand)) < 200) {
-                // std::cout << "Drop the point."
-                //          << "Wob wob wob" << std::endl;
                 continue;
             } else {
                 foundPointC = true;
@@ -328,13 +326,12 @@ void generate_path_RRT() {
     }
     rrtTree tree =
         rrtTree(waypoints, map, map_origin_x, map_origin_y, res, margin);
-    std::cout << "Generating Path" << std::endl;
     path_RRT = tree.generateRRT(world_x_max, world_x_min, world_y_max,
                                 world_y_min, K, MaxStep);
-    printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
-    printf("New trajectory generated. Size of Path %zu\n", path_RRT.size());
 
     if (path_RRT.size() != 0) {
+        printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
+        printf("New trajectory generated. Size of Path %zu\n", path_RRT.size());
         /* tree.visualizeTree(path_RRT); */
     }
 }

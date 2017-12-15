@@ -299,7 +299,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             /* std::cout << "Added Vertex "; */
             /* x_new.print(); */
             this->addVertex(x_new, x_rand, x_near_id, x_new.alpha, x_new.d);
-            if (x_new.distance(x_goal) < 1.0) {
+            if (x_new.distance(x_goal) < 0.40) {
                 x_final_id = this->count - 1;
                 break;
             }
