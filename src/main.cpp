@@ -348,7 +348,7 @@ void generate_path_RRT() {
     std::cout << "Generating Path" << std::endl;
     path_RRT = tree->generateRRT(world_x_max, world_x_min, world_y_max,
                                  world_y_min, K, MaxStep);
-    printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
+    printf("New rrtTree generated. Size of Tree: %d\n", tree->size());
     printf("New trajectory generated. Size of Path %zu\n", path_RRT.size());
     if (path_RRT.size() == 0) {
         /* MaxStep = (MaxStep < 0.4) ? 2.5 : MaxStep - 0.1; */
