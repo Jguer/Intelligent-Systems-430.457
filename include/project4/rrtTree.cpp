@@ -309,7 +309,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         this->freeze_id = x_final_id;
         this->x_init = ptrTable[x_final_id]->location;
 
-        printf("Freeze_id: %d Count: %d\n", x_final_id, this->count);
         if (x_final_id != this->count - 1) {
             for (int i = x_final_id + 1; i < this->count; i++) {
                 if (ptrTable[i] != NULL) {
