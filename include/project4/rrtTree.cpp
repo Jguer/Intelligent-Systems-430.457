@@ -212,12 +212,12 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     // INIT
     // initialization of x_near and x_new at start
     std::vector<traj> path;
-    int x_near_id, x_final_id = 0;
     point x_near;
     traj x_new;
     // building vector x_init to x_goal
     // checking if distance of x_near is close enough to reach in last step
     for (int w = 1; w < waypoints.size(); w++) {
+        int x_final_id = 0;
         this->x_goal = waypoints.at(w);
         for (int k = 0; k < K; k++) {
             point x_rand;
@@ -232,7 +232,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             /* std::cout << "X_Random Point: "; */
             /* x_rand.print(); */
 
-            x_near_id = this->nearestNeighbor(x_rand, MaxStep);
+            int x_near_id = this->nearestNeighbor(x_rand, MaxStep);
             if (x_near_id == -1 || ptrTable[x_near_id] == NULL) {
                 continue;
             }
@@ -267,8 +267,10 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         if (this->count == 1) {
             path.clear();
             return path;
-        } else if (x_final_id == 0) {
-            x_final_id = this->nearestNeighbor(x_goal, MaxStep);
+        }
+
+        if (x_final_id == 0) {
+            x_final_id = this->nearestNeighbor(x_goal);
         }
 
         path.push_back(convertFromPoint(ptrTable[x_final_id]->location,
@@ -292,6 +294,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
 
         this->freeze_id = x_final_id;
         this->x_init = ptrTable[x_final_id]->location;
+
         printf("Freeze_id: %d Count: %d\n", x_final_id, this->count);
         if (x_final_id != this->count - 1) {
             for (int i = x_final_id + 1; i < this->count; i++) {
@@ -370,7 +373,7 @@ bool rrtTree::isCollision(point x_near, traj x_new, double MaxStep) {
     double x_c = x_near.x - R * sin(x_near.th);
     double y_c = x_near.y + R * cos(x_near.th);
 
-    for (double i = 0; i < x_new.d; i += this->res * MaxStep) {
+    for (double i = 0; i < x_new.d; i += 0.1) {
         double beta = i / R;
 
         double new_x = x_c + R * sin(x_near.th + beta);
