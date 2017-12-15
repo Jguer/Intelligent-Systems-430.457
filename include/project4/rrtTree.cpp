@@ -12,11 +12,9 @@ rrtTree::rrtTree() {
 
 rrtTree::~rrtTree() {
     for (int i = 0; i < this->count; i++) {
-        std::cout << "Deleting point " << i << std::endl;
-        if (ptrTable[i] == NULL) {
-            continue;
+        if (ptrTable[i] != NULL) {
+            delete ptrTable[i];
         }
-        delete ptrTable[i];
     }
 }
 
@@ -295,7 +293,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                                         ptrTable[x_final_id]->alpha,
                                         ptrTable[x_final_id]->d));
 
-        for (int i = x_final_id; i != 0; i = ptrTable[i]->idx_parent) {
+        for (int i = x_final_id; i != this->x_init; i = ptrTable[i]->idx_parent) {
             if (ptrTable[i] == NULL) {
                 std::cout << "Parent of important node is deleted" << std::endl;
                 path.clear();
@@ -305,9 +303,6 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
                 convertFromPoint(ptrTable[ptrTable[i]->idx_parent]->location,
                                  ptrTable[ptrTable[i]->idx_parent]->alpha,
                                  ptrTable[ptrTable[i]->idx_parent]->d));
-            if (ptrTable[i]->location == this->x_init) {
-                break;
-            }
         }
 
         this->freeze_id = x_final_id;
@@ -323,7 +318,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         printf("Freeze_id: %d Count: %d\n", x_final_id, this->count);
     }
 
-    this->x_init = ptrTable[0]->location;
+    this->x_init = waypoints.at(0);
     std::reverse(path.begin(), path.end());
 
     return path;
@@ -349,7 +344,7 @@ int rrtTree::nearestNeighbor(point x_rand, double MaxStep) {
 
     double distance_min = INT_MAX;
     for (int i = this->freeze_id; i < this->count; i++) {
-        if (this->ptrTable[i] == NULL) {
+        if (ptrTable[i] == NULL) {
             continue;
         }
         point x_near = this->ptrTable[i]->location;
