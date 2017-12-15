@@ -11,8 +11,9 @@ rrtTree::rrtTree() {
 }
 
 rrtTree::~rrtTree() {
-    for (int i = 1; i <= count; i++) {
-        if (this->ptrTable[i] == NULL) {
+    for (int i = 0; i < this->count; i++) {
+        std::cout << "Deleting point " << i << std::endl;
+        if (ptrTable[i] == NULL) {
             continue;
         }
         delete ptrTable[i];
