@@ -312,7 +312,9 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         printf("Freeze_id: %d Count: %d\n", x_final_id, this->count);
         if (x_final_id != this->count - 1) {
             for (int i = x_final_id + 1; i < this->count; i++) {
-                delete ptrTable[i];
+                if (ptrTable[i] != NULL) {
+                    delete ptrTable[i];
+                }
             }
             this->count = x_final_id + 1;
         }
