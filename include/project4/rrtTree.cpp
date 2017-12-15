@@ -11,7 +11,10 @@ rrtTree::rrtTree() {
 }
 
 rrtTree::~rrtTree() {
-    for (int i = 1; i <= count; i++) {
+    for (int i = 0; i < count; i++) {
+        if (this->ptrTable[i] == NULL) {
+            continue;
+        }
         delete ptrTable[i];
     }
 }
@@ -212,12 +215,12 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
     // INIT
     // initialization of x_near and x_new at start
     std::vector<traj> path;
-    int x_near_id, x_final_id = 0;
     point x_near;
     traj x_new;
     // building vector x_init to x_goal
     // checking if distance of x_near is close enough to reach in last step
     for (int w = 1; w < waypoints.size(); w++) {
+        int x_final_id = 0;
         this->x_goal = waypoints.at(w);
         for (int k = 0; k < K; k++) {
             point x_rand;
@@ -232,7 +235,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             /* std::cout << "X_Random Point: "; */
             /* x_rand.print(); */
 
-            x_near_id = this->nearestNeighbor(x_rand, MaxStep);
+            int x_near_id = this->nearestNeighbor(x_rand, MaxStep);
             if (x_near_id == -1 || ptrTable[x_near_id] == NULL) {
                 continue;
             }
@@ -245,7 +248,9 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             if (x_new.th > 9000) {
                 std::cout << "Popin' x_near: ";
                 this->ptrTable[x_near_id]->location.print();
-                delete this->ptrTable[x_near_id];
+                if (ptrTable[x_near_id] != NULL) {
+                    delete this->ptrTable[x_near_id];
+                }
                 continue;
             }
             /* std::cout << "X_new Point: "; */
@@ -268,25 +273,21 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
             path.clear();
             return path;
         } else if (x_final_id == 0) {
-            x_final_id = this->nearestNeighbor(x_goal, MaxStep);
+            x_final_id = this->nearestNeighbor(x_goal);
         }
         path.push_back(convertFromPoint(ptrTable[x_final_id]->location,
                                         ptrTable[x_final_id]->alpha,
                                         ptrTable[x_final_id]->d));
 
-        for (int i = x_final_id; i != 0; i = ptrTable[i]->idx_parent) {
+        for (int i = ptrTable[x_final_id]->idx_parent; i != this->freeze_id;
+                i = ptrTable[i]->idx_parent) {
             if (ptrTable[i] == NULL) {
                 std::cout << "Parent of important node is deleted" << std::endl;
                 path.clear();
                 return path;
             }
-            path.push_back(
-                convertFromPoint(ptrTable[ptrTable[i]->idx_parent]->location,
-                                 ptrTable[ptrTable[i]->idx_parent]->alpha,
-                                 ptrTable[ptrTable[i]->idx_parent]->d));
-            if (ptrTable[i]->location == this->x_init) {
-                break;
-            }
+            path.push_back(convertFromPoint(ptrTable[i]->location, ptrTable[i]->alpha,
+                                            ptrTable[i]->d));
         }
         this->freeze_id = x_final_id;
         this->x_init = ptrTable[x_final_id]->location;
