@@ -284,7 +284,7 @@ std::vector<traj> rrtTree::generateRRT(double x_max, double x_min, double y_max,
         }
 
         if (x_final_id == x_old_id) {
-            std::cout << "Got stuck" << std::endl;
+            std::cout << "Got stuck: Path Size: " << path.size() << std::endl;
             path.clear();
             return path;
         }
