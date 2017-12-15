@@ -354,6 +354,6 @@ void generate_path_RRT() {
     printf("New trajectory generated. Size of Path %zu\n", path_RRT.size());
     if (path_RRT.size() != 0) {
         /* MaxStep = (MaxStep < 0.4) ? 2.5 : MaxStep - 0.1; */
-        tree->visualizeTree(path_RRT);
+        tree.visualizeTree(path_RRT);
     }
 }
