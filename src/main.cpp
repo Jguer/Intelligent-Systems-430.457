@@ -115,16 +115,18 @@ int main(int argc, char **argv) {
         break;
         case PATH_PLANNING: {
             // Set Way Points
+            std::cout << "Setting Waypoints" << std::endl;
             set_waypoints();
-            printf("Set way points\n");
 
             // RRT
-            generate_path_RRT();
-            printf("Generate RRT\n");
+            do {
+                std::cout << "Generating new path" << std::endl;
+                generate_path_RRT();
+            } while (path_RRT.size() == 0);
 
+            std::cout << "Initializing Robot" << std::endl;
             ros::spinOnce();
             ros::Rate(0.33).sleep();
-            printf("Initialize ROBOT\n");
             state = RUNNING;
         }
         break;
@@ -216,7 +218,7 @@ void set_waypoints() {
         {world_x_min, world_y_min},
         {world_x_max, world_y_min}
     };
-    
+
     std::array<int, 3> quadrantSeq;
 
     // check in which quadrant starting point is => generate sequence
@@ -270,22 +272,26 @@ void set_waypoints() {
         }
         while (foundPointC == false) {
             if (quadrantSeq[i] == 0 || quadrantSeq[i] == 2) {
-                //printf("Sektor: %d, %d \n", 0, 2);
-                x_rand = quadrants[quadrantSeq[i]][0] - ((double) rand() / RAND_MAX)
-                * (1.0 / center_scale * quadrants[quadrantSeq[i]][0]);
-                y_rand = (1.0 / center_scale) * quadrants[quadrantSeq[i]][1] - 
-                ((double) rand() / RAND_MAX) * (2.0 / center_scale * quadrants[quadrantSeq[i]][1]); 
+                // printf("Sektor: %d, %d \n", 0, 2);
+                x_rand = quadrants[quadrantSeq[i]][0] -
+                         ((double)rand() / RAND_MAX) *
+                         (1.0 / center_scale * quadrants[quadrantSeq[i]][0]);
+                y_rand = (1.0 / center_scale) * quadrants[quadrantSeq[i]][1] -
+                         ((double)rand() / RAND_MAX) *
+                         (2.0 / center_scale * quadrants[quadrantSeq[i]][1]);
             } else {
-                //printf("Sektor: %d, %d \n", 1, 3);
-                x_rand = (1.0 / center_scale) * quadrants[quadrantSeq[i]][0] 
-                - ((double) rand() / RAND_MAX) * (2.0 / center_scale * quadrants[quadrantSeq[i]][0]);
-                y_rand = quadrants[quadrantSeq[i]][1] - ((double) rand() / RAND_MAX) 
-                * (1.0 / center_scale * quadrants[quadrantSeq[i]][1]);  
+                // printf("Sektor: %d, %d \n", 1, 3);
+                x_rand = (1.0 / center_scale) * quadrants[quadrantSeq[i]][0] -
+                         ((double)rand() / RAND_MAX) *
+                         (2.0 / center_scale * quadrants[quadrantSeq[i]][0]);
+                y_rand = quadrants[quadrantSeq[i]][1] -
+                         ((double)rand() / RAND_MAX) *
+                         (1.0 / center_scale * quadrants[quadrantSeq[i]][1]);
             }
-            
+
             i_rand = round(x_rand / res + map_origin_x);
             j_rand = round(y_rand / res + map_origin_y);
-            //printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
+            // printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
 
             if ((map_margin.at<uchar>(i_rand, j_rand)) < 200) {
                 // std::cout << "Drop the point."
@@ -315,28 +321,21 @@ void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs) {
 }
 
 void generate_path_RRT() {
-    rrtTree tree;
     if (waypoints.size() < 2) {
         std::cout << "Paths require more than 1 point" << std::endl;
         exit(3);
     }
-    tree = rrtTree(waypoints, map, map_origin_x, map_origin_y, res, margin);
+    rrtTree tree =
+        rrtTree(waypoints, map, map_origin_x, map_origin_y, res, margin);
     std::cout << "Generating Path" << std::endl;
     path_RRT = tree.generateRRT(world_x_max, world_x_min, world_y_max,
                                 world_y_min, K, MaxStep);
     printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
     printf("New trajectory generated. Size of Path %zu\n", path_RRT.size());
+
     if (path_RRT.size() != 0) {
         /* path_RRT.clear(); */
         /* MaxStep = (MaxStep < 0.4) ? 2.0 : MaxStep - 0.1; */
-        generate_path_RRT();
-        return;
-    }
-    tree.visualizeTree(path_RRT);
-
-    size_t size = path_RRT.size();
-    path_RRT.reserve(size * 2);
-    for (size_t i = 0; i < size; i++) {
-        path_RRT.push_back(path_RRT[i]);
+        tree.visualizeTree(path_RRT);
     }
 }
