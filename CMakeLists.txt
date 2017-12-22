@@ -5,7 +5,7 @@ project(final_project)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(gazebo REQUIRED)
-
+#find_package(OpenCV 2.4.9.1 EXACT REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   gazebo_msgs
@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   tf
+  race
   )
 
 # check c++11 / c++0x

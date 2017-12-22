@@ -9,7 +9,8 @@
 #include <unistd.h>
 
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
-#include <ackermann_msgs/AckermannDriveStamped.h>
+//#include <ackermann_msgs/AckermannDriveStamped.h>
+#include "race/drive_param.h"
 #include <project4/pid.h>
 #include <project4/rrtTree.h>
 #include <ros/ros.h>
@@ -31,8 +32,8 @@ double world_y_max;
 
 // parameters you should adjust : K, margin, MaxStep
 int margin = 5;
-int K = 7000;
-double MaxStep = 2.5;
+int K = 2000;
+double MaxStep = 0.5;
 int waypoint_margin = 11;
 double waypoint_scale = 5.00;
 double center_scale = 4.5;
@@ -43,11 +44,13 @@ std::vector<traj> path_RRT;
 
 // Robot Parameters
 point robot_pose;
-ackermann_msgs::AckermannDriveStamped cmd;
+// ackermann_msgs::AckermannDriveStamped cmd;
+race::drive_param cmd;
 double speed = 0.0;
 double angle = 0.0;
-double max_speed = 2.00;
-double max_turn = 60.0 * M_PI / 180.0;
+double max_speed = 20.00;
+double max_turn = 100;
+// 60.0 * M_PI / 180.0;
 
 // FSM state
 int state;
@@ -64,19 +67,24 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "slam_main");
     ros::NodeHandle n;
 
-    // Initialize topics
     ros::Publisher cmd_vel_pub =
+        n.advertise<race::drive_param>("/drive_parameters", 100); // TODO
+
+    ros::Subscriber robot_pose_sub =
+        n.subscribe("/amcl_pose", 100, callback_state);
+    // Initialize topics
+    /*ros::Publisher cmd_vel_pub =
         n.advertise<ackermann_msgs::AckermannDriveStamped>(
             "/vesc/high_level/ackermann_cmd_mux/input/nav_0", 1);
 
     ros::Subscriber gazebo_pose_sub =
-        n.subscribe("/amcl_pose", 100, callback_state);
+        n.subscribe("/amcl_pose", 100, callback_state);*/
     std::cout << "Initialized Topics" << std::endl;
 
     // FSM
     state = INIT;
     bool running = true;
-    PID *pid_ctrl = new PID(0.9, 0.8, 0.4);
+    PID *pid_ctrl = new PID(1.0, 0.07, 0.08);
     ros::Rate control_rate(60);
     int look_ahead_idx = 0;
 
@@ -85,11 +93,11 @@ int main(int argc, char **argv) {
         case INIT: {
             // Load Map
             char *user = getpwuid(getuid())->pw_name;
-            cv::Mat map_org =
-                cv::imread((std::string("/home/") + std::string(user) +
-                            std::string("/catkin_ws/src/final_project/src/final.pgm"))
-                           .c_str(),
-                           CV_LOAD_IMAGE_GRAYSCALE);
+            cv::Mat map_org = cv::imread(
+                                  (std::string("/home/scarab3") +
+                                   std::string("/catkin_ws/src/hwsetup/src/hwsetup3_rot.pgm"))
+                                  .c_str(),
+                                  CV_LOAD_IMAGE_GRAYSCALE);
 
             cv::transpose(map_org, map);
             cv::flip(map, map, 1);
@@ -98,10 +106,10 @@ int main(int argc, char **argv) {
             map_x_range = map.rows;
             map_origin_x = map_x_range / 2.0 - 0.5;
             map_origin_y = map_y_range / 2.0 - 0.5;
-            world_x_min = -4.7;
-            world_x_max = 4.7;
-            world_y_min = -10.2;
-            world_y_max = 10.2;
+            world_x_min = -2.5;
+            world_x_max = 2.5;
+            world_y_min = -2.425;
+            world_y_max = 2.425;
             res = 0.05;
             std::cout << "Loaded Map" << std::endl;
 
@@ -122,9 +130,12 @@ int main(int argc, char **argv) {
             std::cout << "Generating new path" << std::endl;
             do {
                 generate_path_RRT();
-                MaxStep = (MaxStep < 0.5) ? 2.5 : MaxStep - 0.1;
+                // MaxStep = (MaxStep < 0.5) ? 2.5 : MaxStep - 0.1;
             } while (path_RRT.size() == 0);
 
+            for (auto i : path_RRT) {
+                i.print();
+            }
             std::cout << "Initializing Robot" << std::endl;
             ros::spinOnce();
             ros::Rate(0.33).sleep();
@@ -140,7 +151,7 @@ int main(int argc, char **argv) {
 
             double dist_to_target = robot_pose.distance(path_RRT[look_ahead_idx].x,
                                     path_RRT[look_ahead_idx].y);
-            if (dist_to_target <= 0.4) {
+            if (dist_to_target <= 0.3) {
                 std::cout << "New destination" << std::endl;
                 printf("x, y : %.2f, %.2f \n", path_RRT[look_ahead_idx].x,
                        path_RRT[look_ahead_idx].y);
@@ -148,6 +159,7 @@ int main(int argc, char **argv) {
                 if (look_ahead_idx == path_RRT.size()) {
                     std::cout << "Circuit Complete" << std::endl;
                     state = FINISH;
+                    continue;
                 }
             }
 
@@ -164,8 +176,8 @@ int main(int argc, char **argv) {
         }
         break;
         case FINISH: {
-            cmd.drive.speed = 0.0;
-            cmd.drive.steering_angle = 0.0;
+            cmd.velocity = 0.0;
+            cmd.angle = 0.0;
             cmd_vel_pub.publish(cmd);
             running = false;
             ros::spinOnce();
@@ -181,39 +193,61 @@ int main(int argc, char **argv) {
 
 void set_drive_param(ros::Publisher cmd_vel_pub, PID *pid_ctrl,
                      int look_ahead_idx) {
-    speed = 2.0 - 1.2 / (1.0 + (robot_pose.distance(path_RRT[look_ahead_idx].x,
-                                path_RRT[look_ahead_idx].y)));
-    angle = pid_ctrl->get_control(robot_pose, path_RRT[look_ahead_idx]);
+    // speed = max_speed;
+    speed = max_speed -
+            2.0 / (1.0 + (robot_pose.distance(path_RRT[look_ahead_idx].x,
+                          path_RRT[look_ahead_idx].y)));
+    angle =
+        -400 * pid_ctrl->get_control(robot_pose, path_RRT[look_ahead_idx]) / M_PI;
 
     // Validate Speed
-    speed = (speed > max_speed) ? max_speed : speed;
-    speed = (speed < -max_speed) ? -max_speed : speed;
+    // speed = (speed > max_speed) ? max_speed : speed;
+    // speed = (speed < -max_speed) ? -max_speed : speed;
     // Validate Angle
     angle = (angle > max_turn) ? max_turn : angle;
     angle = (angle < -max_turn) ? -max_turn : angle;
 
-    cmd.drive.speed = speed;
-    cmd.drive.steering_angle = angle;
+    cmd.velocity = speed;
+    cmd.angle = angle;
     cmd_vel_pub.publish(cmd);
 }
 
+void set_waypoints() {
+    waypoints.clear();
+    point waypoint_candid[4];
+
+    waypoint_candid[0].x = -0.75;          //-2.1
+    waypoint_candid[0].y = 1.2;            //-1.1
+    waypoint_candid[0].th = -3.141592 / 2; // 1.0715
+    waypoint_candid[1].x = 1;              // 0.25;
+    waypoint_candid[1].y = 1;              // 2
+
+    int order[] = {0, 1};
+    int order_size = 2;
+
+    for (int i = 0; i < order_size; i++) {
+        waypoints.push_back(waypoint_candid[order[i]]);
+    }
+}
+
+/*
 void set_waypoints() {
     std::srand(std::time(NULL));
     waypoints.push_back(point{-3.5, 8.5, 0.0});
 
     cv::Mat map_margin = addMargin(map, waypoint_margin);
-
-    /*
-    quadrants
-        ^y
-    1   |   0
-    ____|____>x
-        |
-    2   |   3
-    */
-    // col == i == x
-    // row == j == y
-
+*/
+/*
+quadrants
+    ^y
+1   |   0
+____|____>x
+    |
+2   |   3
+*/
+// col == i == x
+// row == j == y
+/*
     double quadrants[4][2] = {{world_x_max, world_y_max},
         {world_x_min, world_y_max},
         {world_x_min, world_y_min},
@@ -251,14 +285,11 @@ void set_waypoints() {
         while (foundPointQ == false) {
             x_rand =
                 quadrants[quadrantSeq[i]][0] -
-                (double)(rand() * (quadrants[quadrantSeq[i]][0] / waypoint_scale) /
-                         RAND_MAX);
-            y_rand =
-                quadrants[quadrantSeq[i]][1] -
-                (double)(rand() * (quadrants[quadrantSeq[i]][1] / waypoint_scale) /
-                         RAND_MAX);
-            i_rand = round(x_rand / res + map_origin_x);
-            j_rand = round(y_rand / res + map_origin_y);
+                (double)(rand() * (quadrants[quadrantSeq[i]][0] /
+waypoint_scale) / RAND_MAX); y_rand = quadrants[quadrantSeq[i]][1] -
+                (double)(rand() * (quadrants[quadrantSeq[i]][1] /
+waypoint_scale) / RAND_MAX); i_rand = round(x_rand / res + map_origin_x); j_rand
+= round(y_rand / res + map_origin_y);
             // printf("Random (x,y): %.2f, %.2f \n", x_rand, y_rand);
 
             if ((map_margin.at<uchar>(i_rand, j_rand)) < 200) {
@@ -267,8 +298,8 @@ void set_waypoints() {
                 continue;
             } else {
                 foundPointQ = true;
-                printf("Waypoint Quarter found (x,y): %.2f, %.2f \n", x_rand, y_rand);
-                waypoints.push_back(point{x_rand, y_rand, 0.0});
+                printf("Waypoint Quarter found (x,y): %.2f, %.2f \n", x_rand,
+y_rand); waypoints.push_back(point{x_rand, y_rand, 0.0});
             }
         }
         while (foundPointC == false) {
@@ -298,8 +329,8 @@ void set_waypoints() {
                 continue;
             } else {
                 foundPointC = true;
-                printf("Waypoint Center found (x,y): %.2f, %.2f \n", x_rand, y_rand);
-                waypoints.push_back(point{x_rand, y_rand, 0.0});
+                printf("Waypoint Center found (x,y): %.2f, %.2f \n", x_rand,
+y_rand); waypoints.push_back(point{x_rand, y_rand, 0.0});
             }
         }
     }
@@ -310,7 +341,7 @@ void set_waypoints() {
     // TA will change this part before scoring.
     waypoints.push_back(point{1.5, 1.5, 0.0});
     waypoints.push_back(point{-2.0, -9.0, 0.0});
-}
+}*/
 
 void callback_state(geometry_msgs::PoseWithCovarianceStampedConstPtr msgs) {
     robot_pose.x = msgs->pose.pose.position.x;
@@ -332,6 +363,6 @@ void generate_path_RRT() {
     if (path_RRT.size() != 0) {
         printf("New rrtTree generated. Size of Tree: %d\n", tree.size());
         printf("New trajectory generated. Size of Path %zu\n", path_RRT.size());
-        /* tree.visualizeTree(path_RRT); */
+        tree.visualizeTree(path_RRT);
     }
 }
