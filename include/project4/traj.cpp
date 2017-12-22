@@ -1,5 +1,11 @@
 #include "traj.h"
 
+double constrainAngle(double x) {
+    x = fmod(x + M_PI / 2, M_PI);
+    if (x < 0)
+        x += M_PI;
+    return x - M_PI / 2;
+}
 bool point::operator==(point &rhs) const {
     return this->x == rhs.x && this->y == rhs.y;
 }

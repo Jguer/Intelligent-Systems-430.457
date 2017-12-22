@@ -27,4 +27,5 @@ struct traj : point {
 double distance(point p1, point p2);
 double distance(point p1, double x, double y);
 traj convertFromPoint(point location, double alpha, double d);
+double constrainAngle(double x);
 #endif
